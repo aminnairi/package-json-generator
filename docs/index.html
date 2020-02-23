@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Package JSON Generator">
+        <meta name="theme-color" content="red">
+        <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" as="style">
+        <link rel="preload" href="https://fonts.googleapis.com/icon?family=Material+Icons" as="style">
+        <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js" as="script">
+        <link rel="preload" href="https://fonts.googleapis.com/css?family=Fira+Code&display=swap" as="style">
+        <link rel="preload" href="./index.js" as="script">
+        <link rel="preload" href="./index.css" as="style">
+        <title>Package JSON Generator</title>
+    </head>
+    <body>
+        <div id="elm"></div>
+        <script>
+            "use strict";
+
+            function loadScript(src) {
+                const script = document.createElement("script");
+
+                script.setAttribute("async", true);
+                script.setAttribute("src", src);
+
+                document.head.appendChild(script);
+
+                return new Promise(function(resolve) {
+                    script.addEventListener("load", resolve, true);
+                });
+            }
+
+            function loadStylesheet(href) {
+                const stylesheet = document.createElement("link");
+
+                stylesheet.setAttribute("rel", "stylesheet");
+                stylesheet.setAttribute("href", href);
+
+                document.head.appendChild(stylesheet);
+
+                return new Promise(function(resolve) {
+                    stylesheet.addEventListener("load", resolve, true);
+                });
+            }
+
+            window.addEventListener("load", async function() {
+                await Promise.all([
+                    loadStylesheet("https://fonts.googleapis.com/icon?family=Material+Icons"),
+                    loadStylesheet("https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"),
+                    loadStylesheet("https://fonts.googleapis.com/css?family=Fira+Code&display=swap"),
+                    loadStylesheet("./index.css"),
+                    loadScript("https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"),
+                    loadScript("./index.js")
+                ]);
+
+                if (!window.M) {
+                    throw new ReferenceError("No MaterializeJS attached to the window object.");
+                }
+                if (!Object.prototype.hasOwnProperty.call(window, "Elm")) {
+                    throw new Error("No Elm found in window.");
+                }
+
+                if (!Object.prototype.hasOwnProperty.call(window.Elm, "Main")) {
+                    throw new Error("No Main application found in window.Elm.");
+                }
+
+                if (!Object.prototype.hasOwnProperty.call(window.Elm.Main, "init")) {
+                    throw new Error("No init function found in window.Elm.Main.");
+                }
+
+                const elm = document.getElementById("elm");
+
+                if (elm === null) {
+                    throw new ReferenceError("No div with id elm found in the current DOM.");
+                }
+
+                window.Elm.Main.init({
+                    node: elm
+                });
+
+                window.M.AutoInit();
+            });
+        </script>
+        <noscript>
+            <h1>JavaScript disabled</h1>
+            <p>This application relies on JavaScript to perform best. Unfortunately, it seems like this browser has JavaScript execution disabled. Please, enable JavaScript execution for this page before reloading.</p>
+        </noscript>
+    </body>
+</html>

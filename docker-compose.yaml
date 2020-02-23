@@ -1,0 +1,47 @@
+version: "3"
+
+services:
+    npm:
+        image: node:latest
+        user: node
+        working_dir: /home/node
+        entrypoint: npm
+        volumes:
+            - .:/home/node
+
+    node:
+        image: node:latest
+        user: node
+        working_dir: /home/node
+        entrypoint: node
+        volumes:
+            - .:/home/node
+
+    elm:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        user: user
+        working_dir: /home/user
+        entrypoint: elm
+        ports:
+            - 8000:8000
+        volumes:
+            - .:/home/user
+
+    sh:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        user: user
+        working_dir: /home/user
+        volumes:
+            - .:/home/user
+
+    nginx:
+        image: nginx
+        ports:
+            - 80:80
+        volumes:
+            - ./docs:/usr/share/nginx/html
+

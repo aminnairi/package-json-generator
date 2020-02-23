@@ -1,0 +1,13 @@
+*
+!.gitignore
+!docs
+!src
+!CHANGELOG.md
+!docker-compose.yaml
+!Dockerfile
+!elm.json
+!LICENSE.md
+!makefile
+!package-lock.json
+!package.json
+!README.md
