@@ -9,3 +9,26 @@ html, body {
 code {
     font-family: "Fira Code";
 }
+
+main {
+    flex: 1 0 auto;
+}
+
+#root {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+}
+
+@media(min-width: 600px) {
+    #settings {
+        height: calc(100vh - 64px);
+        overflow-y: scroll;
+    }
+
+    #json {
+        height: calc(100vh - 64px);
+        overflow-y: scroll;
+    }
+}
