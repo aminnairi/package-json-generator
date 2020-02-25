@@ -1,4 +1,4 @@
-.PHONY: reactor build start install clean
+.PHONY: reactor build start install clean deploy
 
 install:
 	docker-compose run --rm npm install
@@ -16,3 +16,6 @@ start:
 
 clean:
 	docker-compose run --rm sh rm -rf elm-stuff .config .elm .npm node_modules .bash_history
+
+deploy:
+	docker-compose run --rm node ./node_modules/.bin/now ./docs
