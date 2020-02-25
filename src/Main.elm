@@ -1,5 +1,22 @@
 module Main exposing ( main )
 
+{--
+
+platforms:
+
+'aix'
+'darwin'
+'freebsd'
+'linux'
+'openbsd'
+'sunos'
+'win32'
+
+archs:
+
+'arm', 'arm64', 'ia32', 'mips','mipsel', 'ppc', 'ppc64', 's390', 's390x', 'x32', and 'x64'.
+--}
+
 import Html exposing ( Html )
 import Html.Attributes
 import Html.Events
@@ -362,10 +379,7 @@ viewInput options =
 view : Model -> Html Msg
 view model =
     Html.div
-        [ Html.Attributes.style "min-height" "100vh"
-        , Html.Attributes.style "width" "100vw"
-        , Html.Attributes.style "display" "flex"
-        , Html.Attributes.style "flex-direction" "column"
+        [ Html.Attributes.id "root"
         ]
         [ Html.ul
             [ Html.Attributes.class "sidenav"
@@ -455,14 +469,16 @@ view model =
                 ]
             ]
         , Html.main_
-            [ Html.Attributes.style "flex" "1 0 auto" ]
+            []
             [ Html.div
                 [ Html.Attributes.class "container"
                 ]
                 [ Html.div
                     [ Html.Attributes.class "row" ]
                     [ Html.div
-                        [ Html.Attributes.class "col s12 m6" ]
+                        [ Html.Attributes.class "col s12 m6"
+                        , Html.Attributes.id "settings"
+                        ]
                         ( List.concat
                             [ [ Html.div [ Html.Attributes.class "row" ] [] ]
                             , [ viewDropdown
@@ -612,7 +628,11 @@ view model =
                             ]
                         )
                     , Html.div
-                        [ Html.Attributes.class "col s12 m6" ]
+                        [ Html.Attributes.class "col"
+                        , Html.Attributes.class "s12"
+                        , Html.Attributes.class "m6"
+                        , Html.Attributes.id "json"
+                        ]
                         [  Html.div [ Html.Attributes.class "row" ] []
                         , viewJsonModel model
                         ]
