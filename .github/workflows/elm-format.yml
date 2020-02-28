@@ -13,8 +13,10 @@ jobs:
     elm-format:
         runs-on: ubuntu-latest
         name: Elm Format
-        uses: actions/checkout@v2
 
         steps:
+            - name: Git Checkout
+              uses: actions/checkout@v2
+
             - name: Elm Syntax Validation
               run: make format
