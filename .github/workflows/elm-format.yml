@@ -1,0 +1,18 @@
+name: Elm CI
+
+on:
+    push:
+        branch:
+            - latest
+
+    pull_request:
+        branch:
+            - latest
+
+jobs:
+    elm-format:
+        runs-on: ubuntu-latest
+        name: Elm Format
+        steps:
+            - name: Elm Syntax Validation
+              run: make format
