@@ -6,7 +6,7 @@
     "author": "Amin NAIRI",
     "license": "GPL-3.0",
     "scripts": {
-        "format": "elm-format --validate ./src/Main.elm"
+        "format": "elm-format --yes ./src/Main.elm"
     },
     "devDependencies": {
         "elm": "^0.19.1-3",
