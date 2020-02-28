@@ -1,25 +1,42 @@
+# Name of the workflow
 name: Elm CI
 
+# GitHub events that triggers this workflow
 on:
+    # Trigger the workflow on push
     push:
+        # Trigger the workflow on push for the following branches
         branches:
             - latest
 
+    # Trigger the workflow on pull requests
     pull_request:
+        # Trigger the workflow on pull requests aiming these particular branches
         branches:
             - latest
 
+# List of tasks run by this workflow
 jobs:
+    # Task for formating and checking the syntax of the main source-code
     elm-format:
+        # This job will run on the latest version available of Ubuntu
         runs-on: ubuntu-latest
+        # The name of this job
         name: Elm Format
 
+        # The steps for this job
         steps:
+            # The name of the current step
             - name: Git Checkout
+              # Action that will clone the repository
               uses: actions/checkout@v2
 
+            # The name of the current step
             - name: Dependencies installation
+              # Install the Node.js dependencies
               run: docker-compose run --rm --user root npm install
 
+            # The name of the current step
             - name: Elm Syntax Validation
+              # Run the validation of the source-code's syntax
               run: docker-compose run --rm --user root npm run format
