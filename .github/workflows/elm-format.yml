@@ -18,11 +18,8 @@ jobs:
             - name: Git Checkout
               uses: actions/checkout@v2
 
-            - name: Node Setup
-              uses: actions/setup-node@v2
-
             - name: Dependencies installation
-              run: npm install
+              run: docker-compose run --rm --user root npm install
 
             - name: Elm Syntax Validation
-              run: make format
+              run: docker-compose run --rm --user root npm run format
