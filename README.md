@@ -4,7 +4,7 @@ Quickly generate your NPM configuration according to https://docs.npmjs.com/file
 
 ## Usage
 
-See [aminnairi.github.io/package-json-generator](https://aminnairi.github.io/package-json-generator/).
+See [package-json-generator.now.sh](https://package-json-generator.now.sh/).
 
 ## Changelog
 
