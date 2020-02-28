@@ -18,8 +18,11 @@ jobs:
             - name: Git Checkout
               uses: actions/checkout@v2
 
+            - name: Node Setup
+              uses: actions/setup-node@v2
+
             - name: Dependencies installation
-              run: make install
+              run: npm install
 
             - name: Elm Syntax Validation
               run: make format
