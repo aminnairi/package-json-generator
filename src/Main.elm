@@ -1,4 +1,4 @@
-module Main exposing ( main )
+module Main exposing (main)
 
 {--
 
@@ -17,65 +17,72 @@ archs:
 'arm', 'arm64', 'ia32', 'mips','mipsel', 'ppc', 'ppc64', 's390', 's390x', 'x32', and 'x64'.
 --}
 
-import Html exposing ( Html )
+import Browser
+import Html exposing (Html)
 import Html.Attributes
 import Html.Events
-import Browser
 import Json.Encode
 
+
 type alias ViewInputsOptions =
-    { label     : String
-    , onAdd     : Msg
-    , onUpdate  : Int -> String -> Msg
-    , onRemove  : Int -> Msg
+    { label : String
+    , onAdd : Msg
+    , onUpdate : Int -> String -> Msg
+    , onRemove : Int -> Msg
     }
+
 
 type alias ViewInputOptions =
-    { placeholder   : String
-    , value         : String
-    , onInput       : String -> Msg
+    { placeholder : String
+    , value : String
+    , onInput : String -> Msg
     }
+
 
 type alias ViewDropdownOptions =
-    { value         : String
-    , label         : String
-    , identifier    : String
-    , onSelection   : String -> Msg
+    { value : String
+    , label : String
+    , identifier : String
+    , onSelection : String -> Msg
     }
 
+
 type alias ViewDropdownValue =
-    ( String , String )
+    ( String, String )
+
 
 type alias ViewDropdownValues =
     List ViewDropdownValue
 
+
 type alias Model =
-    { keywords              : List String
-    , name                  : String
-    , version               : String
-    , description           : String
-    , homePage              : String
-    , mainScript            : String
-    , browserScript         : String
-    , files                 : List String
-    , manPages              : List String
-    , operatingSystems      : List String
-    , centralProcessUnits   : List String
-    , private               : Bool
-    , nodeEngine            : String
-    , npmEngine             : String
-    , bugUrl                : String
-    , bugEmail              : String
-    , license               : String
-    , authorName            : String
-    , authorEmail           : String
-    , authorUrl             : String
-    , binary                : String
-    , repositoryType        : String
-    , repositoryUrl         : String
-    , repositoryDirectory   : String
-    , spaces                : Int
+    { keywords : List String
+    , name : String
+    , version : String
+    , description : String
+    , homePage : String
+    , mainScript : String
+    , browserScript : String
+    , files : List String
+    , manPages : List String
+    , operatingSystems : List String
+    , centralProcessUnits : List String
+    , private : Bool
+    , nodeEngine : String
+    , npmEngine : String
+    , bugUrl : String
+    , bugEmail : String
+    , license : String
+    , authorName : String
+    , authorEmail : String
+    , authorUrl : String
+    , binary : String
+    , repositoryType : String
+    , repositoryUrl : String
+    , repositoryDirectory : String
+    , spaces : Int
     }
+
 
 type Msg
     = AddKeyword
@@ -114,33 +121,34 @@ type Msg
     | UpdateRepositoryDirectory String
     | UpdateSpaces String
 
+
 init : Model
 init =
-    { keywords              = [""]
-    , name                  = ""
-    , version               = ""
-    , description           = ""
-    , homePage              = ""
-    , mainScript            = ""
-    , browserScript         = ""
-    , files                 = [""]
-    , manPages              = [""]
-    , operatingSystems      = [""]
-    , centralProcessUnits   = [""]
-    , private               = True
-    , nodeEngine            = ""
-    , npmEngine             = ""
-    , bugUrl                = ""
-    , bugEmail              = ""
-    , license               = ""
-    , authorName            = ""
-    , authorEmail           = ""
-    , authorUrl             = ""
-    , binary                = ""
-    , repositoryType        = ""
-    , repositoryUrl         = ""
-    , repositoryDirectory   = ""
-    , spaces                = 2 
+    { keywords = [ "" ]
+    , name = ""
+    , version = ""
+    , description = ""
+    , homePage = ""
+    , mainScript = ""
+    , browserScript = ""
+    , files = [ "" ]
+    , manPages = [ "" ]
+    , operatingSystems = [ "" ]
+    , centralProcessUnits = [ "" ]
+    , private = True
+    , nodeEngine = ""
+    , npmEngine = ""
+    , bugUrl = ""
+    , bugEmail = ""
+    , license = ""
+    , authorName = ""
+    , authorEmail = ""
+    , authorUrl = ""
+    , binary = ""
+    , repositoryType = ""
+    , repositoryUrl = ""
+    , repositoryDirectory = ""
+    , spaces = 2
     }
 
 
@@ -151,14 +159,13 @@ maybeJsonEncodeList ( property, list ) =
         filteredList =
             list
                 |> List.map String.trim
-                |> List.filter ( String.isEmpty >> not )
-
+                |> List.filter (String.isEmpty >> not)
     in
-        if List.isEmpty filteredList || List.all String.isEmpty filteredList then
-            Nothing
+    if List.isEmpty filteredList || List.all String.isEmpty filteredList then
+        Nothing
 
-        else
-            Just ( property, Json.Encode.list Json.Encode.string filteredList )
+    else
+        Just ( property, Json.Encode.list Json.Encode.string filteredList )
 
 
 maybeListValues : Maybe item -> List item -> List item
@@ -177,14 +184,13 @@ maybeJsonEncodeString ( property, value ) =
         sanitizedValue : String
         sanitizedValue =
             String.trim value
-
     in
-        case String.isEmpty sanitizedValue of
-            True ->
-                Nothing
+    case String.isEmpty sanitizedValue of
+        True ->
+            Nothing
 
-            False ->
-                Just ( property, Json.Encode.string sanitizedValue )
+        False ->
+            Just ( property, Json.Encode.string sanitizedValue )
 
 
 maybeJsonEncodeBool : ( String, Bool ) -> Maybe ( String, Json.Encode.Value )
@@ -197,13 +203,13 @@ maybeJsonEncodeBool ( property, value ) =
             Nothing
 
 
-maybeJsonEncodeObject : List ( Maybe ( String, Json.Encode.Value ) ) -> Json.Encode.Value
+maybeJsonEncodeObject : List (Maybe ( String, Json.Encode.Value )) -> Json.Encode.Value
 maybeJsonEncodeObject maybeProperties =
     List.foldr maybeListValues [] maybeProperties
         |> Json.Encode.object
 
 
-maybeJsonEncodeNamedObject : String -> List ( Maybe ( String, Json.Encode.Value ) ) -> Maybe ( String, Json.Encode.Value )
+maybeJsonEncodeNamedObject : String -> List (Maybe ( String, Json.Encode.Value )) -> Maybe ( String, Json.Encode.Value )
 maybeJsonEncodeNamedObject name maybeProperties =
     case List.foldr maybeListValues [] maybeProperties of
         [] ->
@@ -223,8 +229,9 @@ viewJsonModel model =
                 []
                 [ Html.code
                     []
-                    [ Html.text <| Json.Encode.encode model.spaces <|
-                        maybeJsonEncodeObject
+                    [ Html.text <|
+                        Json.Encode.encode model.spaces <|
+                            maybeJsonEncodeObject
                                 [ maybeJsonEncodeString ( "name", model.name )
                                 , maybeJsonEncodeString ( "version", model.version )
                                 , maybeJsonEncodeString ( "description", model.description )
@@ -260,17 +267,18 @@ viewJsonModel model =
                                     , maybeJsonEncodeString ( "url", model.repositoryUrl )
                                     , maybeJsonEncodeString ( "directory", model.repositoryDirectory )
                                     ]
-                                , maybeJsonEncodeList ( "cpu", model.centralProcessUnits ) ]
+                                , maybeJsonEncodeList ( "cpu", model.centralProcessUnits )
+                                ]
                     ]
                 ]
             ]
         ]
 
 
-viewInputs : ViewInputsOptions -> List String -> List ( Html Msg )
+viewInputs : ViewInputsOptions -> List String -> List (Html Msg)
 viewInputs options values =
     List.indexedMap
-        ( \index value ->
+        (\index value ->
             if index == 0 then
                 Html.div
                     [ Html.Attributes.class "row" ]
@@ -285,14 +293,14 @@ viewInputs options values =
                             [ Html.text "add_circle" ]
                         , Html.input
                             [ Html.Attributes.value value
-                            , Html.Events.onInput ( options.onUpdate index )
-                            , Html.Attributes.id ( options.label ++ String.fromInt index )
+                            , Html.Events.onInput (options.onUpdate index)
+                            , Html.Attributes.id (options.label ++ String.fromInt index)
                             , Html.Attributes.type_ "text"
                             ]
                             []
                         , Html.label
-                            [ Html.Attributes.for ( options.label ++ String.fromInt index ) ]
-                            [ Html.text ( options.label ++ " " ) ]
+                            [ Html.Attributes.for (options.label ++ String.fromInt index) ]
+                            [ Html.text (options.label ++ " ") ]
                         ]
                     ]
 
@@ -302,7 +310,7 @@ viewInputs options values =
                     [ Html.div
                         [ Html.Attributes.class "col s12 input-field" ]
                         [ Html.i
-                            [ Html.Events.onClick ( options.onRemove index )
+                            [ Html.Events.onClick (options.onRemove index)
                             , Html.Attributes.class "material-icons"
                             , Html.Attributes.class "prefix"
                             , Html.Attributes.class "red-text"
@@ -310,17 +318,16 @@ viewInputs options values =
                             [ Html.text "remove_circle" ]
                         , Html.input
                             [ Html.Attributes.value value
-                            , Html.Events.onInput ( options.onUpdate index )
-                            , Html.Attributes.id ( options.label ++ String.fromInt index )
+                            , Html.Events.onInput (options.onUpdate index)
+                            , Html.Attributes.id (options.label ++ String.fromInt index)
                             , Html.Attributes.type_ "text"
                             ]
                             []
                         , Html.label
-                            [ Html.Attributes.for ( options.label ++ String.fromInt index) ]
-                            [ Html.text ( options.label ++ " " ) ]
+                            [ Html.Attributes.for (options.label ++ String.fromInt index) ]
+                            [ Html.text (options.label ++ " ") ]
                         ]
                     ]
-
         )
         values
 
@@ -330,11 +337,11 @@ toHtmlOption ( value, text ) =
     Html.option
         [ Html.Attributes.value value ]
         [ Html.text text ]
-        
 
-viewDropdownValues : ViewDropdownValues -> List ( Html Msg )
+
+viewDropdownValues : ViewDropdownValues -> List (Html Msg)
 viewDropdownValues values =
-    List.map toHtmlOption values 
+    List.map toHtmlOption values
 
 
 viewDropdown : ViewDropdownOptions -> ViewDropdownValues -> Html Msg
@@ -351,7 +358,7 @@ viewDropdown options values =
                 , Html.Attributes.id options.identifier
                 , Html.Attributes.class "browser-default"
                 ]
-                ( viewDropdownValues values )
+                (viewDropdownValues values)
             ]
         ]
 
@@ -364,7 +371,7 @@ viewInput options =
             [ Html.Attributes.class "col s12 input-field" ]
             [ Html.label
                 [ Html.Attributes.for options.placeholder ]
-                [ Html.text ( options.placeholder ++ " " ) ]
+                [ Html.text (options.placeholder ++ " ") ]
             , Html.input
                 [ Html.Attributes.value options.value
                 , Html.Events.onInput options.onInput
@@ -479,150 +486,155 @@ view model =
                         [ Html.Attributes.class "col s12 m6"
                         , Html.Attributes.id "settings"
                         ]
-                        ( List.concat
+                        (List.concat
                             [ [ Html.div [ Html.Attributes.class "row" ] [] ]
                             , [ viewDropdown
-                                    { value         = if model.private then "true" else "false"
-                                    , label         = "Private"
-                                    , identifier    = "private"
-                                    , onSelection   = UpdatePrivate
+                                    { value =
+                                        if model.private then
+                                            "true"
+
+                                        else
+                                            "false"
+                                    , label = "Private"
+                                    , identifier = "private"
+                                    , onSelection = UpdatePrivate
                                     }
                                     [ ( "true", "Yes" )
                                     , ( "false", "No" )
                                     ]
                               , viewDropdown
-                                    { value         = String.fromInt model.spaces
-                                    , label         = "Spaces"
-                                    , identifier    = "spaces"
-                                    , onSelection   = UpdateSpaces
+                                    { value = String.fromInt model.spaces
+                                    , label = "Spaces"
+                                    , identifier = "spaces"
+                                    , onSelection = UpdateSpaces
                                     }
                                     [ ( "2", "2" )
                                     , ( "4", "4" )
                                     ]
                               , viewInput
-                                    { placeholder   = "Name"
-                                    , value         = model.name
-                                    , onInput       = UpdateName
+                                    { placeholder = "Name"
+                                    , value = model.name
+                                    , onInput = UpdateName
                                     }
                               , viewInput
-                                    { placeholder   = "Version"
-                                    , value         = model.version
-                                    , onInput       = UpdateVersion
+                                    { placeholder = "Version"
+                                    , value = model.version
+                                    , onInput = UpdateVersion
                                     }
                               , viewInput
-                                    { placeholder   = "Description"
-                                    , value         = model.description
-                                    , onInput       = UpdateDescription
+                                    { placeholder = "Description"
+                                    , value = model.description
+                                    , onInput = UpdateDescription
                                     }
                               , viewInput
-                                    { placeholder   = "Home Page"
-                                    , value         = model.homePage
-                                    , onInput       = UpdateHomePage
+                                    { placeholder = "Home Page"
+                                    , value = model.homePage
+                                    , onInput = UpdateHomePage
                                     }
                               , viewInput
-                                    { placeholder   = "Main Script"
-                                    , value         = model.mainScript
-                                    , onInput       = UpdateMainScript
+                                    { placeholder = "Main Script"
+                                    , value = model.mainScript
+                                    , onInput = UpdateMainScript
                                     }
                               , viewInput
-                                    { placeholder   = "Browser Script"
-                                    , value         = model.browserScript
-                                    , onInput       = UpdateBrowserScript
+                                    { placeholder = "Browser Script"
+                                    , value = model.browserScript
+                                    , onInput = UpdateBrowserScript
                                     }
                               , viewInput
-                                    { placeholder   = "Node Engine"
-                                    , value         = model.nodeEngine
-                                    , onInput       = UpdateNodeEngine
+                                    { placeholder = "Node Engine"
+                                    , value = model.nodeEngine
+                                    , onInput = UpdateNodeEngine
                                     }
                               , viewInput
-                                    { placeholder   = "NPM Engine"
-                                    , value         = model.npmEngine
-                                    , onInput       = UpdateNpmEngine
+                                    { placeholder = "NPM Engine"
+                                    , value = model.npmEngine
+                                    , onInput = UpdateNpmEngine
                                     }
                               , viewInput
-                                    { placeholder   = "Bug URL"
-                                    , value         = model.bugUrl
-                                    , onInput       = UpdateBugUrl
+                                    { placeholder = "Bug URL"
+                                    , value = model.bugUrl
+                                    , onInput = UpdateBugUrl
                                     }
                               , viewInput
-                                    { placeholder   = "Bug Email"
-                                    , value         = model.bugEmail
-                                    , onInput       = UpdateBugEmail
+                                    { placeholder = "Bug Email"
+                                    , value = model.bugEmail
+                                    , onInput = UpdateBugEmail
                                     }
                               , viewInput
-                                    { placeholder   = "License"
-                                    , value         = model.license
-                                    , onInput       = UpdateLicense
+                                    { placeholder = "License"
+                                    , value = model.license
+                                    , onInput = UpdateLicense
                                     }
                               , viewInput
-                                    { placeholder   = "Author Name"
-                                    , value         = model.authorName
-                                    , onInput       = UpdateAuthorName
+                                    { placeholder = "Author Name"
+                                    , value = model.authorName
+                                    , onInput = UpdateAuthorName
                                     }
                               , viewInput
-                                    { placeholder   = "Author Email"
-                                    , value         = model.authorEmail
-                                    , onInput       = UpdateAuthorEmail
+                                    { placeholder = "Author Email"
+                                    , value = model.authorEmail
+                                    , onInput = UpdateAuthorEmail
                                     }
                               , viewInput
-                                    { placeholder   = "Author URL"
-                                    , value         = model.authorUrl
-                                    , onInput       = UpdateAuthorUrl
+                                    { placeholder = "Author URL"
+                                    , value = model.authorUrl
+                                    , onInput = UpdateAuthorUrl
                                     }
                               , viewInput
-                                    { placeholder   = "Binary"
-                                    , value         = model.binary
-                                    , onInput       = UpdateBinary
+                                    { placeholder = "Binary"
+                                    , value = model.binary
+                                    , onInput = UpdateBinary
                                     }
                               , viewInput
-                                    { placeholder   = "Repository Type"
-                                    , value         = model.repositoryType
-                                    , onInput       = UpdateRepositoryType
+                                    { placeholder = "Repository Type"
+                                    , value = model.repositoryType
+                                    , onInput = UpdateRepositoryType
                                     }
                               , viewInput
-                                    { placeholder   = "Repository URL"
-                                    , value         = model.repositoryUrl
-                                    , onInput       = UpdateRepositoryUrl
+                                    { placeholder = "Repository URL"
+                                    , value = model.repositoryUrl
+                                    , onInput = UpdateRepositoryUrl
                                     }
                               , viewInput
-                                    { placeholder   = "Repository Directory"
-                                    , value         = model.repositoryDirectory
-                                    , onInput       = UpdateRepositoryDirectory
+                                    { placeholder = "Repository Directory"
+                                    , value = model.repositoryDirectory
+                                    , onInput = UpdateRepositoryDirectory
                                     }
                               ]
                             , viewInputs
-                                { onAdd     = AddKeyword
-                                , onUpdate  = UpdateKeyword
-                                , onRemove  = RemoveKeyword
-                                , label     = "Keyword"
-                                } 
+                                { onAdd = AddKeyword
+                                , onUpdate = UpdateKeyword
+                                , onRemove = RemoveKeyword
+                                , label = "Keyword"
+                                }
                                 model.keywords
                             , viewInputs
-                                { onAdd     = AddFile
-                                , onUpdate  = UpdateFile
-                                , onRemove  = RemoveFile
-                                , label     = "File"
+                                { onAdd = AddFile
+                                , onUpdate = UpdateFile
+                                , onRemove = RemoveFile
+                                , label = "File"
                                 }
                                 model.files
                             , viewInputs
-                                { onAdd     = AddManPage
-                                , onUpdate  = UpdateManPage
-                                , onRemove  = RemoveManPage
-                                , label     = "Man Page"
+                                { onAdd = AddManPage
+                                , onUpdate = UpdateManPage
+                                , onRemove = RemoveManPage
+                                , label = "Man Page"
                                 }
                                 model.manPages
                             , viewInputs
-                                { onAdd     = AddOperatingSystem
-                                , onUpdate  = UpdateOperatingSystem
-                                , onRemove  = RemoveOperatingSystem
-                                , label     = "OS"
+                                { onAdd = AddOperatingSystem
+                                , onUpdate = UpdateOperatingSystem
+                                , onRemove = RemoveOperatingSystem
+                                , label = "OS"
                                 }
                                 model.operatingSystems
                             , viewInputs
-                                { onAdd     = AddCentralProcessUnit
-                                , onUpdate  = UpdateCentralProcessUnit
-                                , onRemove  = RemoveCentralProcessUnit
-                                , label     = "CPU"
+                                { onAdd = AddCentralProcessUnit
+                                , onUpdate = UpdateCentralProcessUnit
+                                , onRemove = RemoveCentralProcessUnit
+                                , label = "CPU"
                                 }
                                 model.centralProcessUnits
                             ]
@@ -633,13 +645,14 @@ view model =
                         , Html.Attributes.class "m6"
                         , Html.Attributes.id "json"
                         ]
-                        [  Html.div [ Html.Attributes.class "row" ] []
+                        [ Html.div [ Html.Attributes.class "row" ] []
                         , viewJsonModel model
                         ]
                     ]
                 ]
             ]
         ]
+
 
 update : Msg -> Model -> Model
 update msg model =
@@ -648,7 +661,7 @@ update msg model =
             { model | keywords = model.keywords ++ [ "" ] }
 
         UpdateKeyword index keyword ->
-            { model | keywords = (List.take index model.keywords) ++ [keyword] ++ (List.drop (index + 1) model.keywords) }
+            { model | keywords = List.take index model.keywords ++ [ keyword ] ++ List.drop (index + 1) model.keywords }
 
         RemoveKeyword index ->
             { model | keywords = List.take index model.keywords ++ List.drop (index + 1) model.keywords }
@@ -657,7 +670,7 @@ update msg model =
             { model | files = model.files ++ [ "" ] }
 
         UpdateFile index file ->
-            { model | files = (List.take index model.files) ++ [file] ++ (List.drop (index + 1) model.files) }
+            { model | files = List.take index model.files ++ [ file ] ++ List.drop (index + 1) model.files }
 
         RemoveFile index ->
             { model | files = List.take index model.files ++ List.drop (index + 1) model.files }
@@ -666,7 +679,7 @@ update msg model =
             { model | manPages = model.manPages ++ [ "" ] }
 
         UpdateManPage index manPage ->
-            { model | manPages = (List.take index model.manPages) ++ [manPage] ++ (List.drop (index + 1) model.manPages) }
+            { model | manPages = List.take index model.manPages ++ [ manPage ] ++ List.drop (index + 1) model.manPages }
 
         RemoveManPage index ->
             { model | manPages = List.take index model.manPages ++ List.drop (index + 1) model.manPages }
@@ -675,7 +688,7 @@ update msg model =
             { model | operatingSystems = model.operatingSystems ++ [ "" ] }
 
         UpdateOperatingSystem index operatingSystem ->
-            { model | operatingSystems = (List.take index model.operatingSystems) ++ [operatingSystem] ++ (List.drop (index + 1) model.operatingSystems) }
+            { model | operatingSystems = List.take index model.operatingSystems ++ [ operatingSystem ] ++ List.drop (index + 1) model.operatingSystems }
 
         RemoveOperatingSystem index ->
             { model | operatingSystems = List.take index model.operatingSystems ++ List.drop (index + 1) model.operatingSystems }
@@ -684,14 +697,14 @@ update msg model =
             { model | centralProcessUnits = model.centralProcessUnits ++ [ "" ] }
 
         UpdateCentralProcessUnit index centralProcessUnit ->
-            { model | centralProcessUnits = (List.take index model.centralProcessUnits) ++ [centralProcessUnit] ++ (List.drop (index + 1) model.centralProcessUnits) }
+            { model | centralProcessUnits = List.take index model.centralProcessUnits ++ [ centralProcessUnit ] ++ List.drop (index + 1) model.centralProcessUnits }
 
         RemoveCentralProcessUnit index ->
             { model | centralProcessUnits = List.take index model.centralProcessUnits ++ List.drop (index + 1) model.centralProcessUnits }
 
         UpdateName name ->
             { model | name = name }
-            
+
         UpdateVersion version ->
             { model | version = version }
 
@@ -708,7 +721,14 @@ update msg model =
             { model | browserScript = browserScript }
 
         UpdatePrivate private ->
-            { model | private = if private == "true" then True else False }
+            { model
+                | private =
+                    if private == "true" then
+                        True
+
+                    else
+                        False
+            }
 
         UpdateNodeEngine nodeEngine ->
             { model | nodeEngine = nodeEngine }

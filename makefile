@@ -1,9 +1,13 @@
 # Prevent these commands to be treated as files/folders
-.PHONY: reactor build start install clean deploy
+.PHONY: reactor build start install clean deploy format
 
 # Install the Node.js dependencies
 install:
 	docker-compose run --rm npm install
+
+# Format the Elm source-file and check for syntax errors
+format:
+	docker-compose run --rm npm run format
 
 # Build the Web application
 build:
