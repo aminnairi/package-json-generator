@@ -1,6 +1,6 @@
 {
     "name": "@aminnairi/package-json-generator",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "Quickly generate your NPM configuration according to https://docs.npmjs.com/files/package.json.",
     "main": "src/Main.elm",
     "author": "Amin NAIRI",
