@@ -5,6 +5,10 @@
 install:
 	docker-compose run --rm npm install
 
+# Format the Elm source-file and check for syntax errors
+format:
+	docker-compsoe run --rm elm format src/Main.elm
+
 # Build the Web application
 build:
 	docker-compose run --rm sh rm -f ./docs/index.js
