@@ -2,11 +2,11 @@ name: Elm CI
 
 on:
     push:
-        branch:
+        branches:
             - latest
 
     pull_request:
-        branch:
+        branches:
             - latest
 
 jobs:
