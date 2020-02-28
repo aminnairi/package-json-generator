@@ -2,7 +2,6 @@
 !.gitignore
 !docs
 !src
-!CHANGELOG.md
 !docker-compose.yaml
 !Dockerfile
 !elm.json
