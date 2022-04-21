@@ -1,0 +1,31 @@
+version: "3"
+
+services:
+  elm:
+    env_file: .env
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        DOCKER_USER_IDENTIFIER: $DOCKER_USER_IDENTIFIER
+        NODE_VERSION: $NODE_VERSION
+        NODE_DISTRIBUTION: $NODE_DISTRIBUTION
+        ELM_VERSION: $ELM_VERSION
+        ELM_DISTRIBUTION: $ELM_DISTRIBUTION
+    entrypoint: elm
+    user: user
+    tty: true
+    stdin_open: true
+    working_dir: /home/user
+    ports:
+      - $ELM_REACTOR_PORT:$ELM_REACTOR_PORT
+    volumes:
+      - .:/home/user
+
+  uglifyjs:
+    extends: elm
+    entrypoint: uglifyjs
+
+  sh:
+    extends: elm
+    entrypoint: ""
