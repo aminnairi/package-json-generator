@@ -606,8 +606,7 @@ update message model =
       { model | contributors = List.append model.contributors [ { name = "", email = "", url = "" } ] }
 
     RemoveContributor index ->
-      let _ = Debug.log <| "Removed contributor: " ++ String.fromInt index
-      in { model | contributors = List.Extra.removeAt index model.contributors }
+      { model | contributors = List.Extra.removeAt index model.contributors }
 
     UpdateContributorName index name ->
       { model | contributors = List.Extra.updateAt index ( updateContributorName name ) model.contributors }
