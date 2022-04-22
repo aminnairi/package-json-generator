@@ -6,7 +6,7 @@ Generate package.json files directly from your browser.
 
 ## Contributing
 
-For getting started editing this template, see [`CONTRIBUTING.md`](./CONTRIBUTING.md).
+For getting started editing this project, see [`CONTRIBUTING.md`](./CONTRIBUTING.md).
 
 ## License
 
