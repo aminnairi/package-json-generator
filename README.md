@@ -1,16 +1,8 @@
-# elm-template
+# package-json-generator
 
-Template for creating Elm applications.
+Generate package.json files directly from your browser.
 
 [![Build](https://github.com/aminnairi/elm-template/actions/workflows/build.yaml/badge.svg)](https://github.com/aminnairi/elm-template/actions/workflows/build.yaml)
-
-## Documentation
-
-For more information about the Elm language syntax, see [Documentation](https://guide.elm-lang.org/).
-
-## Packages
-
-For more informations about what you can do with the ecosystem, see [Packages](https://package.elm-lang.org/).
 
 ## Contributing
 
