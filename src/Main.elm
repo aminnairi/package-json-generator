@@ -4,8 +4,6 @@ module Main exposing ( main )
 
 import Browser
 import Html exposing ( Html )
-import Html.Keyed
-import Html.Lazy
 import Html.Attributes
 import Html.Events
 import Json.Encode
@@ -81,12 +79,20 @@ viewDevelopmentDependency index developmentDependency =
     [ Html.div
       []
       [ Html.label [] [ Html.text "Key" ]
-      , Html.input [ Html.Events.onInput <| UpdateDevelopmentDependencyKey index ] []
+      , Html.input
+        [ Html.Events.onInput <| UpdateDevelopmentDependencyKey index 
+        , Html.Attributes.value developmentDependency.key
+        ]
+        []
       ]
     , Html.div
       []
       [ Html.label [] [ Html.text "Value" ]
-      , Html.input [ Html.Events.onInput <| UpdateDevelopmentDependencyValue index ] []
+      , Html.input
+        [ Html.Events.onInput <| UpdateDevelopmentDependencyValue index
+        , Html.Attributes.value developmentDependency.value
+        ]
+        []
       ]
     , Html.button [ Html.Events.onClick <| RemoveDevelopmentDependency index ] [ Html.text "Remove" ]
     ]
@@ -110,12 +116,20 @@ viewDependency index dependency =
     [ Html.div
       []
       [ Html.label [] [ Html.text "Key" ]
-      , Html.input [ Html.Events.onInput <| UpdateDependencyKey index ] []
+      , Html.input
+        [ Html.Events.onInput <| UpdateDependencyKey index
+        , Html.Attributes.value dependency.key
+        ]
+        []
       ]
     , Html.div
       []
       [ Html.label [] [ Html.text "Value" ]
-      , Html.input [ Html.Events.onInput <| UpdateDependencyValue index ] []
+      , Html.input
+        [ Html.Events.onInput <| UpdateDependencyValue index
+        , Html.Attributes.value dependency.value
+        ]
+        []
       ]
     , Html.button [ Html.Events.onClick <| RemoveDependency index ] [ Html.text "Remove" ]
     ]
@@ -139,12 +153,20 @@ viewConfiguration index configuration =
     [ Html.div
       []
       [ Html.label [] [ Html.text "Key" ]
-      , Html.input [ Html.Events.onInput <| UpdateConfigurationKey index ] []
+      , Html.input
+        [ Html.Events.onInput <| UpdateConfigurationKey index
+        , Html.Attributes.value configuration.key
+        ]
+        []
       ]
     , Html.div
       []
       [ Html.label [] [ Html.text "Value" ]
-      , Html.input [ Html.Events.onInput <| UpdateConfigurationValue index ] []
+      , Html.input
+        [ Html.Events.onInput <| UpdateConfigurationValue index
+        , Html.Attributes.value configuration.value
+        ]
+        []
       ]
     , Html.button [ Html.Events.onClick <| RemoveConfiguration index ] [ Html.text "Remove" ]
     ]
@@ -168,12 +190,20 @@ viewScript index script =
     [ Html.div
       []
       [ Html.label [] [ Html.text "Key" ]
-      , Html.input [ Html.Events.onInput <| UpdateScriptKey index ] []
+      , Html.input
+        [ Html.Events.onInput <| UpdateScriptKey index
+        , Html.Attributes.value script.key
+        ]
+        []
       ]
     , Html.div
       []
       [ Html.label [] [ Html.text "Command" ]
-      , Html.input [ Html.Events.onInput <| UpdateScriptCommand index ] []
+      , Html.input
+        [ Html.Events.onInput <| UpdateScriptCommand index
+        , Html.Attributes.value script.value
+        ]
+        []
       ]
     , Html.button [ Html.Events.onClick <| RemoveScript index ] [ Html.text "Remove" ]
     ]
@@ -197,12 +227,20 @@ viewFunding index funding =
     [ Html.div
       []
       [ Html.label [] [ Html.text "Type" ]
-      , Html.input [ Html.Events.onInput <| UpdateFundingKind index ] []
+      , Html.input
+        [ Html.Events.onInput <| UpdateFundingKind index
+        , Html.Attributes.value funding.kind
+        ]
+        []
       ]
     , Html.div
       []
       [ Html.label [] [ Html.text "Url" ]
-      , Html.input [ Html.Events.onInput <| UpdateFundingUrl index ] []
+      , Html.input
+        [ Html.Events.onInput <| UpdateFundingUrl index
+        , Html.Attributes.value funding.url
+        ]
+        []
       ]
     , Html.button [ Html.Events.onClick <| RemoveFunding index ] [ Html.text "Remove" ]
     ]
@@ -211,15 +249,11 @@ viewFunding index funding =
 viewContributors : List Contributor -> Html Message
 viewContributors contributors =
   Html.div []
-    [ Html.label [] [ Html.text "Contributors" ]
-    , Html.button [ Html.Events.onClick AddContributor ] [ Html.text "Add" ]
-    , Html.Keyed.node "div" [] <| List.indexedMap viewKeyedContributor contributors
-    ]
-
-
-viewKeyedContributor : Int -> Contributor -> ( String, Html Message )
-viewKeyedContributor index contributor =
-  ( String.fromInt index, Html.Lazy.lazy2 viewContributor index contributor )
+    <| List.append
+        [ Html.label [] [ Html.text "Contributors" ]
+        , Html.button [ Html.Events.onClick AddContributor ] [ Html.text "Add" ]
+        ]
+        <| List.indexedMap viewContributor contributors
 
 
 viewContributor : Int -> Contributor -> Html Message
@@ -229,21 +263,32 @@ viewContributor index contributor =
     [ Html.div
       []
       [ Html.label [] [ Html.text "Name" ]
-      , Html.input [ Html.Events.onInput <| UpdateContributorName index ] []
+      , Html.input
+        [ Html.Events.onInput <| UpdateContributorName index
+        , Html.Attributes.value contributor.name
+        ]
+        []
       ]
     , Html.div
       []
       [ Html.label [] [ Html.text "Email" ]
-      , Html.input [ Html.Events.onInput <| UpdateContributorEmail index ] []
+      , Html.input
+        [ Html.Events.onInput <| UpdateContributorEmail index
+        , Html.Attributes.value contributor.email
+        ]
+        []
       ]
     , Html.div
       []
       [ Html.label [] [ Html.text "URL" ]
-      , Html.input [ Html.Events.onInput <| UpdateContributorUrl index ] []
+      , Html.input
+        [ Html.Events.onInput <| UpdateContributorUrl index
+        , Html.Attributes.value contributor.url
+        ]
+        []
       ]
     , Html.button [ Html.Events.onClick <| RemoveContributor index ] [ Html.text "Remove" ]
     ]
-
 
 
 viewCheckbox : String -> Bool -> ( Bool -> Message ) -> Html Message
