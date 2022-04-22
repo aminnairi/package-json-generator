@@ -2,17 +2,17 @@
 
 include .env
 
-DOCKER_COMPOSE_RUN_OPTIONS=--rm --service-ports
+DOCKER_COMPOSE_RUN_OPTIONS=--rm
 
 ifeq (${CI},true)
-	DOCKER_COMPOSE_RUN_OPTIONS=--rm --service-ports --user root -T
+	DOCKER_COMPOSE_RUN_OPTIONS=--rm --user root -T
 endif
 
 build:
 	docker-compose build
 
 development: build
-	docker-compose run $(DOCKER_COMPOSE_RUN_OPTIONS) elm reactor --port ${ELM_REACTOR_PORT}
+	docker-compose run $(DOCKER_COMPOSE_RUN_OPTIONS) --service-ports elm reactor --port ${ELM_REACTOR_PORT}
 
 production: build
 	docker-compose run $(DOCKER_COMPOSE_RUN_OPTIONS) sh rm -rf ${ELM_PRODUCTION_FOLDER} \

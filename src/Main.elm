@@ -201,7 +201,7 @@ viewScript index script =
       [ Html.label [] [ Html.text "Command" ]
       , Html.input
         [ Html.Events.onInput <| UpdateScriptCommand index
-        , Html.Attributes.value script.value
+        , Html.Attributes.value script.key
         ]
         []
       ]
