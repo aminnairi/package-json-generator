@@ -4,6 +4,7 @@ module Main exposing ( main )
 
 import Browser
 import Html exposing ( Html )
+import Html.Keyed
 import Html.Attributes
 import Html.Events
 import Json.Encode
@@ -342,13 +343,23 @@ encodeModel model =
         , ( "os" , Json.Encode.list Json.Encode.string model.os )
         , ( "files" , Json.Encode.list Json.Encode.string model.files )
         , ( "keywords" , Json.Encode.list Json.Encode.string model.keywords )
-        , ( "contributors" , Json.Encode.list encodeContributor model.contributors )
-        , ( "fundings", Json.Encode.list encodeFunding model.fundings )
-        , ( "scripts", encodeScripts model.scripts )
-        , ( "config", encodeConfigurations model.configurations )
-        , ( "dependencies", encodeDependencies model.dependencies )
+        , encodeContributors model.contributors
+        , encodeFundings model.fundings
+        , encodeScripts model.scripts
+        , encodeConfigurations model.configurations
+        , encodeDependencies model.dependencies
         , encodeDevelopmentDependencies model.developmentDependencies
         ]
+
+
+encodeDependencies : List Dependency -> ( String, Json.Encode.Value )
+encodeDependencies dependencies =
+  ( "dependencies", Json.Encode.object <| List.map encodeDependency dependencies )
+
+
+encodeDependency : Dependency -> ( String, Json.Encode.Value )
+encodeDependency dependency =
+  ( dependency.key, Json.Encode.string dependency.value )
 
 
 encodeDevelopmentDependencies : List DevelopmentDependency -> ( String, Json.Encode.Value )
@@ -401,19 +412,9 @@ encodeName name =
   ( "name", Json.Encode.string name )
 
 
-encodeDependencies : List Dependency -> Json.Encode.Value
-encodeDependencies dependencies =
-  Json.Encode.object <| List.map encodeDependency dependencies
-
-
-encodeDependency : Dependency -> ( String, Json.Encode.Value )
-encodeDependency dependency =
-  ( dependency.key, Json.Encode.string dependency.value )
-
-
-encodeConfigurations : List Configuration -> Json.Encode.Value
+encodeConfigurations : List Configuration -> ( String, Json.Encode.Value )
 encodeConfigurations configurations =
-  Json.Encode.object <| List.map encodeConfiguration configurations
+  ( "config", Json.Encode.object <| List.map encodeConfiguration configurations )
 
 
 encodeConfiguration : Configuration -> ( String, Json.Encode.Value )
@@ -421,14 +422,19 @@ encodeConfiguration configuration =
   ( configuration.key, Json.Encode.string configuration.value )
 
 
-encodeScripts : List Script -> Json.Encode.Value
+encodeScripts : List Script -> ( String, Json.Encode.Value )
 encodeScripts scripts =
-  Json.Encode.object <| List.map encodeScript scripts
+  ( "scripts", Json.Encode.object <| List.map encodeScript scripts )
 
 
 encodeScript : Script -> ( String, Json.Encode.Value )
 encodeScript script =
   ( script.key, Json.Encode.string script.command )
+
+
+encodeFundings : List Funding -> ( String, Json.Encode.Value )
+encodeFundings fundings =
+  ( "fundings", Json.Encode.list encodeFunding fundings )
 
 
 encodeFunding : Funding -> Json.Encode.Value
@@ -437,6 +443,11 @@ encodeFunding funding =
     [ ( "type", Json.Encode.string funding.kind )
     , ( "url", Json.Encode.string funding.url )
     ]
+
+
+encodeContributors : List Contributor -> ( String, Json.Encode.Value )
+encodeContributors contributors =
+  ( "contributors", Json.Encode.list encodeContributor contributors )
 
 
 encodeContributor : Contributor -> Json.Encode.Value
@@ -545,7 +556,8 @@ update message model =
       { model | contributors = List.append model.contributors [ { name = "", email = "", url = "" } ] }
 
     RemoveContributor index ->
-      { model | contributors = List.Extra.removeAt index model.contributors }
+      let _ = Debug.log <| "Removed contributor: " ++ String.fromInt index
+      in { model | contributors = List.Extra.removeAt index model.contributors }
 
     UpdateContributorName index name ->
       { model | contributors = List.Extra.updateAt index ( updateContributorName name ) model.contributors }
