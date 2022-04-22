@@ -5,6 +5,7 @@ module Main exposing ( main )
 import Browser
 import Html exposing ( Html )
 import Html.Keyed
+import Html.Lazy
 import Html.Attributes
 import Html.Events
 import Json.Encode
@@ -210,11 +211,15 @@ viewFunding index funding =
 viewContributors : List Contributor -> Html Message
 viewContributors contributors =
   Html.div []
-    <| List.append
-        [ Html.label [] [ Html.text "Contributors" ]
-        , Html.button [ Html.Events.onClick AddContributor ] [ Html.text "Add" ]
-        ]
-        <| List.indexedMap viewContributor contributors
+    [ Html.label [] [ Html.text "Contributors" ]
+    , Html.button [ Html.Events.onClick AddContributor ] [ Html.text "Add" ]
+    , Html.Keyed.node "div" [] <| List.indexedMap viewKeyedContributor contributors
+    ]
+
+
+viewKeyedContributor : Int -> Contributor -> ( String, Html Message )
+viewKeyedContributor index contributor =
+  ( String.fromInt index, Html.Lazy.lazy2 viewContributor index contributor )
 
 
 viewContributor : Int -> Contributor -> Html Message
