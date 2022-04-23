@@ -57,7 +57,121 @@ view model =
     , viewConfigurations model.configurations
     , viewDependencies model.dependencies
     , viewDevelopmentDependencies model.developmentDependencies
+    , viewPeerDependencies model.peerDependencies
+    , viewBundledDependencies model.bundledDependencies
+    , viewOptionalDependencies model.optionalDependencies
     , viewModel model
+    ]
+
+
+viewOptionalDependencies : List OptionalDependency -> Html Message
+viewOptionalDependencies optionalDependencies =
+  Html.div
+    []
+    <| List.append
+        [ Html.label [] [ Html.text "Optional dependencies" ]
+        , Html.button [ Html.Events.onClick AddOptionalDependency ] [ Html.text "Add" ]
+        ]
+        <| List.indexedMap viewOptionalDependency optionalDependencies
+
+
+viewOptionalDependency : Int -> OptionalDependency -> Html Message
+viewOptionalDependency index optionalDependency =
+  Html.div
+    []
+    [ Html.div
+      []
+      [ Html.label [] [ Html.text "Key" ]
+      , Html.input
+        [ Html.Attributes.value optionalDependency.key
+        , Html.Events.onInput <| UpdateOptionalDependencyKey index
+        ]
+        []
+      ]
+    , Html.div
+      []
+      [ Html.label [] [ Html.text "Value" ]
+      , Html.input
+        [ Html.Attributes.value optionalDependency.value
+        , Html.Events.onInput <| UpdateOptionalDependencyValue index
+        ]
+        []
+      ]
+    , Html.button [ Html.Events.onClick <| RemoveOptionalDependency index ] [ Html.text "Remove" ]
+    ]
+
+
+viewBundledDependencies : List BundledDependency -> Html Message
+viewBundledDependencies bundledDependencies =
+  Html.div
+    []
+    <| List.append
+        [ Html.label [] [ Html.text "Bundled dependencies" ]
+        , Html.button [ Html.Events.onClick AddBundledDependency ] [ Html.text "Add" ]
+        ]
+        <| List.indexedMap viewBundledDependency bundledDependencies
+
+
+viewBundledDependency : Int -> BundledDependency -> Html Message
+viewBundledDependency index bundledDependency =
+  Html.div
+    []
+    [ Html.div
+      []
+      [ Html.label [] [ Html.text "Key" ]
+      , Html.input
+        [ Html.Attributes.value bundledDependency.key
+        , Html.Events.onInput <| UpdateBundledDependencyKey index
+        ]
+        []
+      ]
+    , Html.div
+      []
+      [ Html.label [] [ Html.text "Value" ]
+      , Html.input
+        [ Html.Attributes.value bundledDependency.value
+        , Html.Events.onInput <| UpdateBundledDependencyValue index
+        ]
+        []
+      ]
+    , Html.button [ Html.Events.onClick <| RemoveBundledDependency index ] [ Html.text "Remove" ]
+    ]
+
+
+viewPeerDependencies : List PeerDependency -> Html Message
+viewPeerDependencies peerDependencies =
+  Html.div
+    []
+    <| List.append
+        [ Html.label [] [ Html.text "Peer dependencies" ]
+        , Html.button [ Html.Events.onClick AddPeerDependency ] [ Html.text "Add" ]
+        ]
+        <| List.indexedMap viewPeerDependency peerDependencies
+
+
+viewPeerDependency : Int -> PeerDependency -> Html Message
+viewPeerDependency index peerDependency =
+  Html.div
+    []
+    [ Html.div
+      []
+      [ Html.label [] [ Html.text "Key" ]
+      , Html.input
+        [ Html.Attributes.value peerDependency.key
+        , Html.Events.onInput <| UpdatePeerDependencyKey index
+        ]
+        []
+      ]
+    , Html.div
+      []
+      [ Html.label [] [ Html.text "value" ]
+      , Html.input
+        [ Html.Attributes.value peerDependency.value
+        , Html.Events.onInput <| UpdatePeerDependencyValue index
+        ]
+        []
+      ]
+    , Html.button [ Html.Events.onClick <| RemovePeerDependency index ] [ Html.text "Remove" ]
     ]
 
 
@@ -201,7 +315,7 @@ viewScript index script =
       [ Html.label [] [ Html.text "Command" ]
       , Html.input
         [ Html.Events.onInput <| UpdateScriptCommand index
-        , Html.Attributes.value script.key
+        , Html.Attributes.value script.command
         ]
         []
       ]
@@ -399,7 +513,40 @@ encodeModel model =
         , encodeConfigurations model.configurations
         , encodeDependencies model.dependencies
         , encodeDevelopmentDependencies model.developmentDependencies
+        , encodePeerDependencies model.peerDependencies
+        , encodeBundledDependencies model.bundledDependencies
+        , encodeOptionalDependencies model.optionalDependencies
         ]
+
+
+encodeOptionalDependencies : List OptionalDependency -> ( String, Json.Encode.Value )
+encodeOptionalDependencies optionalDependencies =
+  ( "optionalDependencies", Json.Encode.object <| List.map encodeOptionalDependency optionalDependencies )
+
+
+encodeOptionalDependency : OptionalDependency -> ( String, Json.Encode.Value )
+encodeOptionalDependency optionalDependency =
+  ( optionalDependency.key, Json.Encode.string optionalDependency.value )
+
+
+encodeBundledDependencies : List BundledDependency -> ( String, Json.Encode.Value )
+encodeBundledDependencies bundledDependencies =
+  ( "bundledDependencies", Json.Encode.object <| List.map encodeBundledDependency bundledDependencies )
+
+
+encodeBundledDependency : BundledDependency -> ( String, Json.Encode.Value )
+encodeBundledDependency bundledDependency =
+  ( bundledDependency.key, Json.Encode.string bundledDependency.value )
+
+
+encodePeerDependencies : List PeerDependency -> ( String, Json.Encode.Value )
+encodePeerDependencies peerDependencies =
+  ( "peerDependencies", Json.Encode.object <| List.map encodePeerDependency peerDependencies )
+
+
+encodePeerDependency : PeerDependency -> ( String, Json.Encode.Value )
+encodePeerDependency peerDependency =
+  ( peerDependency.key, Json.Encode.string peerDependency.value )
 
 
 encodeDependencies : List Dependency -> ( String, Json.Encode.Value )
@@ -677,6 +824,73 @@ update message model =
     RemoveDevelopmentDependency index ->
       { model | developmentDependencies = List.Extra.removeAt index model.developmentDependencies }
 
+    AddPeerDependency ->
+      { model | peerDependencies = List.append model.peerDependencies [ { key = "", value = "" } ] }
+
+    UpdatePeerDependencyKey index key ->
+      { model | peerDependencies = List.Extra.updateAt index ( updatePeerDependencyKey key ) model.peerDependencies }
+
+    UpdatePeerDependencyValue index value ->
+      { model | peerDependencies = List.Extra.updateAt index ( updatePeerDependencyValue value ) model.peerDependencies }
+
+    RemovePeerDependency index ->
+      { model | peerDependencies = List.Extra.removeAt index model.peerDependencies }
+
+    AddBundledDependency ->
+      { model | bundledDependencies = List.append model.bundledDependencies [ { key = "", value = "" } ] }
+
+    RemoveBundledDependency index ->
+      { model | bundledDependencies = List.Extra.removeAt index model.bundledDependencies }
+
+    UpdateBundledDependencyKey index key ->
+      { model | bundledDependencies = List.Extra.updateAt index ( updateBundledDependencyKey key ) model.bundledDependencies }
+
+    UpdateBundledDependencyValue index value ->
+      { model | bundledDependencies = List.Extra.updateAt index ( updateBundledDependencyValue value ) model.bundledDependencies }
+
+    AddOptionalDependency ->
+      { model | optionalDependencies = List.append model.optionalDependencies [ { key = "", value = "" } ] }
+
+    UpdateOptionalDependencyKey index key ->
+      { model | optionalDependencies = List.Extra.updateAt index ( updateOptionalDependencyKey key ) model.optionalDependencies }
+
+    UpdateOptionalDependencyValue index value ->
+      { model | optionalDependencies = List.Extra.updateAt index ( updateOptionalDependencyValue value ) model.optionalDependencies }
+  
+    RemoveOptionalDependency index ->
+      { model | optionalDependencies = List.Extra.removeAt index model.optionalDependencies }
+
+
+updateOptionalDependencyValue : String -> OptionalDependency -> OptionalDependency
+updateOptionalDependencyValue value optionalDependency =
+  { optionalDependency | value = value }
+
+
+updateOptionalDependencyKey : String -> OptionalDependency -> OptionalDependency
+updateOptionalDependencyKey key optionalDependency =
+  { optionalDependency | key = key }
+
+
+updateBundledDependencyValue : String -> BundledDependency -> BundledDependency
+updateBundledDependencyValue value bundledDependency =
+  { bundledDependency | value = value }
+
+
+updateBundledDependencyKey : String -> BundledDependency -> BundledDependency
+updateBundledDependencyKey key bundledDependency =
+  { bundledDependency | key = key }
+
+
+updatePeerDependencyKey : String -> PeerDependency -> PeerDependency
+updatePeerDependencyKey key peerDependency =
+  { peerDependency | key = key }
+
+
+updatePeerDependencyValue : String -> PeerDependency -> PeerDependency
+updatePeerDependencyValue value peerDependency =
+  { peerDependency | value = value }
+
+
 updateDevelopmentDependencyKey : String -> DevelopmentDependency -> DevelopmentDependency
 updateDevelopmentDependencyKey key developmentDependency =
   { developmentDependency | key = key }
@@ -774,6 +988,9 @@ init =
   , configurations = []
   , dependencies = []
   , developmentDependencies = []
+  , peerDependencies = []
+  , bundledDependencies = []
+  , optionalDependencies = []
   }
 
 
@@ -808,6 +1025,27 @@ type alias Model =
   , configurations : List Configuration
   , dependencies : List Dependency
   , developmentDependencies : List DevelopmentDependency
+  , peerDependencies : List PeerDependency
+  , bundledDependencies : List BundledDependency
+  , optionalDependencies : List OptionalDependency
+  }
+
+
+type alias OptionalDependency =
+  { key : String
+  , value : String
+  }
+
+
+type alias BundledDependency =
+  { key : String
+  , value : String
+  }
+
+
+type alias PeerDependency =
+  { key : String
+  , value : String
   }
 
 
@@ -906,3 +1144,15 @@ type Message
   | UpdateDevelopmentDependencyKey Int String
   | UpdateDevelopmentDependencyValue Int String
   | RemoveDevelopmentDependency Int
+  | AddPeerDependency
+  | UpdatePeerDependencyKey Int String
+  | UpdatePeerDependencyValue Int String
+  | RemovePeerDependency Int
+  | AddBundledDependency
+  | RemoveBundledDependency Int
+  | UpdateBundledDependencyKey Int String
+  | UpdateBundledDependencyValue Int String
+  | AddOptionalDependency
+  | RemoveOptionalDependency Int
+  | UpdateOptionalDependencyKey Int String
+  | UpdateOptionalDependencyValue Int String
