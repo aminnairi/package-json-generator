@@ -577,14 +577,14 @@ viewPeerDependencies peerDependencies =
 
 
 viewPeerDependency : Int -> PeerDependency -> Html Message
-viewPeerDependency index peerDependency =
+viewPeerDependency index ( PeerDependency peerDependency ) =
   Html.div
     []
     [ Html.div
       []
       [ Html.label [ Html.Attributes.for <| "peer-dependency-key-" ++ String.fromInt index ] [ Html.text "Key" ]
       , Html.input
-        [ Html.Attributes.value peerDependency.key
+        [ Html.Attributes.value <| viewPeerDependencyKey peerDependency.key
         , Html.Events.onInput <| UpdatePeerDependencyKey index
         , Html.Attributes.id <| "peer-dependency-key-" ++ String.fromInt index 
         ]
@@ -594,7 +594,7 @@ viewPeerDependency index peerDependency =
       []
       [ Html.label [ Html.Attributes.for <| "peer-dependency-value-" ++ String.fromInt index ] [ Html.text "Value" ]
       , Html.input
-        [ Html.Attributes.value peerDependency.value
+        [ Html.Attributes.value <| viewPeerDependencyValue peerDependency.value
         , Html.Events.onInput <| UpdatePeerDependencyValue index
         , Html.Attributes.id <| "peer-dependency-value-" ++ String.fromInt index 
         ]
@@ -602,6 +602,16 @@ viewPeerDependency index peerDependency =
       ]
     , Html.button [ Html.Events.onClick <| RemovePeerDependency index ] [ Html.text "Remove" ]
     ]
+
+
+viewPeerDependencyKey : PeerDependencyKey -> String
+viewPeerDependencyKey ( PeerDependencyKey peerDependencyKey ) =
+  peerDependencyKey
+
+
+viewPeerDependencyValue : PeerDependencyValue -> String
+viewPeerDependencyValue ( PeerDependencyValue peerDependencyValue ) =
+  peerDependencyValue
 
 
 viewDevelopmentDependencies : List DevelopmentDependency -> Html Message
@@ -1070,8 +1080,18 @@ encodePeerDependencies peerDependencies =
 
 
 encodePeerDependency : PeerDependency -> ( String, Json.Encode.Value )
-encodePeerDependency peerDependency =
-  ( peerDependency.key, Json.Encode.string peerDependency.value )
+encodePeerDependency ( PeerDependency peerDependency ) =
+  ( encodePeerDependencyKey peerDependency.key, encodePeerDependencyValue peerDependency.value )
+
+
+encodePeerDependencyKey : PeerDependencyKey -> String
+encodePeerDependencyKey ( PeerDependencyKey peerDependencyKey ) =
+  peerDependencyKey
+
+
+encodePeerDependencyValue : PeerDependencyValue -> Json.Encode.Value
+encodePeerDependencyValue ( PeerDependencyValue peerDependencyValue ) =
+  Json.Encode.string peerDependencyValue
 
 
 encodeDependencies : List Dependency -> ( String, Json.Encode.Value )
@@ -1350,13 +1370,13 @@ update message model =
       { model | developmentDependencies = List.Extra.removeAt index model.developmentDependencies }
 
     AddPeerDependency ->
-      { model | peerDependencies = List.append model.peerDependencies [ { key = "", value = "" } ] }
+      { model | peerDependencies = List.append model.peerDependencies [ PeerDependency { key = PeerDependencyKey "", value = PeerDependencyValue "" } ] }
 
     UpdatePeerDependencyKey index key ->
-      { model | peerDependencies = List.Extra.updateAt index ( updatePeerDependencyKey key ) model.peerDependencies }
+      { model | peerDependencies = List.Extra.updateAt index ( updatePeerDependencyKey ( PeerDependencyKey key ) ) model.peerDependencies }
 
     UpdatePeerDependencyValue index value ->
-      { model | peerDependencies = List.Extra.updateAt index ( updatePeerDependencyValue value ) model.peerDependencies }
+      { model | peerDependencies = List.Extra.updateAt index ( updatePeerDependencyValue ( PeerDependencyValue value ) ) model.peerDependencies }
 
     RemovePeerDependency index ->
       { model | peerDependencies = List.Extra.removeAt index model.peerDependencies }
@@ -1460,14 +1480,14 @@ updateBundledDependencyKey ( BundledDependencyKey key ) ( BundledDependency bund
   BundledDependency { bundledDependency | key = BundledDependencyKey key }
 
 
-updatePeerDependencyKey : String -> PeerDependency -> PeerDependency
-updatePeerDependencyKey key peerDependency =
-  { peerDependency | key = key }
+updatePeerDependencyKey : PeerDependencyKey -> PeerDependency -> PeerDependency
+updatePeerDependencyKey ( PeerDependencyKey key ) ( PeerDependency peerDependency ) =
+  PeerDependency { peerDependency | key = PeerDependencyKey key }
 
 
-updatePeerDependencyValue : String -> PeerDependency -> PeerDependency
-updatePeerDependencyValue value peerDependency =
-  { peerDependency | value = value }
+updatePeerDependencyValue : PeerDependencyValue -> PeerDependency -> PeerDependency
+updatePeerDependencyValue ( PeerDependencyValue value ) ( PeerDependency peerDependency ) =
+  PeerDependency { peerDependency | value = PeerDependencyValue value }
 
 
 updateDevelopmentDependencyKey : String -> DevelopmentDependency -> DevelopmentDependency
@@ -1740,10 +1760,17 @@ type BundledDependencyKey = BundledDependencyKey String
 type BundledDependencyValue = BundledDependencyValue String
 
 
-type alias PeerDependency =
-  { key : String
-  , value : String
-  }
+type PeerDependency =
+  PeerDependency 
+    { key : PeerDependencyKey
+    , value : PeerDependencyValue
+    }
+
+
+type PeerDependencyKey = PeerDependencyKey String
+
+
+type PeerDependencyValue = PeerDependencyValue String
 
 
 type alias DevelopmentDependency =
