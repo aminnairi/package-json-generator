@@ -46,6 +46,7 @@ view model =
     , viewOperatingSystems model.operatingSystems
     , viewFiles model.files
     , viewKeywords model.keywords
+    , viewWorkspaces model.workspaces
     , viewContributors model.contributors
     , viewFundings model.fundings
     , viewScripts model.scripts
@@ -59,7 +60,33 @@ view model =
     ]
 
 
-viewKeywords : List String -> Html Message
+viewWorkspaces : List Workspace -> Html Message
+viewWorkspaces workspaces =
+  Html.div
+    []
+    <| List.append
+        [ Html.label [] [ Html.text "Workspaces" ]
+        , Html.button [ Html.Events.onClick AddWorkspace ] [ Html.text "Add" ]
+        ]
+        <| List.indexedMap viewWorkspace workspaces
+
+
+viewWorkspace : Int -> Workspace -> Html Message
+viewWorkspace index ( Workspace workspace ) =
+  Html.div
+    []
+    [ Html.label [ Html.Attributes.for <| "workspace-" ++ String.fromInt index ] [ Html.text "Workspace name" ]
+    , Html.input
+      [ Html.Attributes.value workspace
+      , Html.Attributes.id <| "workspace-" ++ String.fromInt index
+      , Html.Events.onInput <| UpdateWorkspace index
+      ]
+      []
+    , Html.button [ Html.Events.onClick <| RemoveWorkspace index ] [ Html.text "Remove" ]
+    ]
+
+
+viewKeywords : List Keyword -> Html Message
 viewKeywords keywords =
   Html.div
     []
@@ -70,8 +97,8 @@ viewKeywords keywords =
         <| List.indexedMap viewKeyword keywords
 
 
-viewKeyword : Int -> String -> Html Message
-viewKeyword index keyword =
+viewKeyword : Int -> Keyword -> Html Message
+viewKeyword index ( Keyword keyword ) =
   Html.div
     []
     [ Html.label [ Html.Attributes.for <| "keyword-" ++ String.fromInt index ] [ Html.text "Keyword" ]
@@ -85,7 +112,7 @@ viewKeyword index keyword =
     ]
 
 
-viewFiles : List String -> Html Message
+viewFiles : List File -> Html Message
 viewFiles files =
   Html.div
     []
@@ -96,8 +123,8 @@ viewFiles files =
         <| List.indexedMap viewFile files
 
 
-viewFile : Int -> String -> Html Message
-viewFile index file =
+viewFile : Int -> File -> Html Message
+viewFile index ( File file ) =
   Html.div
     []
     [ Html.label [ Html.Attributes.for <| "file-" ++ String.fromInt index ] [ Html.text "File name" ]
@@ -111,7 +138,7 @@ viewFile index file =
     ]
 
 
-viewOperatingSystems : List String -> Html Message
+viewOperatingSystems : List OperatingSystem -> Html Message
 viewOperatingSystems operatingSystems =
   Html.div
     []
@@ -122,8 +149,8 @@ viewOperatingSystems operatingSystems =
         <| List.indexedMap viewOperatingSystem operatingSystems
 
 
-viewOperatingSystem : Int -> String -> Html Message
-viewOperatingSystem index operatingSystem =
+viewOperatingSystem : Int -> OperatingSystem -> Html Message
+viewOperatingSystem index ( OperatingSystem operatingSystem ) =
   Html.div
     []
     [ Html.label [ Html.Attributes.for <| "operating-system-" ++ String.fromInt index ] [ Html.text "OS name" ]
@@ -137,7 +164,7 @@ viewOperatingSystem index operatingSystem =
     ]
 
 
-viewCpus : List String -> Html Message
+viewCpus : List Cpu -> Html Message
 viewCpus cpus =
   Html.div
     []
@@ -148,8 +175,8 @@ viewCpus cpus =
         <| List.indexedMap viewCpu cpus
 
 
-viewCpu : Int -> String -> Html Message
-viewCpu index cpu =
+viewCpu : Int -> Cpu -> Html Message
+viewCpu index ( Cpu cpu ) =
   Html.div
     []
     [ Html.label [ Html.Attributes.for <| "cpu-" ++ String.fromInt index ] [ Html.text "CPU name" ]
@@ -164,8 +191,8 @@ viewCpu index cpu =
 
 
 
-viewBrowser : String -> Html Message
-viewBrowser browser =
+viewBrowser : Browser -> Html Message
+viewBrowser ( Browser browser ) =
   Html.div
     []
     [ Html.label [ Html.Attributes.for "browser" ] [ Html.text "Browser" ]
@@ -178,8 +205,8 @@ viewBrowser browser =
     ]
 
 
-viewMain : String -> Html Message
-viewMain entrypoint =
+viewMain : Main -> Html Message
+viewMain ( Main entrypoint ) =
   Html.div
     []
     [ Html.label [ Html.Attributes.for "main" ] [ Html.text "Main" ]
@@ -192,8 +219,8 @@ viewMain entrypoint =
     ]
 
 
-viewLicense : String -> Html Message
-viewLicense license =
+viewLicense : License -> Html Message
+viewLicense ( License license ) =
   Html.div
     []
     [ Html.label [ Html.Attributes.for "license" ] [ Html.text "License" ]
@@ -206,8 +233,8 @@ viewLicense license =
     ]
 
 
-viewHomepage : String -> Html Message
-viewHomepage homepage =
+viewHomepage : Homepage -> Html Message
+viewHomepage ( Homepage homepage ) =
   Html.div
     []
     [ Html.label [ Html.Attributes.for "homepage" ] [ Html.text "Home page" ]
@@ -220,8 +247,8 @@ viewHomepage homepage =
     ]
 
 
-viewVersion : String -> Html Message
-viewVersion version =
+viewVersion : Version -> Html Message
+viewVersion ( Version version ) =
   Html.div
     []
     [ Html.label [ Html.Attributes.for "version" ] [ Html.text "Version" ]
@@ -234,8 +261,8 @@ viewVersion version =
     ]
 
 
-viewDescription : String -> Html Message
-viewDescription description =
+viewDescription : Description -> Html Message
+viewDescription ( Description description ) =
   Html.div
     []
     [ Html.label [ Html.Attributes.for "description" ] [ Html.text "Description" ]
@@ -248,8 +275,8 @@ viewDescription description =
     ]
 
 
-viewName : String -> Html Message
-viewName name =
+viewName : Name -> Html Message
+viewName ( Name name ) =
   Html.div
     []
     [ Html.label [ Html.Attributes.for "name" ] [ Html.text "Name" ]
@@ -262,8 +289,8 @@ viewName name =
     ]
 
 
-viewPrivate : Bool -> Html Message
-viewPrivate private =
+viewPrivate : Private -> Html Message
+viewPrivate ( Private private ) =
   Html.div
     []
     [ Html.input
@@ -278,16 +305,16 @@ viewPrivate private =
 
 
 viewEngines : Engines -> Html Message
-viewEngines engines =
+viewEngines ( Engines engines ) =
   Html.div
     []
-    [ viewEnginesNode engines.node
-    , viewEnginesNpm engines.npm
+    [ viewNodeEngine engines.node
+    , viewNpmEngine engines.npm
     ]
 
 
-viewEnginesNode : String -> Html Message
-viewEnginesNode node =
+viewNodeEngine : NodeEngine -> Html Message
+viewNodeEngine ( NodeEngine node ) =
   Html.div
     []
     [ Html.label [ Html.Attributes.for "engines-node" ] [ Html.text "Node version" ]
@@ -300,8 +327,8 @@ viewEnginesNode node =
     ]
 
 
-viewEnginesNpm : String -> Html Message
-viewEnginesNpm npm =
+viewNpmEngine : NpmEngine -> Html Message
+viewNpmEngine ( NpmEngine npm ) =
   Html.div
     []
     [ Html.label [ Html.Attributes.for "engines-npm" ] [ Html.text "NPM version" ]
@@ -315,7 +342,7 @@ viewEnginesNpm npm =
 
 
 viewRepository : Repository -> Html Message
-viewRepository repository =
+viewRepository ( Repository repository ) =
   Html.div
     []
     [ viewRepositoryKind repository.kind
@@ -323,8 +350,8 @@ viewRepository repository =
     ]
 
 
-viewRepositoryKind : String -> Html Message
-viewRepositoryKind kind =
+viewRepositoryKind : RepositoryKind -> Html Message
+viewRepositoryKind ( RepositoryKind kind ) =
   Html.div
     []
     [ Html.label [ Html.Attributes.for "repository-type" ] [ Html.text "Repository type" ]
@@ -337,8 +364,8 @@ viewRepositoryKind kind =
     ]
 
 
-viewRepositoryUrl : String -> Html Message
-viewRepositoryUrl url =
+viewRepositoryUrl : RepositoryUrl -> Html Message
+viewRepositoryUrl ( RepositoryUrl url ) =
   Html.div
     []
     [ Html.label [ Html.Attributes.for "repository-url" ] [ Html.text "Repository URL" ]
@@ -352,7 +379,7 @@ viewRepositoryUrl url =
 
 
 viewAuthor : Author -> Html Message
-viewAuthor author =
+viewAuthor ( Author author ) =
   Html.div
     []
     [ viewAuthorName author.name
@@ -361,8 +388,8 @@ viewAuthor author =
     ]
 
 
-viewAuthorName : String -> Html Message
-viewAuthorName name =
+viewAuthorName : AuthorName -> Html Message
+viewAuthorName ( AuthorName name ) =
   Html.div
     []
     [ Html.label [ Html.Attributes.for "author-name" ] [ Html.text "Author name" ] 
@@ -375,8 +402,8 @@ viewAuthorName name =
     ]
 
 
-viewAuthorUrl : String -> Html Message
-viewAuthorUrl url =
+viewAuthorUrl : AuthorUrl -> Html Message
+viewAuthorUrl ( AuthorUrl url ) =
   Html.div
     []
     [ Html.label [ Html.Attributes.for "author-url" ] [ Html.text "Author URL" ] 
@@ -389,8 +416,8 @@ viewAuthorUrl url =
     ]
 
 
-viewAuthorEmail : String -> Html Message
-viewAuthorEmail email =
+viewAuthorEmail : AuthorEmail -> Html Message
+viewAuthorEmail ( AuthorEmail email ) =
   Html.div
     []
     [ Html.label [ Html.Attributes.for "author-email" ] [ Html.text "Author Email" ] 
@@ -404,7 +431,7 @@ viewAuthorEmail email =
 
 
 viewBugs : Bugs -> Html Message
-viewBugs bugs =
+viewBugs ( Bugs bugs ) =
   Html.div
     []
     [ viewBugsUrl bugs.url
@@ -412,8 +439,8 @@ viewBugs bugs =
     ]
 
 
-viewBugsUrl : String -> Html Message
-viewBugsUrl url =
+viewBugsUrl : BugsUrl -> Html Message
+viewBugsUrl ( BugsUrl url ) =
   Html.div
     []
     [ Html.label [ Html.Attributes.for "bugs-url" ] [ Html.text "Bugs URL" ]
@@ -426,8 +453,8 @@ viewBugsUrl url =
     ]
 
 
-viewBugsEmail : String -> Html Message
-viewBugsEmail email =
+viewBugsEmail : BugsEmail -> Html Message
+viewBugsEmail ( BugsEmail email ) =
   Html.div
     []
     [ Html.label [ Html.Attributes.for "bugs-email" ] [ Html.text "Bugs email" ]
@@ -452,14 +479,14 @@ viewOptionalDependencies optionalDependencies =
 
 
 viewOptionalDependency : Int -> OptionalDependency -> Html Message
-viewOptionalDependency index optionalDependency =
+viewOptionalDependency index ( OptionalDependency optionalDependency ) =
   Html.div
     []
     [ Html.div
       []
       [ Html.label [ Html.Attributes.for <| "optional-dependency-key-" ++ String.fromInt index ] [ Html.text "Key" ]
       , Html.input
-        [ Html.Attributes.value optionalDependency.key
+        [ Html.Attributes.value <| viewOptionalDependencyKey optionalDependency.key
         , Html.Events.onInput <| UpdateOptionalDependencyKey index
         , Html.Attributes.id <| "optional-dependency-key-" ++ String.fromInt index 
         ]
@@ -469,7 +496,7 @@ viewOptionalDependency index optionalDependency =
       []
       [ Html.label [ Html.Attributes.for <| "optional-dependency-value-" ++ String.fromInt index ] [ Html.text "Value" ]
       , Html.input
-        [ Html.Attributes.value optionalDependency.value
+        [ Html.Attributes.value <| viewOptionalDependencyValue optionalDependency.value
         , Html.Events.onInput <| UpdateOptionalDependencyValue index
         , Html.Attributes.id <| "optional-dependency-value-" ++ String.fromInt index 
         ]
@@ -477,6 +504,16 @@ viewOptionalDependency index optionalDependency =
       ]
     , Html.button [ Html.Events.onClick <| RemoveOptionalDependency index ] [ Html.text "Remove" ]
     ]
+
+
+viewOptionalDependencyKey : OptionalDependencyKey -> String
+viewOptionalDependencyKey ( OptionalDependencyKey optionalDependencyKey ) =
+  optionalDependencyKey
+
+
+viewOptionalDependencyValue : OptionalDependencyValue -> String
+viewOptionalDependencyValue ( OptionalDependencyValue optionalDependencyValue ) =
+  optionalDependencyValue
 
 
 viewBundledDependencies : List BundledDependency -> Html Message
@@ -491,14 +528,14 @@ viewBundledDependencies bundledDependencies =
 
 
 viewBundledDependency : Int -> BundledDependency -> Html Message
-viewBundledDependency index bundledDependency =
+viewBundledDependency index ( BundledDependency bundledDependency ) =
   Html.div
     []
     [ Html.div
       []
       [ Html.label [ Html.Attributes.for <| "bundled-dependency-key-" ++ String.fromInt index ] [ Html.text "Key" ]
       , Html.input
-        [ Html.Attributes.value bundledDependency.key
+        [ Html.Attributes.value <| viewBundledDependencyKey bundledDependency.key
         , Html.Events.onInput <| UpdateBundledDependencyKey index
         , Html.Attributes.id <| "bundled-dependency-key-" ++ String.fromInt index 
         ]
@@ -508,7 +545,7 @@ viewBundledDependency index bundledDependency =
       []
       [ Html.label [ Html.Attributes.for <| "bundled-dependency-value-" ++ String.fromInt index ] [ Html.text "Value" ]
       , Html.input
-        [ Html.Attributes.value bundledDependency.value
+        [ Html.Attributes.value <| viewBundledDependencyValue bundledDependency.value
         , Html.Events.onInput <| UpdateBundledDependencyValue index
         , Html.Attributes.id <| "bundled-dependency-value-" ++ String.fromInt index 
         ]
@@ -516,6 +553,16 @@ viewBundledDependency index bundledDependency =
       ]
     , Html.button [ Html.Events.onClick <| RemoveBundledDependency index ] [ Html.text "Remove" ]
     ]
+
+
+viewBundledDependencyKey : BundledDependencyKey -> String
+viewBundledDependencyKey ( BundledDependencyKey bundledDependencyKey ) =
+  bundledDependencyKey
+
+
+viewBundledDependencyValue : BundledDependencyValue -> String
+viewBundledDependencyValue ( BundledDependencyValue bundledDependencyValue ) =
+  bundledDependencyValue
 
 
 viewPeerDependencies : List PeerDependency -> Html Message
@@ -812,14 +859,14 @@ encodeModel : Model -> String
 encodeModel model =
   Json.Encode.encode 2
     <| Json.Encode.object 
-        [ encodeName model.name
+        [ encodePrivate model.private
+        , encodeName model.name
         , encodeDescription model.description
         , encodeVersion model.version
         , encodeHomepage model.homepage
         , encodeLicense model.license
         , encodeMain model.main
         , encodeBrowser model.browser
-        , encodePrivate model.private
         , encodeBugs model.bugs
         , encodeAuthor model.author
         , encodeRepository model.repository
@@ -828,6 +875,7 @@ encodeModel model =
         , encodeOperatingSystems model.operatingSystems
         , encodeFiles model.files
         , encodeKeywords model.keywords
+        , encodeWorkspaces model.workspaces
         , encodeContributors model.contributors
         , encodeFundings model.fundings
         , encodeScripts model.scripts
@@ -840,65 +888,140 @@ encodeModel model =
         ]
 
 
-encodeFiles : List String -> ( String, Json.Encode.Value )
+encodeWorkspaces : List Workspace -> ( String, Json.Encode.Value )
+encodeWorkspaces workspaces =
+  ( "workspaces", Json.Encode.list encodeWorkspace workspaces )
+
+
+encodeWorkspace : Workspace -> Json.Encode.Value
+encodeWorkspace ( Workspace workspace ) =
+  Json.Encode.string workspace
+
+
+encodeFiles : List File -> ( String, Json.Encode.Value )
 encodeFiles files =
-  ( "files", Json.Encode.list Json.Encode.string files )
+  ( "files", Json.Encode.list encodeFile files )
 
 
-encodeKeywords : List String -> ( String, Json.Encode.Value )
+encodeFile : File -> Json.Encode.Value
+encodeFile ( File file ) =
+  Json.Encode.string file
+
+
+encodeKeywords : List Keyword -> ( String, Json.Encode.Value )
 encodeKeywords keywords =
-  ( "keywords", Json.Encode.list Json.Encode.string keywords )
+  ( "keywords", Json.Encode.list encodeKeyword keywords )
 
 
-encodeOperatingSystems : List String -> ( String, Json.Encode.Value )
+encodeKeyword : Keyword -> Json.Encode.Value
+encodeKeyword ( Keyword keyword ) =
+  Json.Encode.string keyword
+
+
+encodeOperatingSystems : List OperatingSystem -> ( String, Json.Encode.Value )
 encodeOperatingSystems operatingSystems =
-  ( "os", Json.Encode.list Json.Encode.string operatingSystems )
+  ( "os", Json.Encode.list encodeOperatingSystem operatingSystems )
 
 
-encodeCpus : List String -> ( String, Json.Encode.Value )
+encodeOperatingSystem : OperatingSystem -> Json.Encode.Value
+encodeOperatingSystem ( OperatingSystem operatingSystem ) =
+  Json.Encode.string operatingSystem
+
+
+encodeCpus : List Cpu -> ( String, Json.Encode.Value )
 encodeCpus cpus =
-  ( "cpu", Json.Encode.list Json.Encode.string cpus )
+  ( "cpu", Json.Encode.list encodeCpu cpus )
+
+
+encodeCpu : Cpu -> Json.Encode.Value
+encodeCpu ( Cpu cpu ) =
+  Json.Encode.string cpu
 
 
 encodeEngines : Engines -> ( String, Json.Encode.Value )
-encodeEngines engines =
+encodeEngines ( Engines engines ) =
   ( "engines"
   , Json.Encode.object
-    [ ( "node", Json.Encode.string engines.node )
-    , ( "npm", Json.Encode.string engines.npm )
+    [ encodeNodeEngine engines.node
+    , encodeNpmEngine engines.npm
     ]
   )
+
+
+encodeNodeEngine : NodeEngine -> ( String, Json.Encode.Value )
+encodeNodeEngine ( NodeEngine nodeEngine ) =
+  ( "node", Json.Encode.string nodeEngine )
+
+
+encodeNpmEngine : NpmEngine -> ( String, Json.Encode.Value )
+encodeNpmEngine ( NpmEngine npmEngine ) =
+  ( "npm", Json.Encode.string npmEngine )
 
 
 encodeRepository : Repository -> ( String, Json.Encode.Value )
-encodeRepository repository =
+encodeRepository ( Repository repository ) =
   ( "repository"
   , Json.Encode.object
-    [ ( "type", Json.Encode.string repository.kind )
-    , ( "url", Json.Encode.string repository.url )
+    [ encodeRepositoryKind repository.kind
+    , encodeRepositoryUrl repository.url
     ]
   )
+
+
+encodeRepositoryKind : RepositoryKind -> ( String, Json.Encode.Value )
+encodeRepositoryKind ( RepositoryKind repositoryKind ) =
+  ( "type", Json.Encode.string repositoryKind )
+
+
+encodeRepositoryUrl : RepositoryUrl -> ( String, Json.Encode.Value )
+encodeRepositoryUrl ( RepositoryUrl repositoryUrl ) =
+  ( "url", Json.Encode.string repositoryUrl )
 
 
 encodeAuthor : Author -> ( String, Json.Encode.Value )
-encodeAuthor author =
+encodeAuthor ( Author author ) =
   ( "author"
   , Json.Encode.object
-    [ ( "name", Json.Encode.string author.name )
-    , ( "url", Json.Encode.string author.url )
-    , ( "email", Json.Encode.string author.email )
+    [ encodeAuthorName author.name
+    , encodeAuthorUrl author.url
+    , encodeAuthorEmail author.email
     ]
   )
+
+
+encodeAuthorName : AuthorName -> ( String, Json.Encode.Value )
+encodeAuthorName ( AuthorName name ) =
+  ( "name", Json.Encode.string name )
+
+
+encodeAuthorUrl : AuthorUrl -> ( String, Json.Encode.Value )
+encodeAuthorUrl (AuthorUrl url ) =
+  ( "url", Json.Encode.string url )
+
+
+encodeAuthorEmail : AuthorEmail -> ( String, Json.Encode.Value )
+encodeAuthorEmail ( AuthorEmail email ) =
+  ( "email", Json.Encode.string email )
 
 
 encodeBugs : Bugs -> ( String, Json.Encode.Value )
-encodeBugs bugs =
+encodeBugs ( Bugs bugs ) =
   ( "bugs"
   , Json.Encode.object
-    [ ( "url", Json.Encode.string bugs.url )
-    , ( "email", Json.Encode.string bugs.email )
+    [ encodeBugsUrl bugs.url
+    , encodeBugsEmail bugs.email
     ]
   )
+
+
+encodeBugsUrl : BugsUrl -> ( String, Json.Encode.Value )
+encodeBugsUrl ( BugsUrl url ) =
+  ( "url", Json.Encode.string url )
+
+
+encodeBugsEmail : BugsEmail -> ( String, Json.Encode.Value )
+encodeBugsEmail ( BugsEmail email ) =
+  ( "email", Json.Encode.string email )
 
 
 encodeOptionalDependencies : List OptionalDependency -> ( String, Json.Encode.Value )
@@ -907,8 +1030,18 @@ encodeOptionalDependencies optionalDependencies =
 
 
 encodeOptionalDependency : OptionalDependency -> ( String, Json.Encode.Value )
-encodeOptionalDependency optionalDependency =
-  ( optionalDependency.key, Json.Encode.string optionalDependency.value )
+encodeOptionalDependency ( OptionalDependency optionalDependency ) =
+  ( encodeOptionalDependencyKey optionalDependency.key, encodeOptionalDependencyValue optionalDependency.value )
+
+
+encodeOptionalDependencyKey : OptionalDependencyKey -> String
+encodeOptionalDependencyKey ( OptionalDependencyKey optionalDependencyKey ) =
+  optionalDependencyKey
+
+
+encodeOptionalDependencyValue : OptionalDependencyValue -> Json.Encode.Value
+encodeOptionalDependencyValue ( OptionalDependencyValue optionalDependencyValue ) =
+  Json.Encode.string optionalDependencyValue
 
 
 encodeBundledDependencies : List BundledDependency -> ( String, Json.Encode.Value )
@@ -917,8 +1050,18 @@ encodeBundledDependencies bundledDependencies =
 
 
 encodeBundledDependency : BundledDependency -> ( String, Json.Encode.Value )
-encodeBundledDependency bundledDependency =
-  ( bundledDependency.key, Json.Encode.string bundledDependency.value )
+encodeBundledDependency ( BundledDependency bundledDependency ) =
+  ( encodeBundledDependencyKey bundledDependency.key, encodeBundledDependencyValue bundledDependency.value )
+
+
+encodeBundledDependencyKey : BundledDependencyKey -> String
+encodeBundledDependencyKey ( BundledDependencyKey bundledDependencyKey ) =
+  bundledDependencyKey
+
+
+encodeBundledDependencyValue : BundledDependencyValue -> Json.Encode.Value
+encodeBundledDependencyValue ( BundledDependencyValue bundledDependencyValue ) =
+  Json.Encode.string bundledDependencyValue
 
 
 encodePeerDependencies : List PeerDependency -> ( String, Json.Encode.Value )
@@ -951,43 +1094,43 @@ encodeDevelopmentDependency developmentDependency =
   ( developmentDependency.key, Json.Encode.string developmentDependency.value )
 
 
-encodePrivate : Bool -> ( String, Json.Encode.Value )
-encodePrivate private =
+encodePrivate : Private -> ( String, Json.Encode.Value )
+encodePrivate ( Private private ) =
   ( "private", Json.Encode.bool private )
 
 
-encodeBrowser : String -> ( String, Json.Encode.Value )
-encodeBrowser browser =
+encodeBrowser : Browser -> ( String, Json.Encode.Value )
+encodeBrowser ( Browser browser ) =
   ( "browser", Json.Encode.string browser )
 
 
-encodeMain : String -> ( String, Json.Encode.Value )
-encodeMain mainFile =
-  ( "main", Json.Encode.string mainFile )
+encodeMain : Main -> ( String, Json.Encode.Value )
+encodeMain ( Main entrypoint ) =
+  ( "main", Json.Encode.string entrypoint )
 
 
-encodeLicense : String -> ( String, Json.Encode.Value )
-encodeLicense license =
+encodeLicense : License -> ( String, Json.Encode.Value )
+encodeLicense ( License license ) =
   ( "license", Json.Encode.string license )
 
 
-encodeHomepage : String -> ( String, Json.Encode.Value )
-encodeHomepage homepage =
+encodeHomepage : Homepage -> ( String, Json.Encode.Value )
+encodeHomepage ( Homepage homepage ) =
   ( "homepage", Json.Encode.string homepage )
 
 
-encodeVersion : String -> ( String, Json.Encode.Value )
-encodeVersion version =
+encodeVersion : Version -> ( String, Json.Encode.Value )
+encodeVersion ( Version version ) =
   ( "version", Json.Encode.string version )
 
 
-encodeDescription : String -> ( String, Json.Encode.Value )
-encodeDescription description =
+encodeDescription : Description -> ( String, Json.Encode.Value )
+encodeDescription ( Description description ) =
   ( "description", Json.Encode.string description )
 
 
-encodeName : String -> ( String, Json.Encode.Value )
-encodeName name =
+encodeName : Name -> ( String, Json.Encode.Value )
+encodeName ( Name name ) =
   ( "name", Json.Encode.string name )
 
 
@@ -1045,88 +1188,88 @@ update : Message -> Model -> Model
 update message model =
   case message of
     UpdateName name ->
-      { model | name = name }
+      { model | name = ( Name name ) }
 
     UpdateDescription description ->
-      { model | description = description }
+      { model | description = ( Description description ) }
 
     UpdateVersion version ->
-      { model | version = version }
+      { model | version = ( Version version ) }
 
     UpdateHomepage homepage ->
-      { model | homepage = homepage }
+      { model | homepage = ( Homepage homepage ) }
 
     UpdateLicense license ->
-      { model | license = license }
+      { model | license = ( License license ) }
 
-    UpdateMain newMain ->
-      { model | main = newMain }
+    UpdateMain entrypoint ->
+      { model | main = ( Main entrypoint ) }
 
     UpdateBrowser browser ->
-      { model | browser = browser }
+      { model | browser = ( Browser browser ) }
 
     UpdatePrivate private ->
-      { model | private = private }
+      { model | private = ( Private private ) }
 
     UpdateBugsUrl url ->
-      { model | bugs = updateBugsUrl url model.bugs }
+      { model | bugs = updateBugsUrl ( BugsUrl url ) model.bugs }
 
     UpdateBugsEmail email ->
-      { model | bugs = updateBugsEmail email model.bugs }
+      { model | bugs = updateBugsEmail ( BugsEmail email ) model.bugs }
 
     UpdateAuthorName name ->
-      { model | author = updateAuthorName name model.author }
+      { model | author = updateAuthorName ( AuthorName name ) model.author }
 
     UpdateAuthorEmail email ->
-      { model | author = updateAuthorEmail email model.author }
+      { model | author = updateAuthorEmail ( AuthorEmail email ) model.author }
 
     UpdateAuthorUrl url ->
-      { model | author = updateAuthorUrl url model.author }
+      { model | author = updateAuthorUrl ( AuthorUrl url ) model.author }
 
     UpdateRepositoryKind kind ->
-      { model | repository = updateRepositoryKind kind model.repository }
+      { model | repository = updateRepositoryKind ( RepositoryKind kind ) model.repository }
 
     UpdateRepositoryUrl url ->
-      { model | repository = updateRepositoryUrl url model.repository }
+      { model | repository = updateRepositoryUrl ( RepositoryUrl url ) model.repository }
 
     UpdateEnginesNode node ->
-      { model | engines = updateEnginesNode node model.engines }
+      { model | engines = updateNodeEngine ( NodeEngine node ) model.engines }
 
     UpdateEnginesNpm npm ->
-      { model | engines = updateEnginesNpm npm model.engines }
+      { model | engines = updateNpmEngine ( NpmEngine npm ) model.engines }
 
     AddCpu ->
-      { model | cpus = List.append model.cpus [ "" ] }
+      { model | cpus = List.append model.cpus [ Cpu "" ] }
 
     UpdateCpu index value ->
-      { model | cpus = List.Extra.updateAt index ( always value ) model.cpus }
+      { model | cpus = List.Extra.updateAt index ( always ( Cpu value ) ) model.cpus }
 
     RemoveCpu index ->
       { model | cpus = List.Extra.removeAt index model.cpus }
 
     AddOperatingSystem ->
-      { model | operatingSystems = List.append model.operatingSystems [ "" ] }
+      { model | operatingSystems = List.append model.operatingSystems [ OperatingSystem "" ] }
 
     UpdateOperatingSystem index operatingSystem ->
-      { model | operatingSystems = List.Extra.updateAt index ( always operatingSystem ) model.operatingSystems }
+      { model | operatingSystems = List.Extra.updateAt index ( always ( OperatingSystem operatingSystem ) ) model.operatingSystems }
 
     RemoveOperatingSystem index ->
       { model | operatingSystems = List.Extra.removeAt index model.operatingSystems }
 
     AddFile ->
-      { model | files = List.append model.files [ "" ] }
+      { model | files = List.append model.files [ File "" ] }
 
     UpdateFile index value ->
-      { model | files = List.Extra.updateAt index ( always value ) model.files }
+      { model | files = List.Extra.updateAt index ( always ( File value ) ) model.files }
 
     RemoveFile index ->
       { model | files = List.Extra.removeAt index model.files }
 
     AddKeyword ->
-      { model | keywords = List.append model.keywords [ "" ] }
+      { model | keywords = List.append model.keywords [ Keyword "" ] }
 
-    UpdateKeyword index value ->
-      { model | keywords = List.Extra.updateAt index ( always value ) model.keywords }
+    UpdateKeyword index keyword ->
+      { model | keywords = List.Extra.updateAt index ( always ( Keyword keyword ) ) model.keywords }
 
     RemoveKeyword index ->
       { model | keywords = List.Extra.removeAt index model.keywords }
@@ -1219,93 +1362,102 @@ update message model =
       { model | peerDependencies = List.Extra.removeAt index model.peerDependencies }
 
     AddBundledDependency ->
-      { model | bundledDependencies = List.append model.bundledDependencies [ { key = "", value = "" } ] }
+      { model | bundledDependencies = List.append model.bundledDependencies [ BundledDependency { key = BundledDependencyKey "", value = BundledDependencyValue "" } ] }
 
     RemoveBundledDependency index ->
       { model | bundledDependencies = List.Extra.removeAt index model.bundledDependencies }
 
     UpdateBundledDependencyKey index key ->
-      { model | bundledDependencies = List.Extra.updateAt index ( updateBundledDependencyKey key ) model.bundledDependencies }
+      { model | bundledDependencies = List.Extra.updateAt index ( updateBundledDependencyKey ( BundledDependencyKey key ) ) model.bundledDependencies }
 
     UpdateBundledDependencyValue index value ->
-      { model | bundledDependencies = List.Extra.updateAt index ( updateBundledDependencyValue value ) model.bundledDependencies }
+      { model | bundledDependencies = List.Extra.updateAt index ( updateBundledDependencyValue ( BundledDependencyValue value ) ) model.bundledDependencies }
 
     AddOptionalDependency ->
-      { model | optionalDependencies = List.append model.optionalDependencies [ { key = "", value = "" } ] }
+      { model | optionalDependencies = List.append model.optionalDependencies [ OptionalDependency { key = OptionalDependencyKey "", value = OptionalDependencyValue "" } ] }
 
     UpdateOptionalDependencyKey index key ->
-      { model | optionalDependencies = List.Extra.updateAt index ( updateOptionalDependencyKey key ) model.optionalDependencies }
+      { model | optionalDependencies = List.Extra.updateAt index ( updateOptionalDependencyKey ( OptionalDependencyKey key ) ) model.optionalDependencies }
 
     UpdateOptionalDependencyValue index value ->
-      { model | optionalDependencies = List.Extra.updateAt index ( updateOptionalDependencyValue value ) model.optionalDependencies }
+      { model | optionalDependencies = List.Extra.updateAt index ( updateOptionalDependencyValue ( OptionalDependencyValue value ) ) model.optionalDependencies }
   
     RemoveOptionalDependency index ->
       { model | optionalDependencies = List.Extra.removeAt index model.optionalDependencies }
 
+    AddWorkspace ->
+      { model | workspaces = List.append model.workspaces [ Workspace "" ] } 
 
-updateEnginesNode : String -> Engines -> Engines
-updateEnginesNode node engines =
-  { engines | node = node }
+    RemoveWorkspace index ->
+      { model | workspaces = List.Extra.removeAt index model.workspaces }
 
-
-updateEnginesNpm : String -> Engines -> Engines
-updateEnginesNpm npm engines =
-  { engines | npm = npm }
-
-
-updateRepositoryKind : String -> Repository -> Repository
-updateRepositoryKind kind repository =
-  { repository | kind = kind }
+    UpdateWorkspace index workspace ->
+      { model | workspaces = List.Extra.updateAt index ( always ( Workspace workspace ) ) model.workspaces }
 
 
-updateRepositoryUrl : String -> Repository -> Repository
-updateRepositoryUrl url repository =
-  { repository | url = url }
+updateNodeEngine : NodeEngine -> Engines -> Engines
+updateNodeEngine ( NodeEngine node ) ( Engines engines ) =
+  Engines { engines | node = NodeEngine node }
 
 
-updateAuthorName : String -> Author -> Author
-updateAuthorName name author =
-  { author | name = name }
+updateNpmEngine : NpmEngine -> Engines -> Engines
+updateNpmEngine ( NpmEngine npm ) ( Engines engines ) =
+  Engines { engines | npm = NpmEngine npm }
 
 
-updateAuthorUrl : String -> Author -> Author
-updateAuthorUrl url author =
-  { author | url = url }
+updateRepositoryKind : RepositoryKind -> Repository -> Repository
+updateRepositoryKind ( RepositoryKind kind ) ( Repository repository ) =
+  Repository { repository | kind = RepositoryKind kind }
 
 
-updateAuthorEmail : String -> Author -> Author
-updateAuthorEmail email author =
-  { author | email = email }
+updateRepositoryUrl : RepositoryUrl -> Repository -> Repository
+updateRepositoryUrl ( RepositoryUrl url ) ( Repository repository ) =
+  Repository { repository | url = RepositoryUrl url }
 
 
-updateBugsEmail : String -> Bugs -> Bugs
-updateBugsEmail email bugs =
-  { bugs | email = email }
+updateAuthorName : AuthorName -> Author -> Author
+updateAuthorName ( AuthorName name ) ( Author author ) =
+  Author { author | name = ( AuthorName name ) }
 
 
-updateBugsUrl : String -> Bugs -> Bugs
-updateBugsUrl url bugs =
-  { bugs | url = url }
+updateAuthorUrl : AuthorUrl -> Author -> Author
+updateAuthorUrl ( AuthorUrl url ) ( Author author ) =
+  Author { author | url = AuthorUrl url }
 
 
-updateOptionalDependencyValue : String -> OptionalDependency -> OptionalDependency
-updateOptionalDependencyValue value optionalDependency =
-  { optionalDependency | value = value }
+updateAuthorEmail : AuthorEmail -> Author -> Author
+updateAuthorEmail ( AuthorEmail email ) (Author author ) =
+  Author { author | email = AuthorEmail email }
 
 
-updateOptionalDependencyKey : String -> OptionalDependency -> OptionalDependency
-updateOptionalDependencyKey key optionalDependency =
-  { optionalDependency | key = key }
+updateBugsEmail : BugsEmail -> Bugs -> Bugs
+updateBugsEmail ( BugsEmail email ) ( Bugs bugs ) =
+  Bugs { bugs | email = BugsEmail email }
 
 
-updateBundledDependencyValue : String -> BundledDependency -> BundledDependency
-updateBundledDependencyValue value bundledDependency =
-  { bundledDependency | value = value }
+updateBugsUrl : BugsUrl -> Bugs -> Bugs
+updateBugsUrl ( BugsUrl url ) ( Bugs bugs ) =
+  Bugs { bugs | url = BugsUrl url }
 
 
-updateBundledDependencyKey : String -> BundledDependency -> BundledDependency
-updateBundledDependencyKey key bundledDependency =
-  { bundledDependency | key = key }
+updateOptionalDependencyValue : OptionalDependencyValue -> OptionalDependency -> OptionalDependency
+updateOptionalDependencyValue ( OptionalDependencyValue value ) ( OptionalDependency optionalDependency ) =
+  OptionalDependency { optionalDependency | value = OptionalDependencyValue value }
+
+
+updateOptionalDependencyKey : OptionalDependencyKey -> OptionalDependency -> OptionalDependency
+updateOptionalDependencyKey ( OptionalDependencyKey key ) ( OptionalDependency optionalDependency ) =
+  OptionalDependency { optionalDependency | key = OptionalDependencyKey key }
+
+
+updateBundledDependencyValue : BundledDependencyValue -> BundledDependency -> BundledDependency
+updateBundledDependencyValue ( BundledDependencyValue value ) ( BundledDependency bundledDependency ) =
+  BundledDependency { bundledDependency | value = BundledDependencyValue value }
+
+
+updateBundledDependencyKey : BundledDependencyKey -> BundledDependency -> BundledDependency
+updateBundledDependencyKey ( BundledDependencyKey key ) ( BundledDependency bundledDependency ) =
+  BundledDependency { bundledDependency | key = BundledDependencyKey key }
 
 
 updatePeerDependencyKey : String -> PeerDependency -> PeerDependency
@@ -1388,31 +1540,35 @@ updateContributorName name contributor =
 
 init : Model
 init =
-  { name = ""
-  , description = ""
-  , version = ""
-  , homepage = ""
-  , license = ""
-  , main = ""
-  , browser = ""
-  , private = False
+  { name = Name ""
+  , description = Description ""
+  , version = Version ""
+  , homepage = Homepage ""
+  , license = License ""
+  , main = Main ""
+  , browser = Browser ""
+  , private = Private False
   , bugs =
-    { url = ""
-    , email = ""
-    }
+      Bugs
+        { url = BugsUrl ""
+        , email = BugsEmail ""
+        }
   , author =
-    { name = ""
-    , url = ""
-    , email = ""
-    }
+      Author
+        { name = AuthorName ""
+        , url = AuthorUrl ""
+        , email = AuthorEmail ""
+        }
   , repository =
-    { kind = ""
-    , url = ""
-    }
+      Repository
+        { kind = RepositoryKind ""
+        , url = RepositoryUrl ""
+        }
   , engines =
-    { node = ""
-    , npm = ""
-    }
+      Engines 
+        { node = NodeEngine ""
+        , npm = NpmEngine ""
+        }
   , cpus = []
   , operatingSystems = []
   , files = []
@@ -1426,6 +1582,7 @@ init =
   , peerDependencies = []
   , bundledDependencies = []
   , optionalDependencies = []
+  , workspaces = []
   }
 
 
@@ -1433,22 +1590,22 @@ init =
 
 
 type alias Model =
-  { name : String
-  , description : String
-  , version : String
-  , homepage : String
-  , license : String
-  , main : String
-  , browser : String
-  , private : Bool
+  { name : Name
+  , description : Description
+  , version : Version
+  , homepage : Homepage
+  , license : License
+  , main : Main
+  , browser : Browser
+  , private : Private
   , bugs : Bugs
   , author : Author
   , repository : Repository
   , engines : Engines
-  , cpus : List String
-  , operatingSystems : List String
-  , files : List String
-  , keywords : List String
+  , cpus : List Cpu
+  , operatingSystems : List OperatingSystem
+  , files : List File
+  , keywords : List Keyword
   , contributors : List Contributor
   , fundings : List Funding
   , scripts : List Script
@@ -1458,44 +1615,129 @@ type alias Model =
   , peerDependencies : List PeerDependency
   , bundledDependencies : List BundledDependency
   , optionalDependencies : List OptionalDependency
+  , workspaces : List Workspace
   }
 
 
-type alias Engines =
-  { node : String
-  , npm : String
-  }
+type Keyword = Keyword String
 
 
-type alias Repository =
-  { kind : String
-  , url : String
-  }
+type File = File String
 
 
-type alias Author =
-  { name : String
-  , url : String
-  , email : String
-  }
+type OperatingSystem = OperatingSystem String
 
 
-type alias Bugs =
-  { url : String
-  , email : String
-  }
+type Cpu = Cpu String
 
 
-type alias OptionalDependency =
-  { key : String
-  , value : String
-  }
+type Private = Private Bool
 
 
-type alias BundledDependency =
-  { key : String
-  , value : String
-  }
+type Browser = Browser String
+
+
+type Main = Main String
+
+
+type License = License String
+
+
+type Homepage = Homepage String
+
+
+type Version = Version String
+
+
+type Description = Description String
+
+
+type Name = Name String
+
+
+type Workspace = Workspace String
+
+
+type Engines =
+  Engines
+    { node : NodeEngine
+    , npm : NpmEngine
+    }
+
+
+type NodeEngine = NodeEngine String
+
+
+type NpmEngine = NpmEngine String
+
+
+type Repository =
+  Repository
+    { kind : RepositoryKind
+    , url : RepositoryUrl
+    }
+
+
+type RepositoryKind = RepositoryKind String
+
+
+type RepositoryUrl = RepositoryUrl String
+
+
+type Author =
+  Author
+    { name : AuthorName
+    , url : AuthorUrl
+    , email : AuthorEmail
+    }
+
+
+type AuthorName = AuthorName String
+
+
+type AuthorUrl = AuthorUrl String
+
+
+type AuthorEmail = AuthorEmail String
+
+
+type Bugs =
+  Bugs
+    { url : BugsUrl
+    , email : BugsEmail
+    }
+
+
+type BugsUrl = BugsUrl String
+
+
+type BugsEmail = BugsEmail String
+
+
+type OptionalDependency =
+  OptionalDependency
+    { key : OptionalDependencyKey
+    , value : OptionalDependencyValue
+    }
+
+
+type OptionalDependencyKey = OptionalDependencyKey String
+
+
+type OptionalDependencyValue = OptionalDependencyValue String
+
+
+type BundledDependency =
+  BundledDependency
+    { key : BundledDependencyKey
+    , value : BundledDependencyValue
+    }
+
+
+type BundledDependencyKey = BundledDependencyKey String
+
+
+type BundledDependencyValue = BundledDependencyValue String
 
 
 type alias PeerDependency =
@@ -1611,3 +1853,6 @@ type Message
   | RemoveOptionalDependency Int
   | UpdateOptionalDependencyKey Int String
   | UpdateOptionalDependencyValue Int String
+  | AddWorkspace
+  | UpdateWorkspace Int String
+  | RemoveWorkspace Int
