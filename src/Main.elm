@@ -8,6 +8,7 @@ import Html.Attributes
 import Html.Events
 import Json.Encode
 import List.Extra
+import Html.Events.Extra
 
 
 -- MAIN
@@ -42,6 +43,8 @@ view model =
     , viewAuthor model.author
     , viewRepository model.repository
     , viewEngines model.engines
+    , viewDirectories model.directories
+    , viewPublishingConfiguration model.publishingConfiguration
     , viewCpus model.cpus
     , viewOperatingSystems model.operatingSystems
     , viewFiles model.files
@@ -57,6 +60,137 @@ view model =
     , viewBundledDependencies model.bundledDependencies
     , viewOptionalDependencies model.optionalDependencies
     , viewModel model
+    ]
+
+
+viewPublishingConfiguration : PublishingConfiguration -> Html Message
+viewPublishingConfiguration ( PublishingConfiguration publishingConfiguration ) =
+  Html.div
+    []
+    [ viewAccessPublishingConfiguration publishingConfiguration.access
+    ]
+
+
+viewAccessPublishingConfiguration : AccessPublishingConfiguration -> Html Message
+viewAccessPublishingConfiguration accessPublishingConfiguration =
+  Html.div
+    []
+    [ Html.label [] [ Html.text "Access publishing configuration" ]
+    , Html.select
+      [ Html.Attributes.value <| viewAccessPublishingConfigurationValue accessPublishingConfiguration
+      , Html.Events.Extra.onChange UpdateAccessPublishingConfiguration
+      ]
+      [ Html.option [ Html.Attributes.value "restricted" ] [ Html.text "Restricted" ]
+      , Html.option [ Html.Attributes.value "public" ] [ Html.text "Public" ]
+      ]
+    ]
+
+
+viewAccessPublishingConfigurationValue : AccessPublishingConfiguration -> String
+viewAccessPublishingConfigurationValue accessPublishingConfiguration =
+  case accessPublishingConfiguration of
+    RestrictedAccessPublishingConfiguration ->
+      "restricted"
+
+    PublicAccessPublishingConfiguration ->
+      "public"
+
+
+
+viewDirectories : Directories -> Html Message
+viewDirectories ( Directories directories ) =
+  Html.div
+    []
+    [ viewLibraryDirectory directories.library
+    , viewBinaryDirectory directories.binary
+    , viewManualDirectory directories.manual
+    , viewDocumentationDirectory directories.documentation
+    , viewExampleDirectory directories.example
+    , viewTestDirectory directories.test
+    ]
+
+
+viewLibraryDirectory : LibraryDirectory -> Html Message
+viewLibraryDirectory ( LibraryDirectory libraryDirectory ) =
+  Html.div
+    []
+    [ Html.label [ Html.Attributes.for "directories-library" ] [ Html.text "Library directory" ]
+    , Html.input
+      [ Html.Attributes.value libraryDirectory
+      , Html.Attributes.id "directories-library"
+      , Html.Events.onInput UpdateLibraryDirectory
+      ]
+      []
+    ]
+
+
+viewBinaryDirectory : BinaryDirectory -> Html Message
+viewBinaryDirectory ( BinaryDirectory binaryDirectory ) =
+  Html.div
+    []
+    [ Html.label [ Html.Attributes.for "directories-binary" ] [ Html.text "Binary directory" ]
+    , Html.input
+      [ Html.Attributes.value binaryDirectory
+      , Html.Attributes.id "directories-binary"
+      , Html.Events.onInput UpdateBinaryDirectory
+      ]
+      []
+    ]
+
+
+viewManualDirectory : ManualDirectory -> Html Message
+viewManualDirectory ( ManualDirectory manualDirectory ) =
+  Html.div
+    []
+    [ Html.label [ Html.Attributes.for "directories-manual" ] [ Html.text "Manual directory" ]
+    , Html.input
+      [ Html.Attributes.value manualDirectory
+      , Html.Attributes.id "directories-manual"
+      , Html.Events.onInput UpdateManualDirectory
+      ]
+      []
+    ]
+
+
+viewDocumentationDirectory : DocumentationDirectory -> Html Message
+viewDocumentationDirectory ( DocumentationDirectory documentationDirectory ) =
+  Html.div
+    []
+    [ Html.label [ Html.Attributes.for "directories-documentation" ] [ Html.text "Documentation directory" ]
+    , Html.input
+      [ Html.Attributes.value documentationDirectory
+      , Html.Attributes.id "directories-documentation"
+      , Html.Events.onInput UpdateDocumentationDirectory
+      ]
+      []
+    ]
+
+
+viewExampleDirectory : ExampleDirectory -> Html Message
+viewExampleDirectory ( ExampleDirectory exampleDirectory ) =
+  Html.div
+    []
+    [ Html.label [ Html.Attributes.for "directories-example" ] [ Html.text "Example directory" ]
+    , Html.input
+      [ Html.Attributes.value exampleDirectory
+      , Html.Attributes.id "directories-example"
+      , Html.Events.onInput UpdateExampleDirectory
+      ]
+      []
+    ]
+
+
+viewTestDirectory : TestDirectory -> Html Message
+viewTestDirectory ( TestDirectory testDirectory ) =
+  Html.div
+    []
+    [ Html.label [ Html.Attributes.for "directories-test" ] [ Html.text "Test directory" ]
+    , Html.input
+      [ Html.Attributes.value testDirectory
+      , Html.Attributes.id "directories-test"
+      , Html.Events.onInput UpdateTestDirectory
+      ]
+      []
     ]
 
 
@@ -626,7 +760,7 @@ viewDevelopmentDependencies developmentDependencies =
 
 
 viewDevelopmentDependency : Int -> DevelopmentDependency -> Html Message
-viewDevelopmentDependency index developmentDependency =
+viewDevelopmentDependency index ( DevelopmentDependency developmentDependency ) =
   Html.div
     []
     [ Html.div
@@ -634,7 +768,7 @@ viewDevelopmentDependency index developmentDependency =
       [ Html.label [ Html.Attributes.for <| "development-dependency-key-" ++ String.fromInt index ] [ Html.text "Key" ]
       , Html.input
         [ Html.Events.onInput <| UpdateDevelopmentDependencyKey index 
-        , Html.Attributes.value developmentDependency.key
+        , Html.Attributes.value <| viewDevelopmentDependencyKey developmentDependency.key
         , Html.Attributes.id <| "development-dependency-key-" ++ String.fromInt index 
         ]
         []
@@ -644,13 +778,23 @@ viewDevelopmentDependency index developmentDependency =
       [ Html.label [ Html.Attributes.for <| "development-dependency-value-" ++ String.fromInt index ] [ Html.text "Value" ]
       , Html.input
         [ Html.Events.onInput <| UpdateDevelopmentDependencyValue index
-        , Html.Attributes.value developmentDependency.value
+        , Html.Attributes.value <| viewDevelopmentDependencyValue developmentDependency.value
         , Html.Attributes.id <| "development-dependency-value-" ++ String.fromInt index 
         ]
         []
       ]
     , Html.button [ Html.Events.onClick <| RemoveDevelopmentDependency index ] [ Html.text "Remove" ]
     ]
+
+
+viewDevelopmentDependencyKey : DevelopmentDependencyKey -> String
+viewDevelopmentDependencyKey ( DevelopmentDependencyKey developmentDependencyKey ) =
+  developmentDependencyKey
+
+
+viewDevelopmentDependencyValue : DevelopmentDependencyValue -> String
+viewDevelopmentDependencyValue ( DevelopmentDependencyValue developmentDependencyValue ) =
+  developmentDependencyValue
 
 
 viewDependencies : List Dependency -> Html Message
@@ -665,7 +809,7 @@ viewDependencies dependencies =
 
 
 viewDependency : Int -> Dependency -> Html Message
-viewDependency index dependency =
+viewDependency index ( Dependency dependency ) =
   Html.div
     []
     [ Html.div
@@ -673,7 +817,7 @@ viewDependency index dependency =
       [ Html.label [ Html.Attributes.for <| "dependency-key-" ++ String.fromInt index ] [ Html.text "Key" ]
       , Html.input
         [ Html.Events.onInput <| UpdateDependencyKey index
-        , Html.Attributes.value dependency.key
+        , Html.Attributes.value <| viewDependencyKey dependency.key
         , Html.Attributes.id <| "dependency-key-" ++ String.fromInt index 
         ]
         []
@@ -683,13 +827,23 @@ viewDependency index dependency =
       [ Html.label [ Html.Attributes.for <| "dependency-value-" ++ String.fromInt index ] [ Html.text "Value" ]
       , Html.input
         [ Html.Events.onInput <| UpdateDependencyValue index
-        , Html.Attributes.value dependency.value
+        , Html.Attributes.value <| viewDependencyValue dependency.value
         , Html.Attributes.id <| "dependency-value-" ++ String.fromInt index 
         ]
         []
       ]
     , Html.button [ Html.Events.onClick <| RemoveDependency index ] [ Html.text "Remove" ]
     ]
+
+
+viewDependencyKey : DependencyKey -> String
+viewDependencyKey ( DependencyKey dependencyKey ) =
+  dependencyKey
+
+
+viewDependencyValue : DependencyValue -> String
+viewDependencyValue ( DependencyValue dependencyValue ) =
+  dependencyValue
 
 
 viewConfigurations : List Configuration -> Html Message
@@ -704,7 +858,7 @@ viewConfigurations configurations =
 
 
 viewConfiguration : Int -> Configuration -> Html Message
-viewConfiguration index configuration =
+viewConfiguration index ( Configuration configuration ) =
   Html.div
     []
     [ Html.div
@@ -712,7 +866,7 @@ viewConfiguration index configuration =
       [ Html.label [ Html.Attributes.for <| "configuration-key-" ++ String.fromInt index ] [ Html.text "Key" ]
       , Html.input
         [ Html.Events.onInput <| UpdateConfigurationKey index
-        , Html.Attributes.value configuration.key
+        , Html.Attributes.value <| viewConfigurationKey configuration.key
         , Html.Attributes.id <| "configuration-key-" ++ String.fromInt index 
         ]
         []
@@ -722,13 +876,23 @@ viewConfiguration index configuration =
       [ Html.label [ Html.Attributes.for <| "configuration-value-" ++ String.fromInt index ] [ Html.text "Value" ]
       , Html.input
         [ Html.Events.onInput <| UpdateConfigurationValue index
-        , Html.Attributes.value configuration.value
+        , Html.Attributes.value <| viewConfigurationValue configuration.value
         , Html.Attributes.id <| "configuration-value-" ++ String.fromInt index 
         ]
         []
       ]
     , Html.button [ Html.Events.onClick <| RemoveConfiguration index ] [ Html.text "Remove" ]
     ]
+
+
+viewConfigurationKey : ConfigurationKey -> String
+viewConfigurationKey ( ConfigurationKey configurationKey ) =
+  configurationKey
+
+
+viewConfigurationValue : ConfigurationValue -> String
+viewConfigurationValue ( ConfigurationValue configurationValue ) =
+  configurationValue
 
 
 viewScripts : List Script -> Html Message
@@ -743,7 +907,7 @@ viewScripts scripts =
 
 
 viewScript : Int -> Script -> Html Message
-viewScript index script =
+viewScript index ( Script script ) =
   Html.div
     []
     [ Html.div
@@ -751,7 +915,7 @@ viewScript index script =
       [ Html.label [ Html.Attributes.for <| "script-key-" ++ String.fromInt index ] [ Html.text "Key" ]
       , Html.input
         [ Html.Events.onInput <| UpdateScriptKey index
-        , Html.Attributes.value script.key
+        , Html.Attributes.value <| viewScriptKey script.key
         , Html.Attributes.id <| "script-key-" ++ String.fromInt index 
         ]
         []
@@ -761,13 +925,23 @@ viewScript index script =
       [ Html.label [ Html.Attributes.for <| "script-command-" ++ String.fromInt index ] [ Html.text "Command" ]
       , Html.input
         [ Html.Events.onInput <| UpdateScriptCommand index
-        , Html.Attributes.value script.command
+        , Html.Attributes.value <| viewScriptCommand script.command
         , Html.Attributes.id <| "script-command-" ++ String.fromInt index 
         ]
         []
       ]
     , Html.button [ Html.Events.onClick <| RemoveScript index ] [ Html.text "Remove" ]
     ]
+
+
+viewScriptKey : ScriptKey -> String
+viewScriptKey ( ScriptKey scriptKey ) =
+  scriptKey
+
+
+viewScriptCommand : ScriptCommand -> String
+viewScriptCommand ( ScriptCommand scriptCommand ) =
+  scriptCommand
 
 
 viewFundings : List Funding -> Html Message
@@ -782,7 +956,7 @@ viewFundings fundings =
 
 
 viewFunding : Int -> Funding -> Html Message
-viewFunding index funding =
+viewFunding index ( Funding funding ) =
   Html.div
     []
     [ Html.div
@@ -790,7 +964,7 @@ viewFunding index funding =
       [ Html.label [ Html.Attributes.for <| "funding-type-" ++ String.fromInt index ] [ Html.text "Type" ]
       , Html.input
         [ Html.Events.onInput <| UpdateFundingKind index
-        , Html.Attributes.value funding.kind
+        , Html.Attributes.value <| viewFundingKind funding.kind
         , Html.Attributes.id <| "funding-type-" ++ String.fromInt index 
         ]
         []
@@ -800,13 +974,23 @@ viewFunding index funding =
       [ Html.label [ Html.Attributes.for <| "funding-url-" ++ String.fromInt index ] [ Html.text "Url" ]
       , Html.input
         [ Html.Events.onInput <| UpdateFundingUrl index
-        , Html.Attributes.value funding.url
+        , Html.Attributes.value <| viewFundingUrl funding.url
         , Html.Attributes.id <| "funding-url-" ++ String.fromInt index 
         ]
         []
       ]
     , Html.button [ Html.Events.onClick <| RemoveFunding index ] [ Html.text "Remove" ]
     ]
+
+
+viewFundingKind : FundingKind -> String
+viewFundingKind ( FundingKind fundingKind ) =
+  fundingKind
+
+
+viewFundingUrl : FundingUrl -> String
+viewFundingUrl ( FundingUrl fundingUrl ) =
+  fundingUrl
 
 
 viewContributors : List Contributor -> Html Message
@@ -820,7 +1004,7 @@ viewContributors contributors =
 
 
 viewContributor : Int -> Contributor -> Html Message
-viewContributor index contributor =
+viewContributor index ( Contributor contributor ) =
   Html.div
     []
     [ Html.div
@@ -828,7 +1012,7 @@ viewContributor index contributor =
       [ Html.label [ Html.Attributes.for <| "contributor-name-" ++ String.fromInt index ] [ Html.text "Name" ]
       , Html.input
         [ Html.Events.onInput <| UpdateContributorName index
-        , Html.Attributes.value contributor.name
+        , Html.Attributes.value <| viewContributorName contributor.name
         , Html.Attributes.id <| "contributor-name-" ++ String.fromInt index 
         ]
         []
@@ -838,7 +1022,7 @@ viewContributor index contributor =
       [ Html.label [ Html.Attributes.for <| "contributor-email-" ++ String.fromInt index ] [ Html.text "Email" ]
       , Html.input
         [ Html.Events.onInput <| UpdateContributorEmail index
-        , Html.Attributes.value contributor.email
+        , Html.Attributes.value <| viewContributorEmail contributor.email
         , Html.Attributes.id <| "contributor-email-" ++ String.fromInt index 
         ]
         []
@@ -848,13 +1032,28 @@ viewContributor index contributor =
       [ Html.label [ Html.Attributes.for <| "contributor-url-" ++ String.fromInt index ] [ Html.text "URL" ]
       , Html.input
         [ Html.Events.onInput <| UpdateContributorUrl index
-        , Html.Attributes.value contributor.url
+        , Html.Attributes.value <| viewContributorUrl contributor.url
         , Html.Attributes.id <| "contributor-url-" ++ String.fromInt index 
         ]
         []
       ]
     , Html.button [ Html.Events.onClick <| RemoveContributor index ] [ Html.text "Remove" ]
     ]
+
+
+viewContributorEmail : ContributorEmail -> String
+viewContributorEmail ( ContributorEmail contributorEmail ) =
+  contributorEmail
+
+
+viewContributorName : ContributorName -> String
+viewContributorName ( ContributorName contributorName ) =
+  contributorName
+
+
+viewContributorUrl : ContributorUrl -> String
+viewContributorUrl ( ContributorUrl contributorUrl ) =
+  contributorUrl
 
 
 viewModel : Model -> Html Message
@@ -881,6 +1080,8 @@ encodeModel model =
         , encodeAuthor model.author
         , encodeRepository model.repository
         , encodeEngines model.engines
+        , encodeDirectories model.directories
+        , encodePublishingConfiguration model.publishingConfiguration
         , encodeCpus model.cpus
         , encodeOperatingSystems model.operatingSystems
         , encodeFiles model.files
@@ -896,6 +1097,69 @@ encodeModel model =
         , encodeBundledDependencies model.bundledDependencies
         , encodeOptionalDependencies model.optionalDependencies
         ]
+
+
+encodePublishingConfiguration : PublishingConfiguration -> ( String, Json.Encode.Value )
+encodePublishingConfiguration ( PublishingConfiguration publishingConfiguration ) =
+  ( "publishConfig"
+  , Json.Encode.object
+    [ encodeAccessPublishingConfiguration publishingConfiguration.access
+    ]
+  )
+
+
+encodeAccessPublishingConfiguration : AccessPublishingConfiguration -> ( String, Json.Encode.Value )
+encodeAccessPublishingConfiguration accessPublishingConfiguration =
+  case accessPublishingConfiguration of
+    RestrictedAccessPublishingConfiguration ->
+      ( "access", Json.Encode.string "restricted" )
+
+    PublicAccessPublishingConfiguration ->
+      ( "access", Json.Encode.string "public" )
+
+
+encodeDirectories : Directories -> ( String, Json.Encode.Value )
+encodeDirectories ( Directories directories ) =
+  ( "directories"
+  , Json.Encode.object
+    [ encodeLibraryDirectory directories.library
+    , encodeBinaryDirectory directories.binary
+    , encodeManualDirectory directories.manual
+    , encodeDocumentationDirectory directories.documentation
+    , encodeExampleDirectory directories.example
+    , encodeTestDirectory directories.test
+    ]
+  )
+
+
+encodeLibraryDirectory : LibraryDirectory -> ( String, Json.Encode.Value )
+encodeLibraryDirectory ( LibraryDirectory libraryDirectory ) =
+  ( "lib", Json.Encode.string libraryDirectory )
+
+
+encodeBinaryDirectory : BinaryDirectory -> ( String, Json.Encode.Value )
+encodeBinaryDirectory ( BinaryDirectory binaryDirectory ) =
+  ( "bin", Json.Encode.string binaryDirectory )
+
+
+encodeManualDirectory : ManualDirectory -> ( String, Json.Encode.Value )
+encodeManualDirectory ( ManualDirectory manualDirectory ) =
+  ( "man", Json.Encode.string manualDirectory )
+
+
+encodeDocumentationDirectory : DocumentationDirectory -> ( String, Json.Encode.Value )
+encodeDocumentationDirectory ( DocumentationDirectory documentationDirectory ) =
+  ( "doc", Json.Encode.string documentationDirectory )
+
+
+encodeExampleDirectory : ExampleDirectory -> ( String, Json.Encode.Value )
+encodeExampleDirectory ( ExampleDirectory exampleDirectory ) =
+  ( "example", Json.Encode.string exampleDirectory )
+
+
+encodeTestDirectory : TestDirectory -> ( String, Json.Encode.Value )
+encodeTestDirectory ( TestDirectory testDirectory ) =
+  ( "test", Json.Encode.string testDirectory )
 
 
 encodeWorkspaces : List Workspace -> ( String, Json.Encode.Value )
@@ -1100,8 +1364,18 @@ encodeDependencies dependencies =
 
 
 encodeDependency : Dependency -> ( String, Json.Encode.Value )
-encodeDependency dependency =
-  ( dependency.key, Json.Encode.string dependency.value )
+encodeDependency ( Dependency dependency ) =
+  ( encodeDependencyKey dependency.key, encodeDependencyValue dependency.value )
+
+
+encodeDependencyKey : DependencyKey -> String
+encodeDependencyKey ( DependencyKey dependencyKey ) =
+  dependencyKey
+
+
+encodeDependencyValue : DependencyValue -> Json.Encode.Value
+encodeDependencyValue ( DependencyValue dependencyValue ) =
+  Json.Encode.string dependencyValue
 
 
 encodeDevelopmentDependencies : List DevelopmentDependency -> ( String, Json.Encode.Value )
@@ -1110,8 +1384,18 @@ encodeDevelopmentDependencies developmentDependencies =
 
 
 encodeDevelopmentDependency : DevelopmentDependency -> ( String, Json.Encode.Value )
-encodeDevelopmentDependency developmentDependency =
-  ( developmentDependency.key, Json.Encode.string developmentDependency.value )
+encodeDevelopmentDependency ( DevelopmentDependency developmentDependency ) =
+  ( encodeDevelopmentDependencyKey developmentDependency.key, encodeDevelopmentDependencyValue developmentDependency.value )
+
+
+encodeDevelopmentDependencyKey : DevelopmentDependencyKey -> String
+encodeDevelopmentDependencyKey ( DevelopmentDependencyKey developmentDependencyKey ) =
+  developmentDependencyKey
+
+
+encodeDevelopmentDependencyValue : DevelopmentDependencyValue -> Json.Encode.Value
+encodeDevelopmentDependencyValue ( DevelopmentDependencyValue developmentDependencyValue ) =
+  Json.Encode.string developmentDependencyValue
 
 
 encodePrivate : Private -> ( String, Json.Encode.Value )
@@ -1160,8 +1444,18 @@ encodeConfigurations configurations =
 
 
 encodeConfiguration : Configuration -> ( String, Json.Encode.Value )
-encodeConfiguration configuration =
-  ( configuration.key, Json.Encode.string configuration.value )
+encodeConfiguration ( Configuration configuration ) =
+  ( encodeConfigurationKey configuration.key, encodeConfigurationValue configuration.value )
+
+
+encodeConfigurationKey : ConfigurationKey -> String
+encodeConfigurationKey ( ConfigurationKey configurationKey ) = 
+  configurationKey
+
+
+encodeConfigurationValue : ConfigurationValue -> Json.Encode.Value
+encodeConfigurationValue ( ConfigurationValue configurationValue ) =
+  Json.Encode.string configurationValue
 
 
 encodeScripts : List Script -> ( String, Json.Encode.Value )
@@ -1170,8 +1464,18 @@ encodeScripts scripts =
 
 
 encodeScript : Script -> ( String, Json.Encode.Value )
-encodeScript script =
-  ( script.key, Json.Encode.string script.command )
+encodeScript ( Script script ) =
+  ( encodeScriptKey script.key, encodeScriptCommand script.command )
+
+
+encodeScriptKey : ScriptKey -> String
+encodeScriptKey ( ScriptKey scriptKey ) =
+  scriptKey
+
+
+encodeScriptCommand : ScriptCommand -> Json.Encode.Value
+encodeScriptCommand ( ScriptCommand scriptCommand ) =
+  Json.Encode.string scriptCommand
 
 
 encodeFundings : List Funding -> ( String, Json.Encode.Value )
@@ -1180,11 +1484,21 @@ encodeFundings fundings =
 
 
 encodeFunding : Funding -> Json.Encode.Value
-encodeFunding funding =
+encodeFunding ( Funding funding ) =
   Json.Encode.object
-    [ ( "type", Json.Encode.string funding.kind )
-    , ( "url", Json.Encode.string funding.url )
+    [ encodeFundingKind funding.kind
+    , encodeFundingUrl funding.url
     ]
+
+
+encodeFundingKind : FundingKind -> ( String, Json.Encode.Value )
+encodeFundingKind ( FundingKind fundingKind ) =
+  ( "type", Json.Encode.string fundingKind )
+
+
+encodeFundingUrl : FundingUrl -> ( String, Json.Encode.Value )
+encodeFundingUrl ( FundingUrl fundingUrl ) =
+  ( "url", Json.Encode.string fundingUrl )
 
 
 encodeContributors : List Contributor -> ( String, Json.Encode.Value )
@@ -1193,12 +1507,27 @@ encodeContributors contributors =
 
 
 encodeContributor : Contributor -> Json.Encode.Value
-encodeContributor contributor =
+encodeContributor ( Contributor contributor ) =
   Json.Encode.object
-    [ ( "name", Json.Encode.string contributor.name )
-    , ( "email", Json.Encode.string contributor.email )
-    , ( "url", Json.Encode.string contributor.url )
+    [ encodeContributorName contributor.name
+    , encodeContributorEmail contributor.email
+    , encodeContributorUrl contributor.url
     ]
+
+
+encodeContributorName : ContributorName -> ( String, Json.Encode.Value )
+encodeContributorName ( ContributorName contributorName ) =
+  ( "name", Json.Encode.string contributorName )
+
+
+encodeContributorEmail : ContributorEmail -> ( String, Json.Encode.Value )
+encodeContributorEmail ( ContributorEmail contributorEmail ) =
+  ( "email", Json.Encode.string contributorEmail )
+
+
+encodeContributorUrl : ContributorUrl -> ( String, Json.Encode.Value )
+encodeContributorUrl ( ContributorUrl contributorUrl ) =
+  ( "url", Json.Encode.string contributorUrl )
 
 
 -- UPDATE
@@ -1295,76 +1624,76 @@ update message model =
       { model | keywords = List.Extra.removeAt index model.keywords }
 
     AddContributor ->
-      { model | contributors = List.append model.contributors [ { name = "", email = "", url = "" } ] }
+      { model | contributors = List.append model.contributors [ Contributor { name = ContributorName "", email = ContributorEmail "", url = ContributorUrl "" } ] }
 
     RemoveContributor index ->
       { model | contributors = List.Extra.removeAt index model.contributors }
 
     UpdateContributorName index name ->
-      { model | contributors = List.Extra.updateAt index ( updateContributorName name ) model.contributors }
+      { model | contributors = List.Extra.updateAt index ( updateContributorName ( ContributorName name ) ) model.contributors }
 
     UpdateContributorEmail index email ->
-      { model | contributors = List.Extra.updateAt index ( updateContributorEmail email ) model.contributors }
+      { model | contributors = List.Extra.updateAt index ( updateContributorEmail ( ContributorEmail email ) ) model.contributors }
 
     UpdateContributorUrl index url ->
-      { model | contributors = List.Extra.updateAt index ( updateContributorUrl url ) model.contributors }
+      { model | contributors = List.Extra.updateAt index ( updateContributorUrl ( ContributorUrl url ) ) model.contributors }
 
     AddFunding ->
-      { model | fundings = List.append model.fundings [ { kind = "", url = "" } ] }
+      { model | fundings = List.append model.fundings [ Funding { kind = FundingKind "", url = FundingUrl "" } ] }
 
     UpdateFundingKind index kind ->
-      { model | fundings = List.Extra.updateAt index ( updateFundingKind kind ) model.fundings }
+      { model | fundings = List.Extra.updateAt index ( updateFundingKind ( FundingKind kind ) ) model.fundings }
 
     UpdateFundingUrl index url ->
-      { model | fundings = List.Extra.updateAt index ( updateFundingUrl url ) model.fundings }
+      { model | fundings = List.Extra.updateAt index ( updateFundingUrl ( FundingUrl url ) ) model.fundings }
 
     RemoveFunding index ->
       { model | fundings = List.Extra.removeAt index model.fundings }
 
     AddScript ->
-      { model | scripts = List.append model.scripts [ { key = "", command = "" } ] }
+      { model | scripts = List.append model.scripts [ Script { key = ScriptKey "", command = ScriptCommand "" } ] }
 
     RemoveScript index ->
       { model | scripts = List.Extra.removeAt index model.scripts }
 
     UpdateScriptKey index key ->
-      { model | scripts = List.Extra.updateAt index ( updateScriptKey key ) model.scripts }
+      { model | scripts = List.Extra.updateAt index ( updateScriptKey ( ScriptKey key ) ) model.scripts }
 
     UpdateScriptCommand index command ->
-      { model | scripts = List.Extra.updateAt index ( updateScriptCommand command ) model.scripts }
+      { model | scripts = List.Extra.updateAt index ( updateScriptCommand ( ScriptCommand command ) ) model.scripts }
 
     AddConfiguration ->
-      { model | configurations = List.append model.configurations [ { key = "", value = "" } ] }
+      { model | configurations = List.append model.configurations [ Configuration { key = ConfigurationKey "", value = ConfigurationValue "" } ] }
 
     RemoveConfiguration index ->
       { model | configurations = List.Extra.removeAt index model.configurations }
 
     UpdateConfigurationKey index key ->
-      { model | configurations = List.Extra.updateAt index ( updateConfigurationKey key ) model.configurations }
+      { model | configurations = List.Extra.updateAt index ( updateConfigurationKey ( ConfigurationKey key ) ) model.configurations }
 
     UpdateConfigurationValue index value ->
-      { model | configurations = List.Extra.updateAt index ( updateConfigurationValue value ) model.configurations }
+      { model | configurations = List.Extra.updateAt index ( updateConfigurationValue ( ConfigurationValue value ) ) model.configurations }
 
     AddDependency ->
-      { model | dependencies = List.append model.dependencies [ { key = "", value = "" } ] }
+      { model | dependencies = List.append model.dependencies [ Dependency { key = DependencyKey "", value = DependencyValue "" } ] }
 
     RemoveDependency index ->
       { model | dependencies = List.Extra.removeAt index model.dependencies }
 
     UpdateDependencyKey index key ->
-      { model | dependencies = List.Extra.updateAt index ( updateDependencyKey key ) model.dependencies }
+      { model | dependencies = List.Extra.updateAt index ( updateDependencyKey ( DependencyKey key ) ) model.dependencies }
     
     UpdateDependencyValue index value ->
-      { model | dependencies = List.Extra.updateAt index ( updateDependencyValue value ) model.dependencies }
+      { model | dependencies = List.Extra.updateAt index ( updateDependencyValue ( DependencyValue value ) ) model.dependencies }
 
     AddDevelopmentDependency ->
-      { model | developmentDependencies = List.append model.developmentDependencies [ { key = "", value = "" } ] }
+      { model | developmentDependencies = List.append model.developmentDependencies [ DevelopmentDependency { key = DevelopmentDependencyKey "", value = DevelopmentDependencyValue "" } ] }
 
     UpdateDevelopmentDependencyValue index value ->
-      { model | developmentDependencies = List.Extra.updateAt index ( updateDevelopmentDependencyValue value ) model.developmentDependencies }
+      { model | developmentDependencies = List.Extra.updateAt index ( updateDevelopmentDependencyValue ( DevelopmentDependencyValue value ) ) model.developmentDependencies }
 
     UpdateDevelopmentDependencyKey index key ->
-      { model | developmentDependencies = List.Extra.updateAt index ( updateDevelopmentDependencyKey key ) model.developmentDependencies }
+      { model | developmentDependencies = List.Extra.updateAt index ( updateDevelopmentDependencyKey ( DevelopmentDependencyKey key ) ) model.developmentDependencies }
 
     RemoveDevelopmentDependency index ->
       { model | developmentDependencies = List.Extra.removeAt index model.developmentDependencies }
@@ -1413,6 +1742,67 @@ update message model =
 
     UpdateWorkspace index workspace ->
       { model | workspaces = List.Extra.updateAt index ( always ( Workspace workspace ) ) model.workspaces }
+
+    UpdateLibraryDirectory libraryDirectory ->
+      { model | directories = updateLibraryDirectory ( LibraryDirectory libraryDirectory ) model.directories }
+
+    UpdateBinaryDirectory binaryDirectory ->
+      { model | directories = updateBinaryDirectory ( BinaryDirectory binaryDirectory ) model.directories }
+
+    UpdateManualDirectory manualDirectory ->
+      { model | directories = updateManualDirectory ( ManualDirectory manualDirectory ) model.directories }
+
+    UpdateDocumentationDirectory documentationDirectory ->
+      { model | directories = updateDocumentationDirectory ( DocumentationDirectory documentationDirectory ) model.directories }
+
+    UpdateExampleDirectory exampleDirectory ->
+      { model | directories = updateExampleDirectory ( ExampleDirectory exampleDirectory ) model.directories }
+
+    UpdateTestDirectory testDirectory ->
+      { model | directories = updateTestDirectory ( TestDirectory testDirectory ) model.directories }
+
+    UpdateAccessPublishingConfiguration accessPublishingConfiguration ->
+      { model | publishingConfiguration = ( updateAccessPublishingConfiguration accessPublishingConfiguration ) model.publishingConfiguration }
+
+
+updateAccessPublishingConfiguration : String -> PublishingConfiguration -> PublishingConfiguration
+updateAccessPublishingConfiguration accessPublishingConfiguration ( PublishingConfiguration publishingConfiguration ) =
+  case accessPublishingConfiguration of
+    "public" ->
+      PublishingConfiguration { publishingConfiguration | access = PublicAccessPublishingConfiguration }
+
+    _ ->
+      PublishingConfiguration { publishingConfiguration | access = RestrictedAccessPublishingConfiguration }
+
+
+updateTestDirectory : TestDirectory -> Directories -> Directories
+updateTestDirectory ( TestDirectory test ) ( Directories directories ) =
+  Directories { directories | test = TestDirectory test }
+
+
+updateExampleDirectory : ExampleDirectory -> Directories -> Directories
+updateExampleDirectory ( ExampleDirectory example ) ( Directories directories ) =
+  Directories { directories | example = ExampleDirectory example }
+
+
+updateDocumentationDirectory : DocumentationDirectory -> Directories -> Directories
+updateDocumentationDirectory ( DocumentationDirectory documentation ) ( Directories directories ) =
+  Directories { directories | documentation = DocumentationDirectory documentation }
+
+
+updateManualDirectory : ManualDirectory -> Directories -> Directories
+updateManualDirectory ( ManualDirectory manual ) ( Directories directories ) =
+  Directories { directories | manual = ManualDirectory manual }
+
+
+updateBinaryDirectory : BinaryDirectory -> Directories -> Directories
+updateBinaryDirectory ( BinaryDirectory binary ) ( Directories directories ) =
+  Directories { directories | binary = BinaryDirectory binary }
+
+
+updateLibraryDirectory : LibraryDirectory -> Directories -> Directories
+updateLibraryDirectory ( LibraryDirectory library ) ( Directories directories ) =
+  Directories { directories | library = LibraryDirectory library }
 
 
 updateNodeEngine : NodeEngine -> Engines -> Engines
@@ -1490,69 +1880,69 @@ updatePeerDependencyValue ( PeerDependencyValue value ) ( PeerDependency peerDep
   PeerDependency { peerDependency | value = PeerDependencyValue value }
 
 
-updateDevelopmentDependencyKey : String -> DevelopmentDependency -> DevelopmentDependency
-updateDevelopmentDependencyKey key developmentDependency =
-  { developmentDependency | key = key }
+updateDevelopmentDependencyKey : DevelopmentDependencyKey -> DevelopmentDependency -> DevelopmentDependency
+updateDevelopmentDependencyKey ( DevelopmentDependencyKey key ) ( DevelopmentDependency developmentDependency ) =
+  DevelopmentDependency { developmentDependency | key = DevelopmentDependencyKey key }
 
 
-updateDevelopmentDependencyValue : String -> DevelopmentDependency -> DevelopmentDependency
-updateDevelopmentDependencyValue value developmentDependency =
-  { developmentDependency | value = value }
+updateDevelopmentDependencyValue : DevelopmentDependencyValue -> DevelopmentDependency -> DevelopmentDependency
+updateDevelopmentDependencyValue ( DevelopmentDependencyValue value ) ( DevelopmentDependency developmentDependency ) =
+  DevelopmentDependency { developmentDependency | value = DevelopmentDependencyValue value }
 
 
-updateDependencyValue : String -> Dependency -> Dependency
-updateDependencyValue value dependency =
-  { dependency | value = value }
+updateDependencyValue : DependencyValue -> Dependency -> Dependency
+updateDependencyValue ( DependencyValue value ) ( Dependency dependency ) =
+  Dependency { dependency | value = DependencyValue value }
 
 
-updateDependencyKey : String -> Dependency -> Dependency
-updateDependencyKey key dependency =
-  { dependency | key = key }
+updateDependencyKey : DependencyKey -> Dependency -> Dependency
+updateDependencyKey ( DependencyKey key ) ( Dependency dependency ) =
+  Dependency { dependency | key = DependencyKey key }
 
 
-updateConfigurationValue : String -> Configuration -> Configuration
-updateConfigurationValue value configuration =
-  { configuration | value = value }
+updateConfigurationValue : ConfigurationValue -> Configuration -> Configuration
+updateConfigurationValue ( ConfigurationValue value ) ( Configuration configuration ) =
+  Configuration { configuration | value = ConfigurationValue value }
 
 
-updateConfigurationKey : String -> Configuration -> Configuration
-updateConfigurationKey key configuration =
-  { configuration | key = key }
+updateConfigurationKey : ConfigurationKey -> Configuration -> Configuration
+updateConfigurationKey ( ConfigurationKey key ) ( Configuration configuration ) =
+  Configuration { configuration | key = ConfigurationKey key }
 
 
-updateScriptCommand : String -> Script -> Script
-updateScriptCommand command script =
-  { script | command = command }
+updateScriptCommand : ScriptCommand -> Script -> Script
+updateScriptCommand ( ScriptCommand command ) ( Script script ) =
+  Script { script | command = ScriptCommand command }
 
 
-updateScriptKey : String -> Script -> Script
-updateScriptKey key script =
-  { script | key = key }
+updateScriptKey : ScriptKey -> Script -> Script
+updateScriptKey ( ScriptKey key ) ( Script script ) =
+  Script { script | key = ScriptKey key }
 
 
-updateFundingUrl : String -> Funding -> Funding
-updateFundingUrl url funding =
-  { funding | url = url }
+updateFundingUrl : FundingUrl -> Funding -> Funding
+updateFundingUrl ( FundingUrl url ) ( Funding funding ) =
+  Funding { funding | url = FundingUrl url }
 
 
-updateFundingKind : String -> Funding -> Funding
-updateFundingKind kind funding =
-  { funding | kind = kind }
+updateFundingKind : FundingKind -> Funding -> Funding
+updateFundingKind ( FundingKind kind ) ( Funding funding ) =
+  Funding { funding | kind = FundingKind kind }
 
 
-updateContributorUrl : String -> Contributor -> Contributor
-updateContributorUrl url contributor =
-  { contributor | url = url }
+updateContributorUrl : ContributorUrl -> Contributor -> Contributor
+updateContributorUrl ( ContributorUrl url ) ( Contributor contributor ) =
+  Contributor { contributor | url = ContributorUrl url }
 
 
-updateContributorEmail : String -> Contributor -> Contributor
-updateContributorEmail email contributor =
-  { contributor | email = email }
+updateContributorEmail : ContributorEmail -> Contributor -> Contributor
+updateContributorEmail ( ContributorEmail email ) ( Contributor contributor ) =
+  Contributor { contributor | email = ContributorEmail email }
 
 
-updateContributorName : String -> Contributor -> Contributor
-updateContributorName name contributor =
-  { contributor | name = name }
+updateContributorName : ContributorName -> Contributor -> Contributor
+updateContributorName ( ContributorName name ) ( Contributor contributor ) =
+  Contributor { contributor | name = ContributorName name }
 
 
 -- INIT
@@ -1589,6 +1979,15 @@ init =
         { node = NodeEngine ""
         , npm = NpmEngine ""
         }
+  , directories =
+      Directories
+        { library = LibraryDirectory ""
+        , binary = BinaryDirectory ""
+        , manual = ManualDirectory ""
+        , documentation = DocumentationDirectory ""
+        , example = ExampleDirectory ""
+        , test = TestDirectory ""
+        }
   , cpus = []
   , operatingSystems = []
   , files = []
@@ -1603,6 +2002,10 @@ init =
   , bundledDependencies = []
   , optionalDependencies = []
   , workspaces = []
+  , publishingConfiguration =
+      PublishingConfiguration
+        { access = RestrictedAccessPublishingConfiguration
+        }
   }
 
 
@@ -1636,7 +2039,55 @@ type alias Model =
   , bundledDependencies : List BundledDependency
   , optionalDependencies : List OptionalDependency
   , workspaces : List Workspace
+  , directories : Directories
+  , publishingConfiguration : PublishingConfiguration
   }
+
+
+type PublishingConfiguration =
+  PublishingConfiguration
+    { access : AccessPublishingConfiguration
+      -- tag
+      -- dry-run
+      -- otp
+      -- workspace
+      -- workspaces
+      -- include-workspace-root
+    }
+
+
+type AccessPublishingConfiguration
+  = RestrictedAccessPublishingConfiguration
+  | PublicAccessPublishingConfiguration
+
+
+type Directories =
+  Directories
+    { library : LibraryDirectory
+    , binary : BinaryDirectory
+    , manual : ManualDirectory
+    , documentation : DocumentationDirectory
+    , example : ExampleDirectory
+    , test : TestDirectory
+    }
+
+
+type LibraryDirectory = LibraryDirectory String
+
+
+type BinaryDirectory = BinaryDirectory String
+
+
+type ManualDirectory = ManualDirectory String
+
+
+type DocumentationDirectory = DocumentationDirectory String
+
+
+type ExampleDirectory = ExampleDirectory String
+
+
+type TestDirectory = TestDirectory String
 
 
 type Keyword = Keyword String
@@ -1773,41 +2224,86 @@ type PeerDependencyKey = PeerDependencyKey String
 type PeerDependencyValue = PeerDependencyValue String
 
 
-type alias DevelopmentDependency =
-  { key : String
-  , value : String
-  }
+type DevelopmentDependency =
+  DevelopmentDependency
+    { key : DevelopmentDependencyKey
+    , value : DevelopmentDependencyValue
+    }
 
 
-type alias Dependency =
-  { key : String
-  , value : String
-  }
+type DevelopmentDependencyValue = DevelopmentDependencyValue String
 
 
-type alias Configuration =
-  { key : String
-  , value : String
-  }
+type DevelopmentDependencyKey = DevelopmentDependencyKey String
 
 
-type alias Script =
-  { key : String
-  , command : String
-  }
+type Dependency =
+  Dependency
+    { key : DependencyKey
+    , value : DependencyValue
+    }
 
 
-type alias Funding =
-  { kind : String
-  , url : String
-  }
+type DependencyKey = DependencyKey String
 
 
-type alias Contributor =
-  { name : String
-  , email : String
-  , url : String
-  }
+type DependencyValue = DependencyValue String
+
+
+type Configuration =
+  Configuration
+    { key : ConfigurationKey
+    , value : ConfigurationValue
+    }
+
+
+type ConfigurationKey = ConfigurationKey String
+
+
+type ConfigurationValue = ConfigurationValue String
+
+
+type Script =
+  Script
+    { key : ScriptKey
+    , command : ScriptCommand
+    }
+
+
+type ScriptKey = ScriptKey String
+
+
+type ScriptCommand = ScriptCommand String
+
+
+type Funding =
+  Funding 
+    { kind : FundingKind
+    , url : FundingUrl
+    }
+
+
+type FundingKind = FundingKind String
+
+
+type FundingUrl = FundingUrl String
+
+
+type Contributor =
+  Contributor
+    { name : ContributorName
+    , email : ContributorEmail
+    , url : ContributorUrl
+    }
+
+
+type ContributorName = ContributorName String
+
+
+type ContributorEmail = ContributorEmail String
+
+
+type ContributorUrl = ContributorUrl String
 
 
 -- TYPES ( MESSAGE )
@@ -1883,3 +2379,10 @@ type Message
   | AddWorkspace
   | UpdateWorkspace Int String
   | RemoveWorkspace Int
+  | UpdateLibraryDirectory String
+  | UpdateBinaryDirectory String
+  | UpdateManualDirectory String
+  | UpdateDocumentationDirectory String
+  | UpdateExampleDirectory String
+  | UpdateTestDirectory String
+  | UpdateAccessPublishingConfiguration String
