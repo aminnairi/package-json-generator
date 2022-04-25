@@ -1091,6 +1091,7 @@ viewSecondLevelTitle attributes children =
       , Html.Attributes.style "font-family" "sans-serif"
       , Html.Attributes.style "margin" "0"
       , Html.Attributes.style "padding" "0"
+      , Html.Attributes.style "font-weight" "lighter"
       ]
       attributes
     )
