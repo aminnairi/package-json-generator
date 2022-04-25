@@ -1180,17 +1180,17 @@ encodeDirectories ( Directories directories ) =
 
 encodeLibraryDirectory : LibraryDirectory -> ( String, Json.Encode.Value )
 encodeLibraryDirectory ( LibraryDirectory libraryDirectory ) =
-  ( "lib", Json.Encode.string <| String.trim <| String.trim libraryDirectory )
+  ( "lib", Json.Encode.string <| String.trim libraryDirectory )
 
 
 encodeBinaryDirectory : BinaryDirectory -> ( String, Json.Encode.Value )
 encodeBinaryDirectory ( BinaryDirectory binaryDirectory ) =
-  ( "bin", Json.Encode.string <| String.trim <| String.trim binaryDirectory )
+  ( "bin", Json.Encode.string <| String.trim binaryDirectory )
 
 
 encodeManualDirectory : ManualDirectory -> ( String, Json.Encode.Value )
 encodeManualDirectory ( ManualDirectory manualDirectory ) =
-  ( "man", Json.Encode.string <| String.trim <| String.trim manualDirectory )
+  ( "man", Json.Encode.string <| String.trim manualDirectory )
 
 
 encodeDocumentationDirectory : DocumentationDirectory -> ( String, Json.Encode.Value )
