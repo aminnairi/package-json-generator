@@ -3,7 +3,7 @@ module Main exposing ( main )
 -- IMPORTS
 
 import Browser
-import Html exposing ( Html )
+import Html exposing ( Html, Attribute )
 import Html.Attributes
 import Html.Events
 import Json.Encode
@@ -30,7 +30,7 @@ view : Model -> Html Message
 view model =
   Html.div
     []
-    [ Html.h1 [] [ Html.text "package.json generator" ]
+    [ Html.h1 [ Html.Attributes.style "font-family" "sans-serif" ] [ Html.text "package.json generator" ]
     , viewPrivate model.private
     , viewName model.name
     , viewDescription model.description
@@ -44,7 +44,6 @@ view model =
     , viewRepository model.repository
     , viewEngines model.engines
     , viewDirectories model.directories
-    , viewPublishingConfiguration model.publishingConfiguration
     , viewCpus model.cpus
     , viewOperatingSystems model.operatingSystems
     , viewFiles model.files
@@ -61,40 +60,6 @@ view model =
     , viewOptionalDependencies model.optionalDependencies
     , viewModel model
     ]
-
-
-viewPublishingConfiguration : PublishingConfiguration -> Html Message
-viewPublishingConfiguration ( PublishingConfiguration publishingConfiguration ) =
-  Html.div
-    []
-    [ viewAccessPublishingConfiguration publishingConfiguration.access
-    ]
-
-
-viewAccessPublishingConfiguration : AccessPublishingConfiguration -> Html Message
-viewAccessPublishingConfiguration accessPublishingConfiguration =
-  Html.div
-    []
-    [ Html.label [] [ Html.text "Access publishing configuration" ]
-    , Html.select
-      [ Html.Attributes.value <| viewAccessPublishingConfigurationValue accessPublishingConfiguration
-      , Html.Events.Extra.onChange UpdateAccessPublishingConfiguration
-      ]
-      [ Html.option [ Html.Attributes.value "restricted" ] [ Html.text "Restricted" ]
-      , Html.option [ Html.Attributes.value "public" ] [ Html.text "Public" ]
-      ]
-    ]
-
-
-viewAccessPublishingConfigurationValue : AccessPublishingConfiguration -> String
-viewAccessPublishingConfigurationValue accessPublishingConfiguration =
-  case accessPublishingConfiguration of
-    RestrictedAccessPublishingConfiguration ->
-      "restricted"
-
-    PublicAccessPublishingConfiguration ->
-      "public"
-
 
 
 viewDirectories : Directories -> Html Message
@@ -114,7 +79,7 @@ viewLibraryDirectory : LibraryDirectory -> Html Message
 viewLibraryDirectory ( LibraryDirectory libraryDirectory ) =
   Html.div
     []
-    [ Html.label [ Html.Attributes.for "directories-library" ] [ Html.text "Library directory" ]
+    [ viewLabel [ Html.Attributes.for "directories-library" ] [ Html.text "Library directory" ]
     , Html.input
       [ Html.Attributes.value libraryDirectory
       , Html.Attributes.id "directories-library"
@@ -128,7 +93,7 @@ viewBinaryDirectory : BinaryDirectory -> Html Message
 viewBinaryDirectory ( BinaryDirectory binaryDirectory ) =
   Html.div
     []
-    [ Html.label [ Html.Attributes.for "directories-binary" ] [ Html.text "Binary directory" ]
+    [ viewLabel [ Html.Attributes.for "directories-binary" ] [ Html.text "Binary directory" ]
     , Html.input
       [ Html.Attributes.value binaryDirectory
       , Html.Attributes.id "directories-binary"
@@ -142,7 +107,7 @@ viewManualDirectory : ManualDirectory -> Html Message
 viewManualDirectory ( ManualDirectory manualDirectory ) =
   Html.div
     []
-    [ Html.label [ Html.Attributes.for "directories-manual" ] [ Html.text "Manual directory" ]
+    [ viewLabel [ Html.Attributes.for "directories-manual" ] [ Html.text "Manual directory" ]
     , Html.input
       [ Html.Attributes.value manualDirectory
       , Html.Attributes.id "directories-manual"
@@ -156,7 +121,7 @@ viewDocumentationDirectory : DocumentationDirectory -> Html Message
 viewDocumentationDirectory ( DocumentationDirectory documentationDirectory ) =
   Html.div
     []
-    [ Html.label [ Html.Attributes.for "directories-documentation" ] [ Html.text "Documentation directory" ]
+    [ viewLabel [ Html.Attributes.for "directories-documentation" ] [ Html.text "Documentation directory" ]
     , Html.input
       [ Html.Attributes.value documentationDirectory
       , Html.Attributes.id "directories-documentation"
@@ -170,7 +135,7 @@ viewExampleDirectory : ExampleDirectory -> Html Message
 viewExampleDirectory ( ExampleDirectory exampleDirectory ) =
   Html.div
     []
-    [ Html.label [ Html.Attributes.for "directories-example" ] [ Html.text "Example directory" ]
+    [ viewLabel [ Html.Attributes.for "directories-example" ] [ Html.text "Example directory" ]
     , Html.input
       [ Html.Attributes.value exampleDirectory
       , Html.Attributes.id "directories-example"
@@ -184,7 +149,7 @@ viewTestDirectory : TestDirectory -> Html Message
 viewTestDirectory ( TestDirectory testDirectory ) =
   Html.div
     []
-    [ Html.label [ Html.Attributes.for "directories-test" ] [ Html.text "Test directory" ]
+    [ viewLabel [ Html.Attributes.for "directories-test" ] [ Html.text "Test directory" ]
     , Html.input
       [ Html.Attributes.value testDirectory
       , Html.Attributes.id "directories-test"
@@ -199,7 +164,7 @@ viewWorkspaces workspaces =
   Html.div
     []
     <| List.append
-        [ Html.label [] [ Html.text "Workspaces" ]
+        [ viewLabel [] [ Html.text "Workspaces" ]
         , Html.button [ Html.Events.onClick AddWorkspace ] [ Html.text "Add" ]
         ]
         <| List.indexedMap viewWorkspace workspaces
@@ -209,7 +174,7 @@ viewWorkspace : Int -> Workspace -> Html Message
 viewWorkspace index ( Workspace workspace ) =
   Html.div
     []
-    [ Html.label [ Html.Attributes.for <| "workspace-" ++ String.fromInt index ] [ Html.text "Workspace name" ]
+    [ viewLabel [ Html.Attributes.for <| "workspace-" ++ String.fromInt index ] [ Html.text "Workspace name" ]
     , Html.input
       [ Html.Attributes.value workspace
       , Html.Attributes.id <| "workspace-" ++ String.fromInt index
@@ -225,7 +190,7 @@ viewKeywords keywords =
   Html.div
     []
     <| List.append
-        [ Html.label [] [ Html.text "Keywords" ]
+        [ viewLabel [] [ Html.text "Keywords" ]
         , Html.button [ Html.Events.onClick AddKeyword ] [ Html.text "Add" ]
         ]
         <| List.indexedMap viewKeyword keywords
@@ -235,7 +200,7 @@ viewKeyword : Int -> Keyword -> Html Message
 viewKeyword index ( Keyword keyword ) =
   Html.div
     []
-    [ Html.label [ Html.Attributes.for <| "keyword-" ++ String.fromInt index ] [ Html.text "Keyword" ]
+    [ viewLabel [ Html.Attributes.for <| "keyword-" ++ String.fromInt index ] [ Html.text "Keyword" ]
     , Html.input
       [ Html.Attributes.id <| "keyword-" ++ String.fromInt index 
       , Html.Attributes.value keyword
@@ -251,7 +216,7 @@ viewFiles files =
   Html.div
     []
     <| List.append
-        [ Html.label [] [ Html.text "Files" ]
+        [ viewLabel [] [ Html.text "Files" ]
         , Html.button [ Html.Events.onClick AddFile ] [ Html.text "Add" ]
         ]
         <| List.indexedMap viewFile files
@@ -261,7 +226,7 @@ viewFile : Int -> File -> Html Message
 viewFile index ( File file ) =
   Html.div
     []
-    [ Html.label [ Html.Attributes.for <| "file-" ++ String.fromInt index ] [ Html.text "File name" ]
+    [ viewLabel [ Html.Attributes.for <| "file-" ++ String.fromInt index ] [ Html.text "File name" ]
     , Html.input
       [ Html.Attributes.value file
       , Html.Attributes.id <| "file-" ++ String.fromInt index 
@@ -277,7 +242,7 @@ viewOperatingSystems operatingSystems =
   Html.div
     []
     <| List.append
-        [ Html.label [] [ Html.text "Operating systems" ]
+        [ viewLabel [] [ Html.text "Operating systems" ]
         , Html.button [ Html.Events.onClick AddOperatingSystem ] [ Html.text "Add" ]
         ]
         <| List.indexedMap viewOperatingSystem operatingSystems
@@ -287,7 +252,7 @@ viewOperatingSystem : Int -> OperatingSystem -> Html Message
 viewOperatingSystem index ( OperatingSystem operatingSystem ) =
   Html.div
     []
-    [ Html.label [ Html.Attributes.for <| "operating-system-" ++ String.fromInt index ] [ Html.text "OS name" ]
+    [ viewLabel [ Html.Attributes.for <| "operating-system-" ++ String.fromInt index ] [ Html.text "OS name" ]
     , Html.input
       [ Html.Attributes.id <| "operating-system-" ++ String.fromInt index 
       , Html.Attributes.value operatingSystem
@@ -303,7 +268,7 @@ viewCpus cpus =
   Html.div
     []
     <| List.append
-        [ Html.label [] [ Html.text "CPUs" ]
+        [ viewLabel [] [ Html.text "CPUs" ]
         , Html.button [ Html.Events.onClick AddCpu ] [ Html.text "Add" ]
         ]
         <| List.indexedMap viewCpu cpus
@@ -313,7 +278,7 @@ viewCpu : Int -> Cpu -> Html Message
 viewCpu index ( Cpu cpu ) =
   Html.div
     []
-    [ Html.label [ Html.Attributes.for <| "cpu-" ++ String.fromInt index ] [ Html.text "CPU name" ]
+    [ viewLabel [ Html.Attributes.for <| "cpu-" ++ String.fromInt index ] [ Html.text "CPU name" ]
     , Html.input
       [ Html.Attributes.id <| "cpu-" ++ String.fromInt index
       , Html.Attributes.value cpu
@@ -329,7 +294,7 @@ viewBrowser : Browser -> Html Message
 viewBrowser ( Browser browser ) =
   Html.div
     []
-    [ Html.label [ Html.Attributes.for "browser" ] [ Html.text "Browser" ]
+    [ viewLabel [ Html.Attributes.for "browser" ] [ Html.text "Browser" ]
     , Html.input
       [ Html.Attributes.value browser
       , Html.Attributes.id "browser"
@@ -343,7 +308,7 @@ viewMain : Main -> Html Message
 viewMain ( Main entrypoint ) =
   Html.div
     []
-    [ Html.label [ Html.Attributes.for "main" ] [ Html.text "Main" ]
+    [ viewLabel [ Html.Attributes.for "main" ] [ Html.text "Main" ]
     , Html.input
       [ Html.Attributes.value entrypoint
       , Html.Attributes.id "main"
@@ -357,7 +322,7 @@ viewLicense : License -> Html Message
 viewLicense ( License license ) =
   Html.div
     []
-    [ Html.label [ Html.Attributes.for "license" ] [ Html.text "License" ]
+    [ viewLabel [ Html.Attributes.for "license" ] [ Html.text "License" ]
     , Html.input
       [ Html.Attributes.value license
       , Html.Attributes.id "license"
@@ -371,7 +336,7 @@ viewHomepage : Homepage -> Html Message
 viewHomepage ( Homepage homepage ) =
   Html.div
     []
-    [ Html.label [ Html.Attributes.for "homepage" ] [ Html.text "Home page" ]
+    [ viewLabel [ Html.Attributes.for "homepage" ] [ Html.text "Home page" ]
     , Html.input
       [ Html.Attributes.value homepage
       , Html.Attributes.id "homepage"
@@ -385,7 +350,7 @@ viewVersion : Version -> Html Message
 viewVersion ( Version version ) =
   Html.div
     []
-    [ Html.label [ Html.Attributes.for "version" ] [ Html.text "Version" ]
+    [ viewLabel [ Html.Attributes.for "version" ] [ Html.text "Version" ]
     , Html.input
       [ Html.Attributes.value version
       , Html.Attributes.id "version"
@@ -399,7 +364,7 @@ viewDescription : Description -> Html Message
 viewDescription ( Description description ) =
   Html.div
     []
-    [ Html.label [ Html.Attributes.for "description" ] [ Html.text "Description" ]
+    [ viewLabel [ Html.Attributes.for "description" ] [ Html.text "Description" ]
     , Html.input
       [ Html.Attributes.value description
       , Html.Attributes.id "description"
@@ -413,7 +378,7 @@ viewName : Name -> Html Message
 viewName ( Name name ) =
   Html.div
     []
-    [ Html.label [ Html.Attributes.for "name" ] [ Html.text "Name" ]
+    [ viewLabel [ Html.Attributes.for "name" ] [ Html.text "Name" ]
     , Html.input
       [ Html.Attributes.value name
       , Html.Attributes.id "name"
@@ -434,7 +399,7 @@ viewPrivate ( Private private ) =
       , Html.Attributes.id "private"
       ]
       []
-    , Html.label [ Html.Attributes.for "private" ] [ Html.text "Private" ]
+    , viewLabel [ Html.Attributes.for "private" ] [ Html.text "Private" ]
     ]
 
 
@@ -451,7 +416,7 @@ viewNodeEngine : NodeEngine -> Html Message
 viewNodeEngine ( NodeEngine node ) =
   Html.div
     []
-    [ Html.label [ Html.Attributes.for "engines-node" ] [ Html.text "Node version" ]
+    [ viewLabel [ Html.Attributes.for "engines-node" ] [ Html.text "Node version" ]
     , Html.input
       [ Html.Attributes.value node
       , Html.Events.onInput UpdateEnginesNode
@@ -465,7 +430,7 @@ viewNpmEngine : NpmEngine -> Html Message
 viewNpmEngine ( NpmEngine npm ) =
   Html.div
     []
-    [ Html.label [ Html.Attributes.for "engines-npm" ] [ Html.text "NPM version" ]
+    [ viewLabel [ Html.Attributes.for "engines-npm" ] [ Html.text "NPM version" ]
     , Html.input
       [ Html.Attributes.value npm
       , Html.Events.onInput UpdateEnginesNpm
@@ -488,7 +453,7 @@ viewRepositoryKind : RepositoryKind -> Html Message
 viewRepositoryKind ( RepositoryKind kind ) =
   Html.div
     []
-    [ Html.label [ Html.Attributes.for "repository-type" ] [ Html.text "Repository type" ]
+    [ viewLabel [ Html.Attributes.for "repository-type" ] [ Html.text "Repository type" ]
     , Html.input
       [ Html.Attributes.value kind
       , Html.Events.onInput UpdateRepositoryKind
@@ -502,7 +467,7 @@ viewRepositoryUrl : RepositoryUrl -> Html Message
 viewRepositoryUrl ( RepositoryUrl url ) =
   Html.div
     []
-    [ Html.label [ Html.Attributes.for "repository-url" ] [ Html.text "Repository URL" ]
+    [ viewLabel [ Html.Attributes.for "repository-url" ] [ Html.text "Repository URL" ]
     , Html.input
       [ Html.Attributes.value url
       , Html.Events.onInput UpdateRepositoryUrl
@@ -526,7 +491,7 @@ viewAuthorName : AuthorName -> Html Message
 viewAuthorName ( AuthorName name ) =
   Html.div
     []
-    [ Html.label [ Html.Attributes.for "author-name" ] [ Html.text "Author name" ] 
+    [ viewLabel [ Html.Attributes.for "author-name" ] [ Html.text "Author name" ] 
     , Html.input
       [ Html.Attributes.value name
       , Html.Events.onInput UpdateAuthorName
@@ -540,7 +505,7 @@ viewAuthorUrl : AuthorUrl -> Html Message
 viewAuthorUrl ( AuthorUrl url ) =
   Html.div
     []
-    [ Html.label [ Html.Attributes.for "author-url" ] [ Html.text "Author URL" ] 
+    [ viewLabel [ Html.Attributes.for "author-url" ] [ Html.text "Author URL" ] 
     , Html.input
       [ Html.Attributes.value url
       , Html.Events.onInput UpdateAuthorUrl
@@ -554,7 +519,7 @@ viewAuthorEmail : AuthorEmail -> Html Message
 viewAuthorEmail ( AuthorEmail email ) =
   Html.div
     []
-    [ Html.label [ Html.Attributes.for "author-email" ] [ Html.text "Author Email" ] 
+    [ viewLabel [ Html.Attributes.for "author-email" ] [ Html.text "Author Email" ] 
     , Html.input
       [ Html.Attributes.value email
       , Html.Events.onInput UpdateAuthorEmail
@@ -577,7 +542,7 @@ viewBugsUrl : BugsUrl -> Html Message
 viewBugsUrl ( BugsUrl url ) =
   Html.div
     []
-    [ Html.label [ Html.Attributes.for "bugs-url" ] [ Html.text "Bugs URL" ]
+    [ viewLabel [ Html.Attributes.for "bugs-url" ] [ Html.text "Bugs URL" ]
     , Html.input
       [ Html.Attributes.value url
       , Html.Events.onInput UpdateBugsUrl
@@ -591,7 +556,7 @@ viewBugsEmail : BugsEmail -> Html Message
 viewBugsEmail ( BugsEmail email ) =
   Html.div
     []
-    [ Html.label [ Html.Attributes.for "bugs-email" ] [ Html.text "Bugs email" ]
+    [ viewLabel [ Html.Attributes.for "bugs-email" ] [ Html.text "Bugs email" ]
     , Html.input
       [ Html.Attributes.value email
       , Html.Events.onInput UpdateBugsEmail
@@ -606,7 +571,7 @@ viewOptionalDependencies optionalDependencies =
   Html.div
     []
     <| List.append
-        [ Html.label [] [ Html.text "Optional dependencies" ]
+        [ viewLabel [] [ Html.text "Optional dependencies" ]
         , Html.button [ Html.Events.onClick AddOptionalDependency ] [ Html.text "Add" ]
         ]
         <| List.indexedMap viewOptionalDependency optionalDependencies
@@ -618,7 +583,7 @@ viewOptionalDependency index ( OptionalDependency optionalDependency ) =
     []
     [ Html.div
       []
-      [ Html.label [ Html.Attributes.for <| "optional-dependency-key-" ++ String.fromInt index ] [ Html.text "Key" ]
+      [ viewLabel [ Html.Attributes.for <| "optional-dependency-key-" ++ String.fromInt index ] [ Html.text "Key" ]
       , Html.input
         [ Html.Attributes.value <| viewOptionalDependencyKey optionalDependency.key
         , Html.Events.onInput <| UpdateOptionalDependencyKey index
@@ -628,7 +593,7 @@ viewOptionalDependency index ( OptionalDependency optionalDependency ) =
       ]
     , Html.div
       []
-      [ Html.label [ Html.Attributes.for <| "optional-dependency-value-" ++ String.fromInt index ] [ Html.text "Value" ]
+      [ viewLabel [ Html.Attributes.for <| "optional-dependency-value-" ++ String.fromInt index ] [ Html.text "Value" ]
       , Html.input
         [ Html.Attributes.value <| viewOptionalDependencyValue optionalDependency.value
         , Html.Events.onInput <| UpdateOptionalDependencyValue index
@@ -655,7 +620,7 @@ viewBundledDependencies bundledDependencies =
   Html.div
     []
     <| List.append
-        [ Html.label [] [ Html.text "Bundled dependencies" ]
+        [ viewLabel [] [ Html.text "Bundled dependencies" ]
         , Html.button [ Html.Events.onClick AddBundledDependency ] [ Html.text "Add" ]
         ]
         <| List.indexedMap viewBundledDependency bundledDependencies
@@ -667,7 +632,7 @@ viewBundledDependency index ( BundledDependency bundledDependency ) =
     []
     [ Html.div
       []
-      [ Html.label [ Html.Attributes.for <| "bundled-dependency-key-" ++ String.fromInt index ] [ Html.text "Key" ]
+      [ viewLabel [ Html.Attributes.for <| "bundled-dependency-key-" ++ String.fromInt index ] [ Html.text "Key" ]
       , Html.input
         [ Html.Attributes.value <| viewBundledDependencyKey bundledDependency.key
         , Html.Events.onInput <| UpdateBundledDependencyKey index
@@ -677,7 +642,7 @@ viewBundledDependency index ( BundledDependency bundledDependency ) =
       ]
     , Html.div
       []
-      [ Html.label [ Html.Attributes.for <| "bundled-dependency-value-" ++ String.fromInt index ] [ Html.text "Value" ]
+      [ viewLabel [ Html.Attributes.for <| "bundled-dependency-value-" ++ String.fromInt index ] [ Html.text "Value" ]
       , Html.input
         [ Html.Attributes.value <| viewBundledDependencyValue bundledDependency.value
         , Html.Events.onInput <| UpdateBundledDependencyValue index
@@ -704,7 +669,7 @@ viewPeerDependencies peerDependencies =
   Html.div
     []
     <| List.append
-        [ Html.label [] [ Html.text "Peer dependencies" ]
+        [ viewLabel [] [ Html.text "Peer dependencies" ]
         , Html.button [ Html.Events.onClick AddPeerDependency ] [ Html.text "Add" ]
         ]
         <| List.indexedMap viewPeerDependency peerDependencies
@@ -716,7 +681,7 @@ viewPeerDependency index ( PeerDependency peerDependency ) =
     []
     [ Html.div
       []
-      [ Html.label [ Html.Attributes.for <| "peer-dependency-key-" ++ String.fromInt index ] [ Html.text "Key" ]
+      [ viewLabel [ Html.Attributes.for <| "peer-dependency-key-" ++ String.fromInt index ] [ Html.text "Key" ]
       , Html.input
         [ Html.Attributes.value <| viewPeerDependencyKey peerDependency.key
         , Html.Events.onInput <| UpdatePeerDependencyKey index
@@ -726,7 +691,7 @@ viewPeerDependency index ( PeerDependency peerDependency ) =
       ]
     , Html.div
       []
-      [ Html.label [ Html.Attributes.for <| "peer-dependency-value-" ++ String.fromInt index ] [ Html.text "Value" ]
+      [ viewLabel [ Html.Attributes.for <| "peer-dependency-value-" ++ String.fromInt index ] [ Html.text "Value" ]
       , Html.input
         [ Html.Attributes.value <| viewPeerDependencyValue peerDependency.value
         , Html.Events.onInput <| UpdatePeerDependencyValue index
@@ -753,7 +718,7 @@ viewDevelopmentDependencies developmentDependencies =
   Html.div
     []
     <| List.append
-        [ Html.label [] [ Html.text "Development dependencies" ]
+        [ viewLabel [] [ Html.text "Development dependencies" ]
         , Html.button [ Html.Events.onClick AddDevelopmentDependency ] [ Html.text "Add" ]
         ]
         <| List.indexedMap viewDevelopmentDependency developmentDependencies
@@ -765,7 +730,7 @@ viewDevelopmentDependency index ( DevelopmentDependency developmentDependency ) 
     []
     [ Html.div
       []
-      [ Html.label [ Html.Attributes.for <| "development-dependency-key-" ++ String.fromInt index ] [ Html.text "Key" ]
+      [ viewLabel [ Html.Attributes.for <| "development-dependency-key-" ++ String.fromInt index ] [ Html.text "Key" ]
       , Html.input
         [ Html.Events.onInput <| UpdateDevelopmentDependencyKey index 
         , Html.Attributes.value <| viewDevelopmentDependencyKey developmentDependency.key
@@ -775,7 +740,7 @@ viewDevelopmentDependency index ( DevelopmentDependency developmentDependency ) 
       ]
     , Html.div
       []
-      [ Html.label [ Html.Attributes.for <| "development-dependency-value-" ++ String.fromInt index ] [ Html.text "Value" ]
+      [ viewLabel [ Html.Attributes.for <| "development-dependency-value-" ++ String.fromInt index ] [ Html.text "Value" ]
       , Html.input
         [ Html.Events.onInput <| UpdateDevelopmentDependencyValue index
         , Html.Attributes.value <| viewDevelopmentDependencyValue developmentDependency.value
@@ -802,7 +767,7 @@ viewDependencies dependencies =
   Html.div
     []
     <| List.append
-        [ Html.label [] [ Html.text "Dependencies" ]
+        [ viewLabel [] [ Html.text "Dependencies" ]
         , Html.button [ Html.Events.onClick AddDependency ] [ Html.text "Add" ]
         ]
         <| List.indexedMap viewDependency dependencies
@@ -814,7 +779,7 @@ viewDependency index ( Dependency dependency ) =
     []
     [ Html.div
       []
-      [ Html.label [ Html.Attributes.for <| "dependency-key-" ++ String.fromInt index ] [ Html.text "Key" ]
+      [ viewLabel [ Html.Attributes.for <| "dependency-key-" ++ String.fromInt index ] [ Html.text "Key" ]
       , Html.input
         [ Html.Events.onInput <| UpdateDependencyKey index
         , Html.Attributes.value <| viewDependencyKey dependency.key
@@ -824,7 +789,7 @@ viewDependency index ( Dependency dependency ) =
       ]
     , Html.div
       []
-      [ Html.label [ Html.Attributes.for <| "dependency-value-" ++ String.fromInt index ] [ Html.text "Value" ]
+      [ viewLabel [ Html.Attributes.for <| "dependency-value-" ++ String.fromInt index ] [ Html.text "Value" ]
       , Html.input
         [ Html.Events.onInput <| UpdateDependencyValue index
         , Html.Attributes.value <| viewDependencyValue dependency.value
@@ -851,7 +816,7 @@ viewConfigurations configurations =
   Html.div
     []
     <| List.append
-        [ Html.label [] [ Html.text "Configurations" ]
+        [ viewLabel [] [ Html.text "Configurations" ]
         , Html.button [ Html.Events.onClick AddConfiguration ] [ Html.text "Add" ]
         ]
         <| List.indexedMap viewConfiguration configurations
@@ -861,26 +826,22 @@ viewConfiguration : Int -> Configuration -> Html Message
 viewConfiguration index ( Configuration configuration ) =
   Html.div
     []
-    [ Html.div
-      []
-      [ Html.label [ Html.Attributes.for <| "configuration-key-" ++ String.fromInt index ] [ Html.text "Key" ]
-      , Html.input
-        [ Html.Events.onInput <| UpdateConfigurationKey index
-        , Html.Attributes.value <| viewConfigurationKey configuration.key
-        , Html.Attributes.id <| "configuration-key-" ++ String.fromInt index 
-        ]
-        []
+    [ viewInputField
+      [ Html.Attributes.for <| "configuration-key-" ++ String.fromInt index ]
+      [ Html.text "Key" ]
+      [ Html.Events.onInput <| UpdateConfigurationKey index
+      , Html.Attributes.value <| viewConfigurationKey configuration.key
+      , Html.Attributes.id <| "configuration-key-" ++ String.fromInt index 
       ]
-    , Html.div
       []
-      [ Html.label [ Html.Attributes.for <| "configuration-value-" ++ String.fromInt index ] [ Html.text "Value" ]
-      , Html.input
-        [ Html.Events.onInput <| UpdateConfigurationValue index
-        , Html.Attributes.value <| viewConfigurationValue configuration.value
-        , Html.Attributes.id <| "configuration-value-" ++ String.fromInt index 
-        ]
-        []
+    , viewInputField
+      [ Html.Attributes.for <| "configuration-value-" ++ String.fromInt index ]
+      [ Html.text "Value" ]
+      [ Html.Events.onInput <| UpdateConfigurationValue index
+      , Html.Attributes.value <| viewConfigurationValue configuration.value
+      , Html.Attributes.id <| "configuration-value-" ++ String.fromInt index 
       ]
+      []
     , Html.button [ Html.Events.onClick <| RemoveConfiguration index ] [ Html.text "Remove" ]
     ]
 
@@ -900,7 +861,7 @@ viewScripts scripts =
   Html.div
     []
     <| List.append
-        [ Html.label [] [ Html.text "Scripts" ]
+        [ viewLabel [] [ Html.text "Scripts" ]
         , Html.button [ Html.Events.onClick AddScript ] [ Html.text "Add" ]
         ]
         <| List.indexedMap viewScript scripts
@@ -910,26 +871,22 @@ viewScript : Int -> Script -> Html Message
 viewScript index ( Script script ) =
   Html.div
     []
-    [ Html.div
-      []
-      [ Html.label [ Html.Attributes.for <| "script-key-" ++ String.fromInt index ] [ Html.text "Key" ]
-      , Html.input
-        [ Html.Events.onInput <| UpdateScriptKey index
-        , Html.Attributes.value <| viewScriptKey script.key
-        , Html.Attributes.id <| "script-key-" ++ String.fromInt index 
-        ]
-        []
+    [ viewInputField
+      [ Html.Attributes.for <| "script-key-" ++ String.fromInt index ]
+      [ Html.text "Key" ]
+      [ Html.Events.onInput <| UpdateScriptKey index
+      , Html.Attributes.value <| viewScriptKey script.key
+      , Html.Attributes.id <| "script-key-" ++ String.fromInt index 
       ]
-    , Html.div
       []
-      [ Html.label [ Html.Attributes.for <| "script-command-" ++ String.fromInt index ] [ Html.text "Command" ]
-      , Html.input
-        [ Html.Events.onInput <| UpdateScriptCommand index
-        , Html.Attributes.value <| viewScriptCommand script.command
-        , Html.Attributes.id <| "script-command-" ++ String.fromInt index 
-        ]
-        []
+    , viewInputField
+      [ Html.Attributes.for <| "script-command-" ++ String.fromInt index ]
+      [ Html.text "Command" ]
+      [ Html.Events.onInput <| UpdateScriptCommand index
+      , Html.Attributes.value <| viewScriptCommand script.command
+      , Html.Attributes.id <| "script-command-" ++ String.fromInt index 
       ]
+      []
     , Html.button [ Html.Events.onClick <| RemoveScript index ] [ Html.text "Remove" ]
     ]
 
@@ -949,7 +906,7 @@ viewFundings fundings =
   Html.div
     []
     <| List.append
-        [ Html.label [] [ Html.text "Fundings" ]
+        [ viewLabel [] [ Html.text "Fundings" ]
         , Html.button [ Html.Events.onClick AddFunding ] [ Html.text "Add" ]
         ]
         <| List.indexedMap viewFunding fundings
@@ -959,26 +916,22 @@ viewFunding : Int -> Funding -> Html Message
 viewFunding index ( Funding funding ) =
   Html.div
     []
-    [ Html.div
-      []
-      [ Html.label [ Html.Attributes.for <| "funding-type-" ++ String.fromInt index ] [ Html.text "Type" ]
-      , Html.input
-        [ Html.Events.onInput <| UpdateFundingKind index
-        , Html.Attributes.value <| viewFundingKind funding.kind
-        , Html.Attributes.id <| "funding-type-" ++ String.fromInt index 
-        ]
-        []
+    [ viewInputField
+      [ Html.Attributes.for <| "funding-type-" ++ String.fromInt index ]
+      [ Html.text "Type" ]
+      [ Html.Events.onInput <| UpdateFundingKind index
+      , Html.Attributes.value <| viewFundingKind funding.kind
+      , Html.Attributes.id <| "funding-type-" ++ String.fromInt index 
       ]
-    , Html.div
       []
-      [ Html.label [ Html.Attributes.for <| "funding-url-" ++ String.fromInt index ] [ Html.text "Url" ]
-      , Html.input
-        [ Html.Events.onInput <| UpdateFundingUrl index
-        , Html.Attributes.value <| viewFundingUrl funding.url
-        , Html.Attributes.id <| "funding-url-" ++ String.fromInt index 
-        ]
-        []
+    , viewInputField
+      [ Html.Attributes.for <| "funding-url-" ++ String.fromInt index ]
+      [ Html.text "Url" ]
+      [ Html.Events.onInput <| UpdateFundingUrl index
+      , Html.Attributes.value <| viewFundingUrl funding.url
+      , Html.Attributes.id <| "funding-url-" ++ String.fromInt index 
       ]
+      []
     , Html.button [ Html.Events.onClick <| RemoveFunding index ] [ Html.text "Remove" ]
     ]
 
@@ -997,7 +950,7 @@ viewContributors : List Contributor -> Html Message
 viewContributors contributors =
   Html.div []
     <| List.append
-        [ Html.label [] [ Html.text "Contributors" ]
+        [ viewLabel [] [ Html.text "Contributors" ]
         , Html.button [ Html.Events.onClick AddContributor ] [ Html.text "Add" ]
         ]
         <| List.indexedMap viewContributor contributors
@@ -1007,36 +960,30 @@ viewContributor : Int -> Contributor -> Html Message
 viewContributor index ( Contributor contributor ) =
   Html.div
     []
-    [ Html.div
-      []
-      [ Html.label [ Html.Attributes.for <| "contributor-name-" ++ String.fromInt index ] [ Html.text "Name" ]
-      , Html.input
-        [ Html.Events.onInput <| UpdateContributorName index
-        , Html.Attributes.value <| viewContributorName contributor.name
-        , Html.Attributes.id <| "contributor-name-" ++ String.fromInt index 
-        ]
-        []
+    [ viewInputField
+      [ Html.Attributes.for <| "contributor-name-" ++ String.fromInt index ]
+      [ Html.text "Name" ]
+      [ Html.Events.onInput <| UpdateContributorName index
+      , Html.Attributes.value <| viewContributorName contributor.name
+      , Html.Attributes.id <| "contributor-name-" ++ String.fromInt index 
       ]
-    , Html.div
       []
-      [ Html.label [ Html.Attributes.for <| "contributor-email-" ++ String.fromInt index ] [ Html.text "Email" ]
-      , Html.input
-        [ Html.Events.onInput <| UpdateContributorEmail index
-        , Html.Attributes.value <| viewContributorEmail contributor.email
-        , Html.Attributes.id <| "contributor-email-" ++ String.fromInt index 
-        ]
-        []
+    , viewInputField
+      [ Html.Attributes.for <| "contributor-email-" ++ String.fromInt index ]
+      [ Html.text "Email" ]
+      [ Html.Events.onInput <| UpdateContributorEmail index
+      , Html.Attributes.value <| viewContributorEmail contributor.email
+      , Html.Attributes.id <| "contributor-email-" ++ String.fromInt index 
       ]
-    , Html.div
       []
-      [ Html.label [ Html.Attributes.for <| "contributor-url-" ++ String.fromInt index ] [ Html.text "URL" ]
-      , Html.input
-        [ Html.Events.onInput <| UpdateContributorUrl index
-        , Html.Attributes.value <| viewContributorUrl contributor.url
-        , Html.Attributes.id <| "contributor-url-" ++ String.fromInt index 
-        ]
-        []
+    , viewInputField
+      [ Html.Attributes.for <| "contributor-url-" ++ String.fromInt index ]
+      [ Html.text "URL" ]
+      [ Html.Events.onInput <| UpdateContributorUrl index
+      , Html.Attributes.value <| viewContributorUrl contributor.url
+      , Html.Attributes.id <| "contributor-url-" ++ String.fromInt index 
       ]
+      []
     , Html.button [ Html.Events.onClick <| RemoveContributor index ] [ Html.text "Remove" ]
     ]
 
@@ -1061,6 +1008,53 @@ viewModel model =
   Html.pre [] [ Html.code [] [ Html.text <| encodeModel model ] ]
 
 
+viewInputField : List ( Attribute Message ) -> List ( Html Message ) -> List ( Attribute Message ) -> List ( Html Message ) -> Html Message
+viewInputField labelAttributes labelChildren inputAttributes inputChildren =
+  Html.div
+    [ Html.Attributes.style "position" "relative"
+    , Html.Attributes.style "margin" "5px 10px"
+    ]
+    [ viewInputFieldLabel labelAttributes labelChildren
+    , viewInput inputAttributes inputChildren
+    ]
+
+
+viewInputFieldLabel : List ( Attribute Message ) -> List ( Html Message ) -> Html Message
+viewInputFieldLabel attributes children =
+  Html.label
+    ( List.append
+      [ Html.Attributes.style "font-family" "sans-serif"
+      , Html.Attributes.style "position" "absolute"
+      , Html.Attributes.style "top" "0"
+      , Html.Attributes.style "left" "0"
+      , Html.Attributes.style "transform" "translateX(-50%)"
+      , Html.Attributes.style "transform" "translatey(-50%)"
+      , Html.Attributes.style "background-color" "white"
+      ]
+      attributes
+    )
+    children
+
+
+viewLabel : List ( Attribute Message ) -> List ( Html Message ) -> Html Message
+viewLabel attributes children =
+  Html.label
+    ( List.append [ Html.Attributes.style "font-family" "sans-serif" ] attributes )
+    children
+
+
+viewInput : List ( Attribute Message ) -> List ( Html Message ) -> Html Message
+viewInput attributes children =
+  Html.input
+    ( List.append
+      [ Html.Attributes.style "padding" "5px 10px"
+      , Html.Attributes.style "border" "1px solid black"
+      , Html.Attributes.style "border-radius" "5px"
+      ]
+      attributes
+    )
+    children
+
 -- VIEW HELPERS
 
 
@@ -1081,7 +1075,6 @@ encodeModel model =
         , encodeRepository model.repository
         , encodeEngines model.engines
         , encodeDirectories model.directories
-        , encodePublishingConfiguration model.publishingConfiguration
         , encodeCpus model.cpus
         , encodeOperatingSystems model.operatingSystems
         , encodeFiles model.files
@@ -1097,25 +1090,6 @@ encodeModel model =
         , encodeBundledDependencies model.bundledDependencies
         , encodeOptionalDependencies model.optionalDependencies
         ]
-
-
-encodePublishingConfiguration : PublishingConfiguration -> ( String, Json.Encode.Value )
-encodePublishingConfiguration ( PublishingConfiguration publishingConfiguration ) =
-  ( "publishConfig"
-  , Json.Encode.object
-    [ encodeAccessPublishingConfiguration publishingConfiguration.access
-    ]
-  )
-
-
-encodeAccessPublishingConfiguration : AccessPublishingConfiguration -> ( String, Json.Encode.Value )
-encodeAccessPublishingConfiguration accessPublishingConfiguration =
-  case accessPublishingConfiguration of
-    RestrictedAccessPublishingConfiguration ->
-      ( "access", Json.Encode.string "restricted" )
-
-    PublicAccessPublishingConfiguration ->
-      ( "access", Json.Encode.string "public" )
 
 
 encodeDirectories : Directories -> ( String, Json.Encode.Value )
@@ -1761,19 +1735,6 @@ update message model =
     UpdateTestDirectory testDirectory ->
       { model | directories = updateTestDirectory ( TestDirectory testDirectory ) model.directories }
 
-    UpdateAccessPublishingConfiguration accessPublishingConfiguration ->
-      { model | publishingConfiguration = ( updateAccessPublishingConfiguration accessPublishingConfiguration ) model.publishingConfiguration }
-
-
-updateAccessPublishingConfiguration : String -> PublishingConfiguration -> PublishingConfiguration
-updateAccessPublishingConfiguration accessPublishingConfiguration ( PublishingConfiguration publishingConfiguration ) =
-  case accessPublishingConfiguration of
-    "public" ->
-      PublishingConfiguration { publishingConfiguration | access = PublicAccessPublishingConfiguration }
-
-    _ ->
-      PublishingConfiguration { publishingConfiguration | access = RestrictedAccessPublishingConfiguration }
-
 
 updateTestDirectory : TestDirectory -> Directories -> Directories
 updateTestDirectory ( TestDirectory test ) ( Directories directories ) =
@@ -2002,10 +1963,6 @@ init =
   , bundledDependencies = []
   , optionalDependencies = []
   , workspaces = []
-  , publishingConfiguration =
-      PublishingConfiguration
-        { access = RestrictedAccessPublishingConfiguration
-        }
   }
 
 
@@ -2040,25 +1997,7 @@ type alias Model =
   , optionalDependencies : List OptionalDependency
   , workspaces : List Workspace
   , directories : Directories
-  , publishingConfiguration : PublishingConfiguration
   }
-
-
-type PublishingConfiguration =
-  PublishingConfiguration
-    { access : AccessPublishingConfiguration
-      -- tag
-      -- dry-run
-      -- otp
-      -- workspace
-      -- workspaces
-      -- include-workspace-root
-    }
-
-
-type AccessPublishingConfiguration
-  = RestrictedAccessPublishingConfiguration
-  | PublicAccessPublishingConfiguration
 
 
 type Directories =
@@ -2385,4 +2324,3 @@ type Message
   | UpdateDocumentationDirectory String
   | UpdateExampleDirectory String
   | UpdateTestDirectory String
-  | UpdateAccessPublishingConfiguration String
