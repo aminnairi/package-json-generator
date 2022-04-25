@@ -2203,9 +2203,6 @@ focusLastOperatingSystemBeforeAdd operatingSystems =
 
 focusLastOperatingSystemBeforeRemove : List OperatingSystem -> Cmd Message
 focusLastOperatingSystemBeforeRemove operatingSystems =
-  let 
-      _ = Debug.log <| Debug.toString operatingSystems
-  in
   Task.attempt
     ( always None )
     ( operatingSystems
