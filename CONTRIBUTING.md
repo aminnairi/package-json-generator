@@ -10,8 +10,8 @@
 ## Installation
 
 ```bash
-git clone https://github.com/aminnairi/elm-template my-elm-project
-cd my-elm-project
+git clone https://github.com/aminnairi/package-json-generator
+cd package-json-generator
 ```
 
 ## Setup

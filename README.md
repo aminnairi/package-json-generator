@@ -6,7 +6,7 @@ Generate package.json files directly from your browser.
 
 ## Usage
 
-See [aminnairi.github.io/package-json](https://aminnairi.github.io/package-json/).
+See [aminnairi.github.io/package-json-generator](https://aminnairi.github.io/package-json/).
 
 ## Contributing
 
