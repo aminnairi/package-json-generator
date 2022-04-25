@@ -997,7 +997,7 @@ viewContributorUrl ( ContributorUrl contributorUrl ) =
 
 viewModel : Model -> Html Message
 viewModel model =
-  Html.pre [] [ Html.code [] [ Html.text <| encodeModel model ] ]
+  Html.pre [] [ Html.code [ Html.Attributes.style "font-size" "1rem" ] [ Html.text <| encodeModel model ] ]
 
 
 viewInputField : List ( Attribute Message ) -> List ( Html Message ) -> List ( Attribute Message ) -> List ( Html Message ) -> Html Message
