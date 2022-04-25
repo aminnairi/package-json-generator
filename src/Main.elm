@@ -3,12 +3,15 @@ module Main exposing ( main )
 -- IMPORTS
 
 import Browser
+import Browser.Dom
 import Html exposing ( Html, Attribute )
 import Html.Attributes
 import Html.Events
 import Json.Encode
 import List.Extra
 import Html.Events.Extra
+import Task
+import Flip
 
 
 -- MAIN
@@ -16,10 +19,11 @@ import Html.Events.Extra
 
 main : Program () Model Message
 main =
-  Browser.sandbox
+  Browser.element
     { init    = init
     , update  = update
     , view    = view
+    , subscriptions = \_ -> Sub.none
     }
 
 
@@ -399,6 +403,7 @@ viewName ( Name name ) =
     [ Html.Attributes.value name
     , Html.Attributes.id "name"
     , Html.Events.onInput UpdateName
+    , Html.Attributes.autofocus True
     ]
     []
 
@@ -1579,236 +1584,391 @@ encodeContributorUrl ( ContributorUrl contributorUrl ) =
 -- UPDATE
 
 
-update : Message -> Model -> Model
+update : Message -> Model -> ( Model, Cmd Message )
 update message model =
   case message of
+    None ->
+      ( model, Cmd.none )
+
     UpdateName name ->
-      { model | name = ( Name name ) }
+      ( { model | name = ( Name name ) }
+      , Cmd.none
+      )
 
     UpdateDescription description ->
-      { model | description = ( Description description ) }
+      ( { model | description = ( Description description ) }
+      , Cmd.none
+      )
 
     UpdateVersion version ->
-      { model | version = ( Version version ) }
+      ( { model | version = ( Version version ) }
+      , Cmd.none
+      )
 
     UpdateHomepage homepage ->
-      { model | homepage = ( Homepage homepage ) }
+      ( { model | homepage = ( Homepage homepage ) }
+      , Cmd.none
+      )
 
     UpdateLicense license ->
-      { model | license = ( License license ) }
+      ( { model | license = ( License license ) }
+      , Cmd.none
+      )
 
     UpdateMain entrypoint ->
-      { model | main = ( Main entrypoint ) }
+      ( { model | main = ( Main entrypoint ) }
+      , Cmd.none
+      )
 
     UpdateBrowser browser ->
-      { model | browser = ( Browser browser ) }
+      ( { model | browser = ( Browser browser ) }
+      , Cmd.none
+      )
 
     UpdateAccess access ->
-      { model | access = updateAccess access }
+      ( { model | access = updateAccess access }
+      , Cmd.none
+      )
 
     UpdateBugsUrl url ->
-      { model | bugs = updateBugsUrl ( BugsUrl url ) model.bugs }
+      ( { model | bugs = updateBugsUrl ( BugsUrl url ) model.bugs }
+      , Cmd.none
+      )
 
     UpdateBugsEmail email ->
-      { model | bugs = updateBugsEmail ( BugsEmail email ) model.bugs }
+      ( { model | bugs = updateBugsEmail ( BugsEmail email ) model.bugs }
+      , Cmd.none
+      )
 
     UpdateAuthorName name ->
-      { model | author = updateAuthorName ( AuthorName name ) model.author }
+      ( { model | author = updateAuthorName ( AuthorName name ) model.author }
+      , Cmd.none
+      )
 
     UpdateAuthorEmail email ->
-      { model | author = updateAuthorEmail ( AuthorEmail email ) model.author }
+      ( { model | author = updateAuthorEmail ( AuthorEmail email ) model.author }
+      , Cmd.none
+      )
 
     UpdateAuthorUrl url ->
-      { model | author = updateAuthorUrl ( AuthorUrl url ) model.author }
+      ( { model | author = updateAuthorUrl ( AuthorUrl url ) model.author }
+      , Cmd.none
+      )
 
     UpdateRepositoryKind kind ->
-      { model | repository = updateRepositoryKind ( RepositoryKind kind ) model.repository }
+      ( { model | repository = updateRepositoryKind ( RepositoryKind kind ) model.repository }
+      , Cmd.none
+      )
 
     UpdateRepositoryUrl url ->
-      { model | repository = updateRepositoryUrl ( RepositoryUrl url ) model.repository }
+      ( { model | repository = updateRepositoryUrl ( RepositoryUrl url ) model.repository }
+      , Cmd.none
+      )
 
     UpdateEnginesNode node ->
-      { model | engines = updateNodeEngine ( NodeEngine node ) model.engines }
+      ( { model | engines = updateNodeEngine ( NodeEngine node ) model.engines }
+      , Cmd.none
+      )
 
     UpdateEnginesNpm npm ->
-      { model | engines = updateNpmEngine ( NpmEngine npm ) model.engines }
+      ( { model | engines = updateNpmEngine ( NpmEngine npm ) model.engines }
+      , Cmd.none
+      )
 
     AddCpu ->
-      { model | cpus = List.append model.cpus [ Cpu "" ] }
+      ( { model | cpus = List.append model.cpus [ Cpu "" ] }
+      , focusLastCpuAfterAdd model.cpus
+      )
 
     UpdateCpu index value ->
-      { model | cpus = List.Extra.updateAt index ( always ( Cpu value ) ) model.cpus }
+      ( { model | cpus = List.Extra.updateAt index ( always ( Cpu value ) ) model.cpus }
+      , Cmd.none
+      )
 
     RemoveCpu index ->
-      { model | cpus = List.Extra.removeAt index model.cpus }
+      ( { model | cpus = List.Extra.removeAt index model.cpus }
+      , focusLastCpuBeforeRemove model.cpus
+      )
 
     AddOperatingSystem ->
-      { model | operatingSystems = List.append model.operatingSystems [ OperatingSystem "" ] }
+      ( { model | operatingSystems = List.append model.operatingSystems [ OperatingSystem "" ] }
+      , focusLastOperatingSystemBeforeAdd model.operatingSystems
+      )
 
     UpdateOperatingSystem index operatingSystem ->
-      { model | operatingSystems = List.Extra.updateAt index ( always ( OperatingSystem operatingSystem ) ) model.operatingSystems }
+      ( { model | operatingSystems = List.Extra.updateAt index ( always ( OperatingSystem operatingSystem ) ) model.operatingSystems }
+      , Cmd.none
+      )
 
     RemoveOperatingSystem index ->
-      { model | operatingSystems = List.Extra.removeAt index model.operatingSystems }
+      ( { model | operatingSystems = List.Extra.removeAt index model.operatingSystems }
+      , focusLastOperatingSystemBeforeRemove model.operatingSystems
+      )
 
     AddFile ->
-      { model | files = List.append model.files [ File "" ] }
+      ( { model | files = List.append model.files [ File "" ] }
+      , Cmd.none
+      )
 
     UpdateFile index value ->
-      { model | files = List.Extra.updateAt index ( always ( File value ) ) model.files }
+      ( { model | files = List.Extra.updateAt index ( always ( File value ) ) model.files }
+      , Cmd.none
+      )
 
     RemoveFile index ->
-      { model | files = List.Extra.removeAt index model.files }
+      ( { model | files = List.Extra.removeAt index model.files }
+      , Cmd.none
+      )
 
     AddKeyword ->
-      { model | keywords = List.append model.keywords [ Keyword "" ] }
+      ( { model | keywords = List.append model.keywords [ Keyword "" ] }
+      , Cmd.none
+      )
 
     UpdateKeyword index keyword ->
-      { model | keywords = List.Extra.updateAt index ( always ( Keyword keyword ) ) model.keywords }
+      ( { model | keywords = List.Extra.updateAt index ( always ( Keyword keyword ) ) model.keywords }
+      , Cmd.none
+      )
 
     RemoveKeyword index ->
-      { model | keywords = List.Extra.removeAt index model.keywords }
+      ( { model | keywords = List.Extra.removeAt index model.keywords }
+      , Cmd.none
+      )
 
     AddContributor ->
-      { model | contributors = List.append model.contributors [ Contributor { name = ContributorName "", email = ContributorEmail "", url = ContributorUrl "" } ] }
+      ( { model | contributors = List.append model.contributors [ Contributor { name = ContributorName "", email = ContributorEmail "", url = ContributorUrl "" } ] }
+      , Cmd.none
+      )
 
     RemoveContributor index ->
-      { model | contributors = List.Extra.removeAt index model.contributors }
+      ( { model | contributors = List.Extra.removeAt index model.contributors }
+      , Cmd.none
+      )
 
     UpdateContributorName index name ->
-      { model | contributors = List.Extra.updateAt index ( updateContributorName ( ContributorName name ) ) model.contributors }
+      ( { model | contributors = List.Extra.updateAt index ( updateContributorName ( ContributorName name ) ) model.contributors }
+      , Cmd.none
+      )
 
     UpdateContributorEmail index email ->
-      { model | contributors = List.Extra.updateAt index ( updateContributorEmail ( ContributorEmail email ) ) model.contributors }
+      ( { model | contributors = List.Extra.updateAt index ( updateContributorEmail ( ContributorEmail email ) ) model.contributors }
+      , Cmd.none
+      )
 
     UpdateContributorUrl index url ->
-      { model | contributors = List.Extra.updateAt index ( updateContributorUrl ( ContributorUrl url ) ) model.contributors }
+      ( { model | contributors = List.Extra.updateAt index ( updateContributorUrl ( ContributorUrl url ) ) model.contributors }
+      , Cmd.none
+      )
 
     AddFunding ->
-      { model | fundings = List.append model.fundings [ Funding { kind = FundingKind "", url = FundingUrl "" } ] }
+      ( { model | fundings = List.append model.fundings [ Funding { kind = FundingKind "", url = FundingUrl "" } ] }
+      , Cmd.none
+      )
 
     UpdateFundingKind index kind ->
-      { model | fundings = List.Extra.updateAt index ( updateFundingKind ( FundingKind kind ) ) model.fundings }
+      ( { model | fundings = List.Extra.updateAt index ( updateFundingKind ( FundingKind kind ) ) model.fundings }
+      , Cmd.none
+      )
 
     UpdateFundingUrl index url ->
-      { model | fundings = List.Extra.updateAt index ( updateFundingUrl ( FundingUrl url ) ) model.fundings }
+      ( { model | fundings = List.Extra.updateAt index ( updateFundingUrl ( FundingUrl url ) ) model.fundings }
+      , Cmd.none
+      )
 
     RemoveFunding index ->
-      { model | fundings = List.Extra.removeAt index model.fundings }
+      ( { model | fundings = List.Extra.removeAt index model.fundings }
+      , Cmd.none
+      )
 
     AddScript ->
-      { model | scripts = List.append model.scripts [ Script { key = ScriptKey "", command = ScriptCommand "" } ] }
+      ( { model | scripts = List.append model.scripts [ Script { key = ScriptKey "", command = ScriptCommand "" } ] }
+      , Cmd.none
+      )
 
     RemoveScript index ->
-      { model | scripts = List.Extra.removeAt index model.scripts }
+      ( { model | scripts = List.Extra.removeAt index model.scripts }
+      , Cmd.none
+      )
 
     UpdateScriptKey index key ->
-      { model | scripts = List.Extra.updateAt index ( updateScriptKey ( ScriptKey key ) ) model.scripts }
+      ( { model | scripts = List.Extra.updateAt index ( updateScriptKey ( ScriptKey key ) ) model.scripts }
+      , Cmd.none
+      )
 
     UpdateScriptCommand index command ->
-      { model | scripts = List.Extra.updateAt index ( updateScriptCommand ( ScriptCommand command ) ) model.scripts }
+      ( { model | scripts = List.Extra.updateAt index ( updateScriptCommand ( ScriptCommand command ) ) model.scripts }
+      , Cmd.none
+      )
 
     AddConfiguration ->
-      { model | configurations = List.append model.configurations [ Configuration { key = ConfigurationKey "", value = ConfigurationValue "" } ] }
+      ( { model | configurations = List.append model.configurations [ Configuration { key = ConfigurationKey "", value = ConfigurationValue "" } ] }
+      , Cmd.none
+      )
 
     RemoveConfiguration index ->
-      { model | configurations = List.Extra.removeAt index model.configurations }
+      ( { model | configurations = List.Extra.removeAt index model.configurations }
+      , Cmd.none
+      )
 
     UpdateConfigurationKey index key ->
-      { model | configurations = List.Extra.updateAt index ( updateConfigurationKey ( ConfigurationKey key ) ) model.configurations }
+      ( { model | configurations = List.Extra.updateAt index ( updateConfigurationKey ( ConfigurationKey key ) ) model.configurations }
+      , Cmd.none
+      )
 
     UpdateConfigurationValue index value ->
-      { model | configurations = List.Extra.updateAt index ( updateConfigurationValue ( ConfigurationValue value ) ) model.configurations }
+      ( { model | configurations = List.Extra.updateAt index ( updateConfigurationValue ( ConfigurationValue value ) ) model.configurations }
+      , Cmd.none
+      )
 
     AddDependency ->
-      { model | dependencies = List.append model.dependencies [ Dependency { key = DependencyKey "", value = DependencyValue "" } ] }
+      ( { model | dependencies = List.append model.dependencies [ Dependency { key = DependencyKey "", value = DependencyValue "" } ] }
+      , Cmd.none
+      )
 
     RemoveDependency index ->
-      { model | dependencies = List.Extra.removeAt index model.dependencies }
+      ( { model | dependencies = List.Extra.removeAt index model.dependencies }
+      , Cmd.none
+      )
 
     UpdateDependencyKey index key ->
-      { model | dependencies = List.Extra.updateAt index ( updateDependencyKey ( DependencyKey key ) ) model.dependencies }
+      ( { model | dependencies = List.Extra.updateAt index ( updateDependencyKey ( DependencyKey key ) ) model.dependencies }
+      , Cmd.none
+      )
     
     UpdateDependencyValue index value ->
-      { model | dependencies = List.Extra.updateAt index ( updateDependencyValue ( DependencyValue value ) ) model.dependencies }
+      ( { model | dependencies = List.Extra.updateAt index ( updateDependencyValue ( DependencyValue value ) ) model.dependencies }
+      , Cmd.none
+      )
 
     AddDevelopmentDependency ->
-      { model | developmentDependencies = List.append model.developmentDependencies [ DevelopmentDependency { key = DevelopmentDependencyKey "", value = DevelopmentDependencyValue "" } ] }
+      ( { model | developmentDependencies = List.append model.developmentDependencies [ DevelopmentDependency { key = DevelopmentDependencyKey "", value = DevelopmentDependencyValue "" } ] }
+      , Cmd.none
+      )
 
     UpdateDevelopmentDependencyValue index value ->
-      { model | developmentDependencies = List.Extra.updateAt index ( updateDevelopmentDependencyValue ( DevelopmentDependencyValue value ) ) model.developmentDependencies }
+      ( { model | developmentDependencies = List.Extra.updateAt index ( updateDevelopmentDependencyValue ( DevelopmentDependencyValue value ) ) model.developmentDependencies }
+      , Cmd.none
+      )
 
     UpdateDevelopmentDependencyKey index key ->
-      { model | developmentDependencies = List.Extra.updateAt index ( updateDevelopmentDependencyKey ( DevelopmentDependencyKey key ) ) model.developmentDependencies }
+      ( { model | developmentDependencies = List.Extra.updateAt index ( updateDevelopmentDependencyKey ( DevelopmentDependencyKey key ) ) model.developmentDependencies }
+      , Cmd.none
+      )
 
     RemoveDevelopmentDependency index ->
-      { model | developmentDependencies = List.Extra.removeAt index model.developmentDependencies }
+      ( { model | developmentDependencies = List.Extra.removeAt index model.developmentDependencies }
+      , Cmd.none
+      )
 
     AddPeerDependency ->
-      { model | peerDependencies = List.append model.peerDependencies [ PeerDependency { key = PeerDependencyKey "", value = PeerDependencyValue "" } ] }
+      ( { model | peerDependencies = List.append model.peerDependencies [ PeerDependency { key = PeerDependencyKey "", value = PeerDependencyValue "" } ] }
+      , Cmd.none
+      )
 
     UpdatePeerDependencyKey index key ->
-      { model | peerDependencies = List.Extra.updateAt index ( updatePeerDependencyKey ( PeerDependencyKey key ) ) model.peerDependencies }
+      ( { model | peerDependencies = List.Extra.updateAt index ( updatePeerDependencyKey ( PeerDependencyKey key ) ) model.peerDependencies }
+      , Cmd.none
+      )
 
     UpdatePeerDependencyValue index value ->
-      { model | peerDependencies = List.Extra.updateAt index ( updatePeerDependencyValue ( PeerDependencyValue value ) ) model.peerDependencies }
+      ( { model | peerDependencies = List.Extra.updateAt index ( updatePeerDependencyValue ( PeerDependencyValue value ) ) model.peerDependencies }
+      , Cmd.none
+      )
 
     RemovePeerDependency index ->
-      { model | peerDependencies = List.Extra.removeAt index model.peerDependencies }
+      ( { model | peerDependencies = List.Extra.removeAt index model.peerDependencies }
+      , Cmd.none
+      )
 
     AddBundledDependency ->
-      { model | bundledDependencies = List.append model.bundledDependencies [ BundledDependency { key = BundledDependencyKey "", value = BundledDependencyValue "" } ] }
+      ( { model | bundledDependencies = List.append model.bundledDependencies [ BundledDependency { key = BundledDependencyKey "", value = BundledDependencyValue "" } ] }
+      , Cmd.none
+      )
 
     RemoveBundledDependency index ->
-      { model | bundledDependencies = List.Extra.removeAt index model.bundledDependencies }
+      ( { model | bundledDependencies = List.Extra.removeAt index model.bundledDependencies }
+      , Cmd.none
+      )
 
     UpdateBundledDependencyKey index key ->
-      { model | bundledDependencies = List.Extra.updateAt index ( updateBundledDependencyKey ( BundledDependencyKey key ) ) model.bundledDependencies }
+      ( { model | bundledDependencies = List.Extra.updateAt index ( updateBundledDependencyKey ( BundledDependencyKey key ) ) model.bundledDependencies }
+      , Cmd.none
+      )
 
     UpdateBundledDependencyValue index value ->
-      { model | bundledDependencies = List.Extra.updateAt index ( updateBundledDependencyValue ( BundledDependencyValue value ) ) model.bundledDependencies }
+      ( { model | bundledDependencies = List.Extra.updateAt index ( updateBundledDependencyValue ( BundledDependencyValue value ) ) model.bundledDependencies }
+      , Cmd.none
+      )
 
     AddOptionalDependency ->
-      { model | optionalDependencies = List.append model.optionalDependencies [ OptionalDependency { key = OptionalDependencyKey "", value = OptionalDependencyValue "" } ] }
+      ( { model | optionalDependencies = List.append model.optionalDependencies [ OptionalDependency { key = OptionalDependencyKey "", value = OptionalDependencyValue "" } ] }
+      , Cmd.none
+      )
 
     UpdateOptionalDependencyKey index key ->
-      { model | optionalDependencies = List.Extra.updateAt index ( updateOptionalDependencyKey ( OptionalDependencyKey key ) ) model.optionalDependencies }
+      ( { model | optionalDependencies = List.Extra.updateAt index ( updateOptionalDependencyKey ( OptionalDependencyKey key ) ) model.optionalDependencies }
+      , Cmd.none
+      )
 
     UpdateOptionalDependencyValue index value ->
-      { model | optionalDependencies = List.Extra.updateAt index ( updateOptionalDependencyValue ( OptionalDependencyValue value ) ) model.optionalDependencies }
+      ( { model | optionalDependencies = List.Extra.updateAt index ( updateOptionalDependencyValue ( OptionalDependencyValue value ) ) model.optionalDependencies }
+      , Cmd.none
+      )
   
     RemoveOptionalDependency index ->
-      { model | optionalDependencies = List.Extra.removeAt index model.optionalDependencies }
+      ( { model | optionalDependencies = List.Extra.removeAt index model.optionalDependencies }
+      , Cmd.none
+      )
 
     AddWorkspace ->
-      { model | workspaces = List.append model.workspaces [ Workspace "" ] } 
+      ( { model | workspaces = List.append model.workspaces [ Workspace "" ] } 
+      , Cmd.none
+      )
 
     RemoveWorkspace index ->
-      { model | workspaces = List.Extra.removeAt index model.workspaces }
+      ( { model | workspaces = List.Extra.removeAt index model.workspaces }
+      , Cmd.none
+      )
 
     UpdateWorkspace index workspace ->
-      { model | workspaces = List.Extra.updateAt index ( always ( Workspace workspace ) ) model.workspaces }
+      ( { model | workspaces = List.Extra.updateAt index ( always ( Workspace workspace ) ) model.workspaces }
+      , Cmd.none
+      )
 
     UpdateLibraryDirectory libraryDirectory ->
-      { model | directories = updateLibraryDirectory ( LibraryDirectory libraryDirectory ) model.directories }
+      ( { model | directories = updateLibraryDirectory ( LibraryDirectory libraryDirectory ) model.directories }
+      , Cmd.none
+      )
 
     UpdateBinaryDirectory binaryDirectory ->
-      { model | directories = updateBinaryDirectory ( BinaryDirectory binaryDirectory ) model.directories }
+      ( { model | directories = updateBinaryDirectory ( BinaryDirectory binaryDirectory ) model.directories }
+      , Cmd.none
+      )
 
     UpdateManualDirectory manualDirectory ->
-      { model | directories = updateManualDirectory ( ManualDirectory manualDirectory ) model.directories }
+      ( { model | directories = updateManualDirectory ( ManualDirectory manualDirectory ) model.directories }
+      , Cmd.none
+      )
 
     UpdateDocumentationDirectory documentationDirectory ->
-      { model | directories = updateDocumentationDirectory ( DocumentationDirectory documentationDirectory ) model.directories }
+      ( { model | directories = updateDocumentationDirectory ( DocumentationDirectory documentationDirectory ) model.directories }
+      , Cmd.none
+      )
 
     UpdateExampleDirectory exampleDirectory ->
-      { model | directories = updateExampleDirectory ( ExampleDirectory exampleDirectory ) model.directories }
+      ( { model | directories = updateExampleDirectory ( ExampleDirectory exampleDirectory ) model.directories }
+      , Cmd.none
+      )
 
     UpdateTestDirectory testDirectory ->
-      { model | directories = updateTestDirectory ( TestDirectory testDirectory ) model.directories }
+      ( { model | directories = updateTestDirectory ( TestDirectory testDirectory ) model.directories }
+      , Cmd.none
+      )
 
     UpdateSpaces spaces ->
-      { model | spaces = updateSpaces spaces }
+      ( { model | spaces = updateSpaces spaces }
+      , Cmd.none
+      )
 
 
 updateAccess : String -> Access
@@ -2001,65 +2161,123 @@ updateContributorName ( ContributorName name ) ( Contributor contributor ) =
   Contributor { contributor | name = ContributorName name }
 
 
+-- COMMANDS
+
+
+focusLastCpuAfterAdd : List Cpu -> Cmd Message
+focusLastCpuAfterAdd cpus =
+  Task.attempt
+    ( always None )
+    ( cpus
+      |> List.length
+      |> String.fromInt
+      |> (++) "cpu-"
+      |> Browser.Dom.focus
+    )
+
+
+focusLastCpuBeforeRemove : List Cpu -> Cmd Message
+focusLastCpuBeforeRemove cpus =
+  Task.attempt
+    ( always None )
+    ( cpus
+      |> List.length
+      |> Flip.flip (-) 2
+      |> String.fromInt
+      |> (++) "cpu-"
+      |> Browser.Dom.focus
+    )
+
+
+focusLastOperatingSystemBeforeAdd : List OperatingSystem -> Cmd Message
+focusLastOperatingSystemBeforeAdd operatingSystems =
+  Task.attempt
+    ( always None )
+    ( operatingSystems
+      |> List.length
+      |> String.fromInt
+      |> (++) "operating-system-"
+      |> Browser.Dom.focus
+    )
+
+
+focusLastOperatingSystemBeforeRemove : List OperatingSystem -> Cmd Message
+focusLastOperatingSystemBeforeRemove operatingSystems =
+  let 
+      _ = Debug.log <| Debug.toString operatingSystems
+  in
+  Task.attempt
+    ( always None )
+    ( operatingSystems
+      |> List.length
+      |> Flip.flip (-) 2
+      |> String.fromInt
+      |> (++) "operating-system-"
+      |> Browser.Dom.focus
+    )
+
+
 -- INIT
 
 
-init : Model
-init =
-  { name = Name ""
-  , description = Description ""
-  , version = Version ""
-  , homepage = Homepage ""
-  , license = License ""
-  , main = Main ""
-  , browser = Browser ""
-  , access = Private
-  , bugs =
-      Bugs
-        { url = BugsUrl ""
-        , email = BugsEmail ""
-        }
-  , author =
-      Author
-        { name = AuthorName ""
-        , url = AuthorUrl ""
-        , email = AuthorEmail ""
-        }
-  , repository =
-      Repository
-        { kind = RepositoryKind ""
-        , url = RepositoryUrl ""
-        }
-  , engines =
-      Engines 
-        { node = NodeEngine ""
-        , npm = NpmEngine ""
-        }
-  , directories =
-      Directories
-        { library = LibraryDirectory ""
-        , binary = BinaryDirectory ""
-        , manual = ManualDirectory ""
-        , documentation = DocumentationDirectory ""
-        , example = ExampleDirectory ""
-        , test = TestDirectory ""
-        }
-  , cpus = []
-  , operatingSystems = []
-  , files = []
-  , keywords = []
-  , contributors = []
-  , fundings = []
-  , scripts = []
-  , configurations = []
-  , dependencies = []
-  , developmentDependencies = []
-  , peerDependencies = []
-  , bundledDependencies = []
-  , optionalDependencies = []
-  , workspaces = []
-  , spaces = TwoSpaces
-  }
+init : () -> ( Model, Cmd Message )
+init flags =
+  ( { name = Name ""
+    , description = Description ""
+    , version = Version ""
+    , homepage = Homepage ""
+    , license = License ""
+    , main = Main ""
+    , browser = Browser ""
+    , access = Private
+    , bugs =
+        Bugs
+          { url = BugsUrl ""
+          , email = BugsEmail ""
+          }
+    , author =
+        Author
+          { name = AuthorName ""
+          , url = AuthorUrl ""
+          , email = AuthorEmail ""
+          }
+    , repository =
+        Repository
+          { kind = RepositoryKind ""
+          , url = RepositoryUrl ""
+          }
+    , engines =
+        Engines 
+          { node = NodeEngine ""
+          , npm = NpmEngine ""
+          }
+    , directories =
+        Directories
+          { library = LibraryDirectory ""
+          , binary = BinaryDirectory ""
+          , manual = ManualDirectory ""
+          , documentation = DocumentationDirectory ""
+          , example = ExampleDirectory ""
+          , test = TestDirectory ""
+          }
+    , cpus = []
+    , operatingSystems = []
+    , files = []
+    , keywords = []
+    , contributors = []
+    , fundings = []
+    , scripts = []
+    , configurations = []
+    , dependencies = []
+    , developmentDependencies = []
+    , peerDependencies = []
+    , bundledDependencies = []
+    , optionalDependencies = []
+    , workspaces = []
+    , spaces = TwoSpaces
+    }
+  , Cmd.none
+  )
 
 
 -- TYPES ( MODEL )
@@ -2353,7 +2571,8 @@ type ContributorUrl = ContributorUrl String
 
 
 type Message
-  = UpdateName String
+  = None
+  | UpdateName String
   | UpdateDescription String
   | UpdateVersion String
   | UpdateHomepage String
