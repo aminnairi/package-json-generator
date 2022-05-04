@@ -8,3 +8,4 @@
 - Fields type
 - Help icon
 - Slimest encoded package.json possible
+- Add custom font
