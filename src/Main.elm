@@ -39,12 +39,14 @@ view model =
     ]
     [ Html.h1
       [ Html.Attributes.style "font-family" "sans-serif"
-      , Html.Attributes.style "margin" "0"
+      , Html.Attributes.style "margin" "20px 0 20px 0"
       , Html.Attributes.style "padding" "0"
       , Html.Attributes.style "font-weight" "lighter"
       , Html.Attributes.style "text-align" "center"
       ]
       [ Html.text "package.json generator" ]
+    , viewAccess model.access
+    , viewSpaces model.spaces
     , viewName model.name
     , viewDescription model.description
     , viewVersion model.version
@@ -57,8 +59,6 @@ view model =
     , viewRepository model.repository
     , viewEngines model.engines
     , viewDirectories model.directories
-    , viewAccess model.access
-    , viewSpaces model.spaces
     , viewCpus model.cpus
     , viewOperatingSystems model.operatingSystems
     , viewFiles model.files
@@ -106,7 +106,8 @@ viewDirectories : Directories -> Html Message
 viewDirectories ( Directories directories ) =
   Html.div
     []
-    [ viewLibraryDirectory directories.library
+    [ viewSecondLevelTitle [] [ Html.text "Directories" ]
+    , viewLibraryDirectory directories.library
     , viewBinaryDirectory directories.binary
     , viewManualDirectory directories.manual
     , viewDocumentationDirectory directories.documentation
@@ -119,10 +120,11 @@ viewLibraryDirectory : LibraryDirectory -> Html Message
 viewLibraryDirectory ( LibraryDirectory libraryDirectory ) =
   viewInputField
     [ Html.Attributes.for "directories-library" ]
-    [ Html.text "Library directory" ]
+    [ Html.text "Library" ]
     [ Html.Attributes.value libraryDirectory
     , Html.Attributes.id "directories-library"
     , Html.Events.onInput UpdateLibraryDirectory
+    , Html.Attributes.placeholder "./library"
     ]
     []
 
@@ -131,10 +133,11 @@ viewBinaryDirectory : BinaryDirectory -> Html Message
 viewBinaryDirectory ( BinaryDirectory binaryDirectory ) =
   viewInputField
     [ Html.Attributes.for "directories-binary" ]
-    [ Html.text "Binary directory" ]
+    [ Html.text "Binary" ]
     [ Html.Attributes.value binaryDirectory
     , Html.Attributes.id "directories-binary"
     , Html.Events.onInput UpdateBinaryDirectory
+    , Html.Attributes.placeholder "./binary"
     ]
     []
 
@@ -143,10 +146,11 @@ viewManualDirectory : ManualDirectory -> Html Message
 viewManualDirectory ( ManualDirectory manualDirectory ) =
   viewInputField
     [ Html.Attributes.for "directories-manual" ]
-    [ Html.text "Manual directory" ]
+    [ Html.text "Manual" ]
     [ Html.Attributes.value manualDirectory
     , Html.Attributes.id "directories-manual"
     , Html.Events.onInput UpdateManualDirectory
+    , Html.Attributes.placeholder "./manual"
     ]
     []
 
@@ -155,10 +159,11 @@ viewDocumentationDirectory : DocumentationDirectory -> Html Message
 viewDocumentationDirectory ( DocumentationDirectory documentationDirectory ) =
   viewInputField
     [ Html.Attributes.for "directories-documentation" ]
-    [ Html.text "Documentation directory" ]
+    [ Html.text "Documentation" ]
     [ Html.Attributes.value documentationDirectory
     , Html.Attributes.id "directories-documentation"
     , Html.Events.onInput UpdateDocumentationDirectory
+    , Html.Attributes.placeholder "./documentation"
     ]
     []
 
@@ -167,10 +172,11 @@ viewExampleDirectory : ExampleDirectory -> Html Message
 viewExampleDirectory ( ExampleDirectory exampleDirectory ) =
   viewInputField
     [ Html.Attributes.for "directories-example" ]
-    [ Html.text "Example directory" ]
+    [ Html.text "Example" ]
     [ Html.Attributes.value exampleDirectory
     , Html.Attributes.id "directories-example"
     , Html.Events.onInput UpdateExampleDirectory
+    , Html.Attributes.placeholder "examples"
     ]
     []
 
@@ -179,10 +185,11 @@ viewTestDirectory : TestDirectory -> Html Message
 viewTestDirectory ( TestDirectory testDirectory ) =
   viewInputField
     [ Html.Attributes.for "directories-test" ]
-    [ Html.text "Test directory" ]
+    [ Html.text "Test" ]
     [ Html.Attributes.value testDirectory
     , Html.Attributes.id "directories-test"
     , Html.Events.onInput UpdateTestDirectory
+    , Html.Attributes.placeholder "./tests"
     ]
     []
 
@@ -325,87 +332,122 @@ viewCpu index ( Cpu cpu ) =
 
 viewBrowser : Browser -> Html Message
 viewBrowser ( Browser browser ) =
-  viewInputField
-    [ Html.Attributes.for "browser" ]
-    [ Html.text "Browser" ]
-    [ Html.Attributes.value browser
-    , Html.Attributes.id "browser"
-    , Html.Events.onInput UpdateBrowser
-    ]
+  Html.div
     []
+    [ viewSecondLevelTitle [] [ Html.text "Browser" ]
+    , viewInputField
+      [ Html.Attributes.for "browser" ]
+      [ Html.text "Browser" ]
+      [ Html.Attributes.value browser
+      , Html.Attributes.id "browser"
+      , Html.Events.onInput UpdateBrowser
+      , Html.Attributes.placeholder "./dist/index.browser.js"
+      ]
+      []
+    ]
 
 
 viewMain : Main -> Html Message
 viewMain ( Main entrypoint ) =
-  viewInputField
-    [ Html.Attributes.for "main" ]
-    [ Html.text "Main" ]
-    [ Html.Attributes.value entrypoint
-    , Html.Attributes.id "main"
-    , Html.Events.onInput UpdateMain
-    ]
+  Html.div
     []
+    [ viewSecondLevelTitle [] [ Html.text "Main" ]
+    , viewInputField
+      [ Html.Attributes.for "main" ]
+      [ Html.text "Main" ]
+      [ Html.Attributes.value entrypoint
+      , Html.Attributes.id "main"
+      , Html.Events.onInput UpdateMain
+      , Html.Attributes.placeholder "./dist/index.js"
+      ]
+      []
+    ]
 
 
 viewLicense : License -> Html Message
 viewLicense ( License license ) =
-  viewInputField
-    [ Html.Attributes.for "license" ]
-    [ Html.text "License" ]
-    [ Html.Attributes.value license
-    , Html.Attributes.id "license"
-    , Html.Events.onInput UpdateLicense
-    ]
+  Html.div
     []
+    [ viewSecondLevelTitle [] [ Html.text "License" ]
+    , viewInputField
+      [ Html.Attributes.for "license" ]
+      [ Html.text "License" ]
+      [ Html.Attributes.value license
+      , Html.Attributes.id "license"
+      , Html.Events.onInput UpdateLicense
+      , Html.Attributes.placeholder "GPL-3.0-or-later"
+      ]
+      []
+    ]
 
 
 viewHomepage : Homepage -> Html Message
 viewHomepage ( Homepage homepage ) =
-  viewInputField
-    [ Html.Attributes.for "homepage" ]
-    [ Html.text "Home page" ]
-    [ Html.Attributes.value homepage
-    , Html.Attributes.id "homepage"
-    , Html.Events.onInput UpdateHomepage
-    ]
+  Html.div
     []
+    [ viewSecondLevelTitle [] [ Html.text "Home page" ]
+    , viewInputField
+      [ Html.Attributes.for "homepage" ]
+      [ Html.text "Home page" ]
+      [ Html.Attributes.value homepage
+      , Html.Attributes.id "homepage"
+      , Html.Events.onInput UpdateHomepage
+      , Html.Attributes.placeholder "https://github.com/user/repository#readme"
+      ]
+      []
+    ]
 
 
 viewVersion : Version -> Html Message
 viewVersion ( Version version ) =
-  viewInputField
-    [ Html.Attributes.for "version" ]
-    [ Html.text "Version" ]
-    [ Html.Attributes.value version
-    , Html.Attributes.id "version"
-    , Html.Events.onInput UpdateVersion
-    ]
+  Html.div
     []
+    [ viewSecondLevelTitle [] [ Html.text "Version" ]
+    , viewInputField
+      [ Html.Attributes.for "version" ]
+      [ Html.text "Version" ]
+      [ Html.Attributes.value version
+      , Html.Attributes.id "version"
+      , Html.Events.onInput UpdateVersion
+      , Html.Attributes.placeholder "0.1.0"
+      ]
+      []
+    ]
 
 
 viewDescription : Description -> Html Message
 viewDescription ( Description description ) =
-  viewInputField
-    [ Html.Attributes.for "description" ]
-    [ Html.text "Description" ]
-    [ Html.Attributes.value description
-    , Html.Attributes.id "description"
-    , Html.Events.onInput UpdateDescription
-    ]
+  Html.div
     []
+    [ viewSecondLevelTitle [] [ Html.text "Description" ]
+    , viewInputField
+      [ Html.Attributes.for "description" ]
+      [ Html.text "Description" ]
+      [ Html.Attributes.value description
+      , Html.Attributes.id "description"
+      , Html.Events.onInput UpdateDescription
+      , Html.Attributes.placeholder "An awesome package that does things"
+      ]
+      []
+    ]
 
 
 viewName : Name -> Html Message
 viewName ( Name name ) =
-  viewInputField
-    [ Html.Attributes.for "name" ]
-    [ Html.text "Name" ]
-    [ Html.Attributes.value name
-    , Html.Attributes.id "name"
-    , Html.Events.onInput UpdateName
-    , Html.Attributes.autofocus True
-    ]
+  Html.div
     []
+    [ viewSecondLevelTitle [] [ Html.text "Name" ]
+    , viewInputField
+      [ Html.Attributes.for "name" ]
+      [ Html.text "Name" ]
+      [ Html.Attributes.value name
+      , Html.Attributes.id "name"
+      , Html.Events.onInput UpdateName
+      , Html.Attributes.autofocus True
+      , Html.Attributes.placeholder "@user/package"
+      ]
+      []
+    ]
 
 
 viewAccess : Access -> Html Message
@@ -437,7 +479,8 @@ viewEngines : Engines -> Html Message
 viewEngines ( Engines engines ) =
   Html.div
     []
-    [ viewNodeEngine engines.node
+    [ viewSecondLevelTitle [] [ Html.text "Engines" ]
+    , viewNodeEngine engines.node
     , viewNpmEngine engines.npm
     ]
 
@@ -446,10 +489,11 @@ viewNodeEngine : NodeEngine -> Html Message
 viewNodeEngine ( NodeEngine node ) =
   viewInputField
     [ Html.Attributes.for "engines-node" ]
-    [ Html.text "Node version" ]
+    [ Html.text "Node" ]
     [ Html.Attributes.value node
     , Html.Events.onInput UpdateEnginesNode
     , Html.Attributes.id "engines-node"
+    , Html.Attributes.placeholder ">=17.0.0"
     ]
     []
 
@@ -458,10 +502,11 @@ viewNpmEngine : NpmEngine -> Html Message
 viewNpmEngine ( NpmEngine npm ) =
   viewInputField
     [ Html.Attributes.for "engines-npm" ]
-    [ Html.text "NPM version" ]
+    [ Html.text "NPM" ]
     [ Html.Attributes.value npm
     , Html.Events.onInput UpdateEnginesNpm
     , Html.Attributes.id "engines-npm"
+    , Html.Attributes.placeholder ">=8.0.0"
     ]
     []
 
@@ -470,7 +515,8 @@ viewRepository : Repository -> Html Message
 viewRepository ( Repository repository ) =
   Html.div
     []
-    [ viewRepositoryKind repository.kind
+    [ viewSecondLevelTitle [] [ Html.text "Repository" ]
+    , viewRepositoryKind repository.kind
     , viewRepositoryUrl repository.url
     ]
 
@@ -479,10 +525,11 @@ viewRepositoryKind : RepositoryKind -> Html Message
 viewRepositoryKind ( RepositoryKind kind ) =
   viewInputField
     [ Html.Attributes.for "repository-type" ]
-    [ Html.text "Repository type" ]
+    [ Html.text "Type" ]
     [ Html.Attributes.value kind
     , Html.Events.onInput UpdateRepositoryKind
     , Html.Attributes.id "repository-type"
+    , Html.Attributes.placeholder "git"
     ]
     []
 
@@ -491,10 +538,11 @@ viewRepositoryUrl : RepositoryUrl -> Html Message
 viewRepositoryUrl ( RepositoryUrl url ) =
   viewInputField
     [ Html.Attributes.for "repository-url" ]
-    [ Html.text "Repository URL" ]
+    [ Html.text "URL" ]
     [ Html.Attributes.value url
     , Html.Events.onInput UpdateRepositoryUrl
     , Html.Attributes.id "repository-url"
+    , Html.Attributes.placeholder "https://github.com/user/repository.git"
     ]
     []
 
@@ -503,7 +551,8 @@ viewAuthor : Author -> Html Message
 viewAuthor ( Author author ) =
   Html.div
     []
-    [ viewAuthorName author.name
+    [ viewSecondLevelTitle [] [ Html.text "Author" ]
+    , viewAuthorName author.name
     , viewAuthorUrl author.url
     , viewAuthorEmail author.email
     ]
@@ -513,10 +562,11 @@ viewAuthorName : AuthorName -> Html Message
 viewAuthorName ( AuthorName name ) =
   viewInputField
     [ Html.Attributes.for "author-name" ]
-    [ Html.text "Author name" ] 
+    [ Html.text "Name" ] 
     [ Html.Attributes.value name
     , Html.Events.onInput UpdateAuthorName
     , Html.Attributes.id "author-name"
+    , Html.Attributes.placeholder "User NAME"
     ]
     [] 
 
@@ -525,10 +575,11 @@ viewAuthorUrl : AuthorUrl -> Html Message
 viewAuthorUrl ( AuthorUrl url ) =
   viewInputField
     [ Html.Attributes.for "author-url" ]
-    [ Html.text "Author URL" ] 
+    [ Html.text "URL" ] 
     [ Html.Attributes.value url
     , Html.Events.onInput UpdateAuthorUrl
     , Html.Attributes.id "author-url"
+    , Html.Attributes.placeholder "https://github.com/user"
     ]
     [] 
 
@@ -537,10 +588,11 @@ viewAuthorEmail : AuthorEmail -> Html Message
 viewAuthorEmail ( AuthorEmail email ) =
   viewInputField
     [ Html.Attributes.for "author-email" ]
-    [ Html.text "Author Email" ] 
+    [ Html.text "Email" ] 
     [ Html.Attributes.value email
     , Html.Events.onInput UpdateAuthorEmail
     , Html.Attributes.id "author-email"
+    , Html.Attributes.placeholder "user@repository.com"
     ]
     [] 
 
@@ -549,7 +601,8 @@ viewBugs : Bugs -> Html Message
 viewBugs ( Bugs bugs ) =
   Html.div
     []
-    [ viewBugsUrl bugs.url
+    [ viewSecondLevelTitle [] [ Html.text "Bugs" ]
+    , viewBugsUrl bugs.url
     , viewBugsEmail bugs.email
     ]
 
@@ -558,10 +611,11 @@ viewBugsUrl : BugsUrl -> Html Message
 viewBugsUrl ( BugsUrl url ) =
   viewInputField
     [ Html.Attributes.for "bugs-url" ]
-    [ Html.text "Bugs URL" ]
+    [ Html.text "URL" ]
     [ Html.Attributes.value url
     , Html.Events.onInput UpdateBugsUrl
     , Html.Attributes.for "bugs-url"
+    , Html.Attributes.placeholder "https://github.com/user/repository/issues"
     ]
     []
 
@@ -570,10 +624,11 @@ viewBugsEmail : BugsEmail -> Html Message
 viewBugsEmail ( BugsEmail email ) =
   viewInputField
     [ Html.Attributes.for "bugs-email" ]
-    [ Html.text "Bugs email" ]
+    [ Html.text "Email" ]
     [ Html.Attributes.value email
     , Html.Events.onInput UpdateBugsEmail
     , Html.Attributes.id "bugs-email"
+    , Html.Attributes.placeholder "user@repository.com"
     ]
     []
 
@@ -594,11 +649,11 @@ viewOptionalDependency index ( OptionalDependency optionalDependency ) =
   Html.div
     []
     [ viewInputField
-      [ Html.Attributes.for <| "optional-dependency-key-" ++ String.fromInt index ]
+      [ Html.Attributes.for <| "optional-dependency-name-" ++ String.fromInt index ]
       [ Html.text "Name" ]
       [ Html.Attributes.value <| viewOptionalDependencyKey optionalDependency.key
       , Html.Events.onInput <| UpdateOptionalDependencyKey index
-      , Html.Attributes.id <| "optional-dependency-key-" ++ String.fromInt index 
+      , Html.Attributes.id <| "optional-dependency-name-" ++ String.fromInt index 
       ]
       []
     , viewInputField
@@ -639,11 +694,11 @@ viewBundledDependency index ( BundledDependency bundledDependency ) =
   Html.div
     []
     [ viewInputField
-      [ Html.Attributes.for <| "bundled-dependency-key-" ++ String.fromInt index ]
+      [ Html.Attributes.for <| "bundled-dependency-name-" ++ String.fromInt index ]
       [ Html.text "Name" ]
       [ Html.Attributes.value <| viewBundledDependencyKey bundledDependency.key
       , Html.Events.onInput <| UpdateBundledDependencyKey index
-      , Html.Attributes.id <| "bundled-dependency-key-" ++ String.fromInt index 
+      , Html.Attributes.id <| "bundled-dependency-name-" ++ String.fromInt index 
       ]
       []
     , viewInputField
@@ -684,11 +739,11 @@ viewPeerDependency index ( PeerDependency peerDependency ) =
   Html.div
     []
     [ viewInputField
-      [ Html.Attributes.for <| "peer-dependency-key-" ++ String.fromInt index ]
+      [ Html.Attributes.for <| "peer-dependency-name-" ++ String.fromInt index ]
       [ Html.text "Name" ]
       [ Html.Attributes.value <| viewPeerDependencyKey peerDependency.key
       , Html.Events.onInput <| UpdatePeerDependencyKey index
-      , Html.Attributes.id <| "peer-dependency-key-" ++ String.fromInt index 
+      , Html.Attributes.id <| "peer-dependency-name-" ++ String.fromInt index 
       ]
       []
     , viewInputField
@@ -729,11 +784,11 @@ viewDevelopmentDependency index ( DevelopmentDependency developmentDependency ) 
   Html.div
     []
     [ viewInputField
-      [ Html.Attributes.for <| "development-dependency-key-" ++ String.fromInt index ]
+      [ Html.Attributes.for <| "development-dependency-name-" ++ String.fromInt index ]
       [ Html.text "Name" ]
       [ Html.Events.onInput <| UpdateDevelopmentDependencyKey index 
       , Html.Attributes.value <| viewDevelopmentDependencyKey developmentDependency.key
-      , Html.Attributes.id <| "development-dependency-key-" ++ String.fromInt index 
+      , Html.Attributes.id <| "development-dependency-name-" ++ String.fromInt index 
       ]
       []
     , viewInputField
@@ -774,11 +829,11 @@ viewDependency index ( Dependency dependency ) =
   Html.div
     []
     [ viewInputField
-      [ Html.Attributes.for <| "dependency-key-" ++ String.fromInt index ]
+      [ Html.Attributes.for <| "dependency-name-" ++ String.fromInt index ]
       [ Html.text "Name" ]
       [ Html.Events.onInput <| UpdateDependencyKey index
       , Html.Attributes.value <| viewDependencyKey dependency.key
-      , Html.Attributes.id <| "dependency-key-" ++ String.fromInt index 
+      , Html.Attributes.id <| "dependency-name-" ++ String.fromInt index 
       ]
       []
     , viewInputField
@@ -1096,7 +1151,7 @@ viewSecondLevelTitle attributes children =
       , Html.Attributes.style "font-family" "sans-serif"
       , Html.Attributes.style "margin" "0"
       , Html.Attributes.style "padding" "0"
-      , Html.Attributes.style "font-weight" "lighter"
+      , Html.Attributes.style "font-weight" "100"
       ]
       attributes
     )
@@ -1116,6 +1171,7 @@ viewSelect attributes children =
       attributes
     )
     children
+
 
 -- VIEW HELPERS
 
@@ -1677,7 +1733,7 @@ update message model =
 
     AddCpu ->
       ( { model | cpus = List.append model.cpus [ Cpu "" ] }
-      , focusLastCpuAfterAdd model.cpus
+      , focusAfterAdd model.cpus "cpu-"
       )
 
     UpdateCpu index value ->
@@ -1687,12 +1743,12 @@ update message model =
 
     RemoveCpu index ->
       ( { model | cpus = List.Extra.removeAt index model.cpus }
-      , focusLastCpuBeforeRemove model.cpus
+      , focusBeforeRemove model.cpus "cpu-"
       )
 
     AddOperatingSystem ->
       ( { model | operatingSystems = List.append model.operatingSystems [ OperatingSystem "" ] }
-      , focusLastOperatingSystemBeforeAdd model.operatingSystems
+      , focusAfterAdd model.operatingSystems "operating-system-"
       )
 
     UpdateOperatingSystem index operatingSystem ->
@@ -1702,12 +1758,12 @@ update message model =
 
     RemoveOperatingSystem index ->
       ( { model | operatingSystems = List.Extra.removeAt index model.operatingSystems }
-      , focusLastOperatingSystemBeforeRemove model.operatingSystems
+      , focusBeforeRemove model.operatingSystems "operating-system-"
       )
 
     AddFile ->
       ( { model | files = List.append model.files [ File "" ] }
-      , Cmd.none
+      , focusAfterAdd model.files "file-"
       )
 
     UpdateFile index value ->
@@ -1717,12 +1773,12 @@ update message model =
 
     RemoveFile index ->
       ( { model | files = List.Extra.removeAt index model.files }
-      , Cmd.none
+      , focusBeforeRemove model.files "cpu-"
       )
 
     AddKeyword ->
       ( { model | keywords = List.append model.keywords [ Keyword "" ] }
-      , Cmd.none
+      , focusAfterAdd model.keywords "keyword-"
       )
 
     UpdateKeyword index keyword ->
@@ -1732,17 +1788,17 @@ update message model =
 
     RemoveKeyword index ->
       ( { model | keywords = List.Extra.removeAt index model.keywords }
-      , Cmd.none
+      , focusBeforeRemove model.keywords "keyword-"
       )
 
     AddContributor ->
       ( { model | contributors = List.append model.contributors [ Contributor { name = ContributorName "", email = ContributorEmail "", url = ContributorUrl "" } ] }
-      , Cmd.none
+      , focusAfterAdd model.contributors "contributor-name-"
       )
 
     RemoveContributor index ->
       ( { model | contributors = List.Extra.removeAt index model.contributors }
-      , Cmd.none
+      , focusBeforeRemove model.contributors "contributor-name-"
       )
 
     UpdateContributorName index name ->
@@ -1762,7 +1818,7 @@ update message model =
 
     AddFunding ->
       ( { model | fundings = List.append model.fundings [ Funding { kind = FundingKind "", url = FundingUrl "" } ] }
-      , Cmd.none
+      , focusAfterAdd model.fundings "funding-type-"
       )
 
     UpdateFundingKind index kind ->
@@ -1777,17 +1833,17 @@ update message model =
 
     RemoveFunding index ->
       ( { model | fundings = List.Extra.removeAt index model.fundings }
-      , Cmd.none
+      , focusBeforeRemove model.fundings "funding-type-"
       )
 
     AddScript ->
       ( { model | scripts = List.append model.scripts [ Script { key = ScriptKey "", command = ScriptCommand "" } ] }
-      , Cmd.none
+      , focusAfterAdd model.scripts "script-key-"
       )
 
     RemoveScript index ->
       ( { model | scripts = List.Extra.removeAt index model.scripts }
-      , Cmd.none
+      , focusBeforeRemove model.scripts "script-key-"
       )
 
     UpdateScriptKey index key ->
@@ -1802,12 +1858,12 @@ update message model =
 
     AddConfiguration ->
       ( { model | configurations = List.append model.configurations [ Configuration { key = ConfigurationKey "", value = ConfigurationValue "" } ] }
-      , Cmd.none
+      , focusAfterAdd model.configurations "configuration-key-"
       )
 
     RemoveConfiguration index ->
       ( { model | configurations = List.Extra.removeAt index model.configurations }
-      , Cmd.none
+      , focusBeforeRemove model.configurations "configuration-key-"
       )
 
     UpdateConfigurationKey index key ->
@@ -1822,12 +1878,12 @@ update message model =
 
     AddDependency ->
       ( { model | dependencies = List.append model.dependencies [ Dependency { key = DependencyKey "", value = DependencyValue "" } ] }
-      , Cmd.none
+      , focusAfterAdd model.dependencies "dependency-name-"
       )
 
     RemoveDependency index ->
       ( { model | dependencies = List.Extra.removeAt index model.dependencies }
-      , Cmd.none
+      , focusBeforeRemove model.dependencies "dependency-name-"
       )
 
     UpdateDependencyKey index key ->
@@ -1842,7 +1898,7 @@ update message model =
 
     AddDevelopmentDependency ->
       ( { model | developmentDependencies = List.append model.developmentDependencies [ DevelopmentDependency { key = DevelopmentDependencyKey "", value = DevelopmentDependencyValue "" } ] }
-      , Cmd.none
+      , focusAfterAdd model.developmentDependencies "development-dependency-name-"
       )
 
     UpdateDevelopmentDependencyValue index value ->
@@ -1857,12 +1913,12 @@ update message model =
 
     RemoveDevelopmentDependency index ->
       ( { model | developmentDependencies = List.Extra.removeAt index model.developmentDependencies }
-      , Cmd.none
+      , focusBeforeRemove model.developmentDependencies "development-dependency-name-"
       )
 
     AddPeerDependency ->
       ( { model | peerDependencies = List.append model.peerDependencies [ PeerDependency { key = PeerDependencyKey "", value = PeerDependencyValue "" } ] }
-      , Cmd.none
+      , focusAfterAdd model.peerDependencies "peer-dependency-name-"
       )
 
     UpdatePeerDependencyKey index key ->
@@ -1877,17 +1933,17 @@ update message model =
 
     RemovePeerDependency index ->
       ( { model | peerDependencies = List.Extra.removeAt index model.peerDependencies }
-      , Cmd.none
+      , focusBeforeRemove model.peerDependencies "peer-dependency-name-"
       )
 
     AddBundledDependency ->
       ( { model | bundledDependencies = List.append model.bundledDependencies [ BundledDependency { key = BundledDependencyKey "", value = BundledDependencyValue "" } ] }
-      , Cmd.none
+      , focusAfterAdd model.bundledDependencies "bundled-dependency-name-"
       )
 
     RemoveBundledDependency index ->
       ( { model | bundledDependencies = List.Extra.removeAt index model.bundledDependencies }
-      , Cmd.none
+      , focusBeforeRemove model.bundledDependencies "bundled-dependency-name-"
       )
 
     UpdateBundledDependencyKey index key ->
@@ -1902,7 +1958,7 @@ update message model =
 
     AddOptionalDependency ->
       ( { model | optionalDependencies = List.append model.optionalDependencies [ OptionalDependency { key = OptionalDependencyKey "", value = OptionalDependencyValue "" } ] }
-      , Cmd.none
+      , focusAfterAdd model.optionalDependencies "optional-dependency-name-"
       )
 
     UpdateOptionalDependencyKey index key ->
@@ -1917,17 +1973,17 @@ update message model =
   
     RemoveOptionalDependency index ->
       ( { model | optionalDependencies = List.Extra.removeAt index model.optionalDependencies }
-      , Cmd.none
+      , focusBeforeRemove model.optionalDependencies "optional-dependency-name-"
       )
 
     AddWorkspace ->
       ( { model | workspaces = List.append model.workspaces [ Workspace "" ] } 
-      , Cmd.none
+      , focusAfterAdd model.workspaces "workspace-"
       )
 
     RemoveWorkspace index ->
       ( { model | workspaces = List.Extra.removeAt index model.workspaces }
-      , Cmd.none
+      , focusBeforeRemove model.workspaces "workspace-"
       )
 
     UpdateWorkspace index workspace ->
@@ -2164,52 +2220,27 @@ updateContributorName ( ContributorName name ) ( Contributor contributor ) =
 -- COMMANDS
 
 
-focusLastCpuAfterAdd : List Cpu -> Cmd Message
-focusLastCpuAfterAdd cpus =
+focusAfterAdd : List a -> String -> Cmd Message
+focusAfterAdd list identifier =
   Task.attempt
     ( always None )
-    ( cpus
+    ( list
       |> List.length
       |> String.fromInt
-      |> (++) "cpu-"
+      |> (++) identifier
       |> Browser.Dom.focus
     )
 
 
-focusLastCpuBeforeRemove : List Cpu -> Cmd Message
-focusLastCpuBeforeRemove cpus =
+focusBeforeRemove : List a -> String -> Cmd Message
+focusBeforeRemove list identifier =
   Task.attempt
     ( always None )
-    ( cpus
+    ( list
       |> List.length
       |> Flip.flip (-) 2
       |> String.fromInt
-      |> (++) "cpu-"
-      |> Browser.Dom.focus
-    )
-
-
-focusLastOperatingSystemBeforeAdd : List OperatingSystem -> Cmd Message
-focusLastOperatingSystemBeforeAdd operatingSystems =
-  Task.attempt
-    ( always None )
-    ( operatingSystems
-      |> List.length
-      |> String.fromInt
-      |> (++) "operating-system-"
-      |> Browser.Dom.focus
-    )
-
-
-focusLastOperatingSystemBeforeRemove : List OperatingSystem -> Cmd Message
-focusLastOperatingSystemBeforeRemove operatingSystems =
-  Task.attempt
-    ( always None )
-    ( operatingSystems
-      |> List.length
-      |> Flip.flip (-) 2
-      |> String.fromInt
-      |> (++) "operating-system-"
+      |> (++) identifier
       |> Browser.Dom.focus
     )
 
