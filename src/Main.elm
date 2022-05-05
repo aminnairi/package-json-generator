@@ -1,6 +1,8 @@
 module Main exposing ( main )
 
+
 -- IMPORTS
+
 
 import Browser
 import Browser.Dom
@@ -23,7 +25,7 @@ main =
     { init    = init
     , update  = update
     , view    = view
-    , subscriptions = \_ -> Sub.none
+    , subscriptions = always Sub.none
     }
 
 
@@ -38,10 +40,10 @@ view model =
     , Html.Attributes.style "margin" "0 auto"
     ]
     [ Html.h1
-      [ Html.Attributes.style "font-family" "sans-serif"
+      [ Html.Attributes.style "font-family" "Poppins"
       , Html.Attributes.style "margin" "20px 0 20px 0"
       , Html.Attributes.style "padding" "0"
-      , Html.Attributes.style "font-weight" "lighter"
+      , Html.Attributes.style "font-weight" "200"
       , Html.Attributes.style "text-align" "center"
       ]
       [ Html.text "package.json generator" ]
@@ -125,6 +127,7 @@ viewLibraryDirectory ( LibraryDirectory libraryDirectory ) =
     , Html.Attributes.id "directories-library"
     , Html.Events.onInput UpdateLibraryDirectory
     , Html.Attributes.placeholder "./library"
+    , Html.Attributes.type_ "text"
     ]
     []
 
@@ -138,6 +141,7 @@ viewBinaryDirectory ( BinaryDirectory binaryDirectory ) =
     , Html.Attributes.id "directories-binary"
     , Html.Events.onInput UpdateBinaryDirectory
     , Html.Attributes.placeholder "./binary"
+    , Html.Attributes.type_ "text"
     ]
     []
 
@@ -151,6 +155,7 @@ viewManualDirectory ( ManualDirectory manualDirectory ) =
     , Html.Attributes.id "directories-manual"
     , Html.Events.onInput UpdateManualDirectory
     , Html.Attributes.placeholder "./manual"
+    , Html.Attributes.type_ "text"
     ]
     []
 
@@ -164,6 +169,7 @@ viewDocumentationDirectory ( DocumentationDirectory documentationDirectory ) =
     , Html.Attributes.id "directories-documentation"
     , Html.Events.onInput UpdateDocumentationDirectory
     , Html.Attributes.placeholder "./documentation"
+    , Html.Attributes.type_ "text"
     ]
     []
 
@@ -177,6 +183,7 @@ viewExampleDirectory ( ExampleDirectory exampleDirectory ) =
     , Html.Attributes.id "directories-example"
     , Html.Events.onInput UpdateExampleDirectory
     , Html.Attributes.placeholder "examples"
+    , Html.Attributes.type_ "text"
     ]
     []
 
@@ -190,6 +197,7 @@ viewTestDirectory ( TestDirectory testDirectory ) =
     , Html.Attributes.id "directories-test"
     , Html.Events.onInput UpdateTestDirectory
     , Html.Attributes.placeholder "./tests"
+    , Html.Attributes.type_ "text"
     ]
     []
 
@@ -215,6 +223,8 @@ viewWorkspace index ( Workspace workspace ) =
       [ Html.Attributes.value workspace
       , Html.Attributes.id <| "workspace-" ++ String.fromInt index
       , Html.Events.onInput <| UpdateWorkspace index
+      , Html.Attributes.type_ "text"
+      , Html.Attributes.placeholder "client, server, mobile, ..."
       ]
       []
     , viewButton [ Html.Events.onClick <| RemoveWorkspace index ] [ Html.text "Remove" ]
@@ -242,6 +252,8 @@ viewKeyword index ( Keyword keyword ) =
       [ Html.Attributes.id <| "keyword-" ++ String.fromInt index 
       , Html.Attributes.value keyword
       , Html.Events.onInput <| UpdateKeyword index
+      , Html.Attributes.type_ "text"
+      , Html.Attributes.placeholder "node, browser, javascript, ..."
       ]
       []
     , viewButton [ Html.Events.onClick <| RemoveKeyword index ] [ Html.text "Remove" ]
@@ -269,6 +281,8 @@ viewFile index ( File file ) =
       [ Html.Attributes.value file
       , Html.Attributes.id <| "file-" ++ String.fromInt index 
       , Html.Events.onInput <| UpdateFile index
+      , Html.Attributes.type_ "text"
+      , Html.Attributes.placeholder "./index.js, ./library/index.js, ./helpers/index.js, ..."
       ]
       []
     , viewButton [ Html.Events.onClick <| RemoveFile index ] [ Html.text "Remove" ]
@@ -296,6 +310,8 @@ viewOperatingSystem index ( OperatingSystem operatingSystem ) =
       [ Html.Attributes.id <| "operating-system-" ++ String.fromInt index 
       , Html.Attributes.value operatingSystem
       , Html.Events.onInput <| UpdateOperatingSystem index
+      , Html.Attributes.type_ "text"
+      , Html.Attributes.placeholder "linux, nt, darwin, ..."
       ]
       []
     , viewButton [ Html.Events.onClick <| RemoveOperatingSystem index ] [ Html.text "Remove" ]
@@ -323,6 +339,8 @@ viewCpu index ( Cpu cpu ) =
       [ Html.Attributes.id <| "cpu-" ++ String.fromInt index
       , Html.Attributes.value cpu
       , Html.Events.onInput <| UpdateCpu index
+      , Html.Attributes.type_ "text"
+      , Html.Attributes.placeholder "x64, x86_64, arm, ..."
       ]
       []
     , viewButton [ Html.Events.onClick <| RemoveCpu index ] [ Html.text "Remove" ]
@@ -342,6 +360,7 @@ viewBrowser ( Browser browser ) =
       , Html.Attributes.id "browser"
       , Html.Events.onInput UpdateBrowser
       , Html.Attributes.placeholder "./dist/index.browser.js"
+      , Html.Attributes.type_ "text"
       ]
       []
     ]
@@ -359,6 +378,7 @@ viewMain ( Main entrypoint ) =
       , Html.Attributes.id "main"
       , Html.Events.onInput UpdateMain
       , Html.Attributes.placeholder "./dist/index.js"
+      , Html.Attributes.type_ "text"
       ]
       []
     ]
@@ -376,6 +396,7 @@ viewLicense ( License license ) =
       , Html.Attributes.id "license"
       , Html.Events.onInput UpdateLicense
       , Html.Attributes.placeholder "GPL-3.0-or-later"
+      , Html.Attributes.type_ "text"
       ]
       []
     ]
@@ -393,6 +414,7 @@ viewHomepage ( Homepage homepage ) =
       , Html.Attributes.id "homepage"
       , Html.Events.onInput UpdateHomepage
       , Html.Attributes.placeholder "https://github.com/user/repository#readme"
+      , Html.Attributes.type_ "url"
       ]
       []
     ]
@@ -410,6 +432,7 @@ viewVersion ( Version version ) =
       , Html.Attributes.id "version"
       , Html.Events.onInput UpdateVersion
       , Html.Attributes.placeholder "0.1.0"
+      , Html.Attributes.type_ "text"
       ]
       []
     ]
@@ -427,6 +450,7 @@ viewDescription ( Description description ) =
       , Html.Attributes.id "description"
       , Html.Events.onInput UpdateDescription
       , Html.Attributes.placeholder "An awesome package that does things"
+      , Html.Attributes.type_ "text"
       ]
       []
     ]
@@ -445,6 +469,7 @@ viewName ( Name name ) =
       , Html.Events.onInput UpdateName
       , Html.Attributes.autofocus True
       , Html.Attributes.placeholder "@user/package"
+      , Html.Attributes.type_ "text"
       ]
       []
     ]
@@ -494,6 +519,7 @@ viewNodeEngine ( NodeEngine node ) =
     , Html.Events.onInput UpdateEnginesNode
     , Html.Attributes.id "engines-node"
     , Html.Attributes.placeholder ">=17.0.0"
+    , Html.Attributes.type_ "text"
     ]
     []
 
@@ -507,6 +533,7 @@ viewNpmEngine ( NpmEngine npm ) =
     , Html.Events.onInput UpdateEnginesNpm
     , Html.Attributes.id "engines-npm"
     , Html.Attributes.placeholder ">=8.0.0"
+    , Html.Attributes.type_ "text"
     ]
     []
 
@@ -530,6 +557,7 @@ viewRepositoryKind ( RepositoryKind kind ) =
     , Html.Events.onInput UpdateRepositoryKind
     , Html.Attributes.id "repository-type"
     , Html.Attributes.placeholder "git"
+    , Html.Attributes.type_ "text"
     ]
     []
 
@@ -543,6 +571,7 @@ viewRepositoryUrl ( RepositoryUrl url ) =
     , Html.Events.onInput UpdateRepositoryUrl
     , Html.Attributes.id "repository-url"
     , Html.Attributes.placeholder "https://github.com/user/repository.git"
+    , Html.Attributes.type_ "url"
     ]
     []
 
@@ -567,6 +596,7 @@ viewAuthorName ( AuthorName name ) =
     , Html.Events.onInput UpdateAuthorName
     , Html.Attributes.id "author-name"
     , Html.Attributes.placeholder "User NAME"
+    , Html.Attributes.type_ "text"
     ]
     [] 
 
@@ -580,6 +610,7 @@ viewAuthorUrl ( AuthorUrl url ) =
     , Html.Events.onInput UpdateAuthorUrl
     , Html.Attributes.id "author-url"
     , Html.Attributes.placeholder "https://github.com/user"
+    , Html.Attributes.type_ "url"
     ]
     [] 
 
@@ -593,6 +624,7 @@ viewAuthorEmail ( AuthorEmail email ) =
     , Html.Events.onInput UpdateAuthorEmail
     , Html.Attributes.id "author-email"
     , Html.Attributes.placeholder "user@repository.com"
+    , Html.Attributes.type_ "email"
     ]
     [] 
 
@@ -616,6 +648,7 @@ viewBugsUrl ( BugsUrl url ) =
     , Html.Events.onInput UpdateBugsUrl
     , Html.Attributes.for "bugs-url"
     , Html.Attributes.placeholder "https://github.com/user/repository/issues"
+    , Html.Attributes.type_ "url"
     ]
     []
 
@@ -629,6 +662,7 @@ viewBugsEmail ( BugsEmail email ) =
     , Html.Events.onInput UpdateBugsEmail
     , Html.Attributes.id "bugs-email"
     , Html.Attributes.placeholder "user@repository.com"
+    , Html.Attributes.type_ "email"
     ]
     []
 
@@ -654,6 +688,8 @@ viewOptionalDependency index ( OptionalDependency optionalDependency ) =
       [ Html.Attributes.value <| viewOptionalDependencyKey optionalDependency.key
       , Html.Events.onInput <| UpdateOptionalDependencyKey index
       , Html.Attributes.id <| "optional-dependency-name-" ++ String.fromInt index 
+      , Html.Attributes.type_ "text"
+      , Html.Attributes.placeholder "react, react-dom, react-router-dom"
       ]
       []
     , viewInputField
@@ -662,6 +698,8 @@ viewOptionalDependency index ( OptionalDependency optionalDependency ) =
       [ Html.Attributes.value <| viewOptionalDependencyValue optionalDependency.value
       , Html.Events.onInput <| UpdateOptionalDependencyValue index
       , Html.Attributes.id <| "optional-dependency-value-" ++ String.fromInt index 
+      , Html.Attributes.type_ "text"
+      , Html.Attributes.placeholder "18.0.0, 6.1.4, 0.21.9"
       ]
       []
     , viewButton [ Html.Events.onClick <| RemoveOptionalDependency index ] [ Html.text "Remove" ]
@@ -699,6 +737,8 @@ viewBundledDependency index ( BundledDependency bundledDependency ) =
       [ Html.Attributes.value <| viewBundledDependencyKey bundledDependency.key
       , Html.Events.onInput <| UpdateBundledDependencyKey index
       , Html.Attributes.id <| "bundled-dependency-name-" ++ String.fromInt index 
+      , Html.Attributes.type_ "text"
+      , Html.Attributes.placeholder "react, react-dom, react-router-dom"
       ]
       []
     , viewInputField
@@ -707,6 +747,8 @@ viewBundledDependency index ( BundledDependency bundledDependency ) =
       [ Html.Attributes.value <| viewBundledDependencyValue bundledDependency.value
       , Html.Events.onInput <| UpdateBundledDependencyValue index
       , Html.Attributes.id <| "bundled-dependency-value-" ++ String.fromInt index 
+      , Html.Attributes.type_ "text"
+      , Html.Attributes.placeholder "18.0.0, 6.1.4, 0.21.9"
       ]
       []
     , viewButton [ Html.Events.onClick <| RemoveBundledDependency index ] [ Html.text "Remove" ]
@@ -744,6 +786,8 @@ viewPeerDependency index ( PeerDependency peerDependency ) =
       [ Html.Attributes.value <| viewPeerDependencyKey peerDependency.key
       , Html.Events.onInput <| UpdatePeerDependencyKey index
       , Html.Attributes.id <| "peer-dependency-name-" ++ String.fromInt index 
+      , Html.Attributes.type_ "text"
+      , Html.Attributes.placeholder "react, react-dom, react-router-dom"
       ]
       []
     , viewInputField
@@ -752,6 +796,8 @@ viewPeerDependency index ( PeerDependency peerDependency ) =
       [ Html.Attributes.value <| viewPeerDependencyValue peerDependency.value
       , Html.Events.onInput <| UpdatePeerDependencyValue index
       , Html.Attributes.id <| "peer-dependency-value-" ++ String.fromInt index 
+      , Html.Attributes.type_ "text"
+      , Html.Attributes.placeholder "18.0.0, 6.1.4, 0.21.9"
       ]
       []
     , viewButton [ Html.Events.onClick <| RemovePeerDependency index ] [ Html.text "Remove" ]
@@ -789,6 +835,8 @@ viewDevelopmentDependency index ( DevelopmentDependency developmentDependency ) 
       [ Html.Events.onInput <| UpdateDevelopmentDependencyKey index 
       , Html.Attributes.value <| viewDevelopmentDependencyKey developmentDependency.key
       , Html.Attributes.id <| "development-dependency-name-" ++ String.fromInt index 
+      , Html.Attributes.type_ "text"
+      , Html.Attributes.placeholder "react, react-dom, react-router-dom"
       ]
       []
     , viewInputField
@@ -797,6 +845,8 @@ viewDevelopmentDependency index ( DevelopmentDependency developmentDependency ) 
       [ Html.Events.onInput <| UpdateDevelopmentDependencyValue index
       , Html.Attributes.value <| viewDevelopmentDependencyValue developmentDependency.value
       , Html.Attributes.id <| "development-dependency-value-" ++ String.fromInt index 
+      , Html.Attributes.type_ "text"
+      , Html.Attributes.placeholder "18.0.0, 6.1.4, 0.21.9"
       ]
       []
     , viewButton [ Html.Events.onClick <| RemoveDevelopmentDependency index ] [ Html.text "Remove" ]
@@ -834,6 +884,8 @@ viewDependency index ( Dependency dependency ) =
       [ Html.Events.onInput <| UpdateDependencyKey index
       , Html.Attributes.value <| viewDependencyKey dependency.key
       , Html.Attributes.id <| "dependency-name-" ++ String.fromInt index 
+      , Html.Attributes.type_ "text"
+      , Html.Attributes.placeholder "react, react-dom, react-router-dom"
       ]
       []
     , viewInputField
@@ -842,6 +894,8 @@ viewDependency index ( Dependency dependency ) =
       [ Html.Events.onInput <| UpdateDependencyValue index
       , Html.Attributes.value <| viewDependencyValue dependency.value
       , Html.Attributes.id <| "dependency-value-" ++ String.fromInt index 
+      , Html.Attributes.type_ "text"
+      , Html.Attributes.placeholder "18.0.0, 6.1.4, 0.21.9"
       ]
       []
     , viewButton [ Html.Events.onClick <| RemoveDependency index ] [ Html.text "Remove" ]
@@ -879,6 +933,8 @@ viewConfiguration index ( Configuration configuration ) =
       [ Html.Events.onInput <| UpdateConfigurationKey index
       , Html.Attributes.value <| viewConfigurationKey configuration.key
       , Html.Attributes.id <| "configuration-key-" ++ String.fromInt index 
+      , Html.Attributes.type_ "text"
+      , Html.Attributes.placeholder "port, host, url, ..."
       ]
       []
     , viewInputField
@@ -887,6 +943,8 @@ viewConfiguration index ( Configuration configuration ) =
       [ Html.Events.onInput <| UpdateConfigurationValue index
       , Html.Attributes.value <| viewConfigurationValue configuration.value
       , Html.Attributes.id <| "configuration-value-" ++ String.fromInt index 
+      , Html.Attributes.type_ "text"
+      , Html.Attributes.placeholder "8000, localhost, https://api.domain.com"
       ]
       []
     , viewButton [ Html.Events.onClick <| RemoveConfiguration index ] [ Html.text "Remove" ]
@@ -924,6 +982,8 @@ viewScript index ( Script script ) =
       [ Html.Events.onInput <| UpdateScriptKey index
       , Html.Attributes.value <| viewScriptKey script.key
       , Html.Attributes.id <| "script-key-" ++ String.fromInt index 
+      , Html.Attributes.type_ "text"
+      , Html.Attributes.placeholder "dev, prod, test, ..."
       ]
       []
     , viewInputField
@@ -932,6 +992,8 @@ viewScript index ( Script script ) =
       [ Html.Events.onInput <| UpdateScriptCommand index
       , Html.Attributes.value <| viewScriptCommand script.command
       , Html.Attributes.id <| "script-command-" ++ String.fromInt index 
+      , Html.Attributes.type_ "text"
+      , Html.Attributes.placeholder "vite, vite build, eslint, ..."
       ]
       []
     , viewButton [ Html.Events.onClick <| RemoveScript index ] [ Html.text "Remove" ]
@@ -969,6 +1031,8 @@ viewFunding index ( Funding funding ) =
       [ Html.Events.onInput <| UpdateFundingKind index
       , Html.Attributes.value <| viewFundingKind funding.kind
       , Html.Attributes.id <| "funding-type-" ++ String.fromInt index 
+      , Html.Attributes.type_ "text"
+      , Html.Attributes.placeholder "individual, patreon, ..."
       ]
       []
     , viewInputField
@@ -977,6 +1041,8 @@ viewFunding index ( Funding funding ) =
       [ Html.Events.onInput <| UpdateFundingUrl index
       , Html.Attributes.value <| viewFundingUrl funding.url
       , Html.Attributes.id <| "funding-url-" ++ String.fromInt index 
+      , Html.Attributes.type_ "url"
+      , Html.Attributes.placeholder "https://patreon.com/user"
       ]
       []
     , viewButton [ Html.Events.onClick <| RemoveFunding index ] [ Html.text "Remove" ]
@@ -1013,6 +1079,8 @@ viewContributor index ( Contributor contributor ) =
       [ Html.Events.onInput <| UpdateContributorName index
       , Html.Attributes.value <| viewContributorName contributor.name
       , Html.Attributes.id <| "contributor-name-" ++ String.fromInt index 
+      , Html.Attributes.type_ "text"
+      , Html.Attributes.placeholder "John DOE"
       ]
       []
     , viewInputField
@@ -1021,6 +1089,8 @@ viewContributor index ( Contributor contributor ) =
       [ Html.Events.onInput <| UpdateContributorEmail index
       , Html.Attributes.value <| viewContributorEmail contributor.email
       , Html.Attributes.id <| "contributor-email-" ++ String.fromInt index 
+      , Html.Attributes.type_ "email"
+      , Html.Attributes.placeholder "johndoe@domain.com"
       ]
       []
     , viewInputField
@@ -1029,6 +1099,8 @@ viewContributor index ( Contributor contributor ) =
       [ Html.Events.onInput <| UpdateContributorUrl index
       , Html.Attributes.value <| viewContributorUrl contributor.url
       , Html.Attributes.id <| "contributor-url-" ++ String.fromInt index 
+      , Html.Attributes.type_ "url"
+      , Html.Attributes.placeholder "https://johndoe.com"
       ]
       []
     , viewButton [ Html.Events.onClick <| RemoveContributor index ] [ Html.text "Remove" ]
@@ -1071,7 +1143,8 @@ viewInputFieldLabel : List ( Attribute Message ) -> List ( Html Message ) -> Htm
 viewInputFieldLabel attributes children =
   Html.label
     ( List.append
-      [ Html.Attributes.style "font-family" "sans-serif"
+      [ Html.Attributes.style "font-family" "Poppins"
+      , Html.Attributes.style "font-weight" "400"
       , Html.Attributes.style "font-size" "0.75rem"
       , Html.Attributes.style "position" "absolute"
       , Html.Attributes.style "top" "0"
@@ -1084,13 +1157,6 @@ viewInputFieldLabel attributes children =
       ]
       attributes
     )
-    children
-
-
-viewLabel : List ( Attribute Message ) -> List ( Html Message ) -> Html Message
-viewLabel attributes children =
-  Html.label
-    ( List.append [ Html.Attributes.style "font-family" "sans-serif" ] attributes )
     children
 
 
@@ -1122,7 +1188,7 @@ viewButton attributes children =
       , Html.Attributes.style "margin" "10px"
       , Html.Attributes.style "cursor" "pointer"
       , Html.Attributes.style "text-transform" "uppercase"
-      , Html.Attributes.style "font-weight" "normal"
+      , Html.Attributes.style "font-weight" "400"
       ]
       attributes
     )
@@ -1147,11 +1213,11 @@ viewSecondLevelTitle attributes children =
   Html.h2
     ( List.append
       [ Html.Attributes.style "text-align" "center"
-      , Html.Attributes.style "font-weight" "normal"
-      , Html.Attributes.style "font-family" "sans-serif"
+      , Html.Attributes.style "font-weight" "200"
+      , Html.Attributes.style "font-family" "Poppins"
       , Html.Attributes.style "margin" "0"
       , Html.Attributes.style "padding" "0"
-      , Html.Attributes.style "font-weight" "100"
+      , Html.Attributes.style "font-weight" "200"
       ]
       attributes
     )
