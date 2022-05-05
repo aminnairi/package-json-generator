@@ -10,3 +10,4 @@
 - Slimest encoded package.json possible
 - Add custom font
 - Placeholders
+- Favicon
