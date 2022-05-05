@@ -7,4 +7,4 @@
 - Share query parameter
 - Help icon
 - Slimest encoded package.json possible
-- Favicon
+- Manifest
