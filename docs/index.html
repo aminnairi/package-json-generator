@@ -5,6 +5,11 @@
     <meta name="viewport" content="width-device-width, initial-scale=1.0">
     <meta name="description" content="Generate your package.json configuration from your browser.">
     <meta name="theme-color" content="#ffffff">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;400&display=swap" as="style">
+    <link rel="icon" href="./icon.png">
+    <link rel="apple-touch-icon" href="./icon.png">
     <title>Package JSON Generator</title>
     <style>
       html, body {
@@ -19,6 +24,15 @@
     <div id="elm"></div>
     <script src="elm.js"></script>
     <script>
+      "use strict";
+
+      const link = window.document.createElement("link");
+
+      link.setAttribute("rel", "stylesheet");
+      link.setAttribute("href", "https://fonts.googleapis.com/css2?family=Poppins:wght@200;400&display=swap");
+
+      window.document.head.appendChild(link);
+
       Elm.Main.init({
         node: document.getElementById("elm")
       });
