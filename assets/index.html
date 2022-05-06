@@ -41,6 +41,10 @@
       elm.ports.vibrate.subscribe(() => {
         window.navigator.vibrate(100);
       });
+
+      elm.ports.copyToClipboard.subscribe((model) => {
+        window.navigator.clipboard.writeText(model).catch(Promise.resolve);
+      });
     </script>
   </body>
 </html>
