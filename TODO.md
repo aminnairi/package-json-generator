@@ -7,4 +7,3 @@
 - Share query parameter
 - Help icon
 - Slimest encoded package.json possible
-- Manifest
