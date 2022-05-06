@@ -1,4 +1,4 @@
-module Main exposing ( main )
+port module Main exposing ( main )
 
 
 -- IMPORTS
@@ -1799,7 +1799,10 @@ update message model =
 
     AddCpu ->
       ( { model | cpus = List.append model.cpus [ Cpu "" ] }
-      , focusAfterAdd model.cpus "cpu-"
+      , Cmd.batch
+        [ focusAfterAdd model.cpus "cpu-"
+        , vibrate ()
+        ]
       )
 
     UpdateCpu index value ->
@@ -1809,12 +1812,18 @@ update message model =
 
     RemoveCpu index ->
       ( { model | cpus = List.Extra.removeAt index model.cpus }
-      , focusBeforeRemove model.cpus "cpu-"
+      , Cmd.batch
+        [ focusBeforeRemove model.cpus "cpu-"
+        , vibrate ()
+        ]
       )
 
     AddOperatingSystem ->
       ( { model | operatingSystems = List.append model.operatingSystems [ OperatingSystem "" ] }
-      , focusAfterAdd model.operatingSystems "operating-system-"
+      , Cmd.batch
+        [ focusAfterAdd model.operatingSystems "operating-system-"
+        , vibrate ()
+        ]
       )
 
     UpdateOperatingSystem index operatingSystem ->
@@ -1824,12 +1833,18 @@ update message model =
 
     RemoveOperatingSystem index ->
       ( { model | operatingSystems = List.Extra.removeAt index model.operatingSystems }
-      , focusBeforeRemove model.operatingSystems "operating-system-"
+      , Cmd.batch
+        [ focusBeforeRemove model.operatingSystems "operating-system-"
+        , vibrate ()
+        ]
       )
 
     AddFile ->
       ( { model | files = List.append model.files [ File "" ] }
-      , focusAfterAdd model.files "file-"
+      , Cmd.batch
+        [ focusAfterAdd model.files "file-"
+        , vibrate ()
+        ]
       )
 
     UpdateFile index value ->
@@ -1839,12 +1854,18 @@ update message model =
 
     RemoveFile index ->
       ( { model | files = List.Extra.removeAt index model.files }
-      , focusBeforeRemove model.files "cpu-"
+      , Cmd.batch 
+        [ focusBeforeRemove model.files "cpu-"
+        , vibrate ()
+        ]
       )
 
     AddKeyword ->
       ( { model | keywords = List.append model.keywords [ Keyword "" ] }
-      , focusAfterAdd model.keywords "keyword-"
+      , Cmd.batch
+        [ focusAfterAdd model.keywords "keyword-"
+        , vibrate ()
+        ]
       )
 
     UpdateKeyword index keyword ->
@@ -1854,17 +1875,26 @@ update message model =
 
     RemoveKeyword index ->
       ( { model | keywords = List.Extra.removeAt index model.keywords }
-      , focusBeforeRemove model.keywords "keyword-"
+      , Cmd.batch
+        [ focusBeforeRemove model.keywords "keyword-"
+        , vibrate ()
+        ]
       )
 
     AddContributor ->
       ( { model | contributors = List.append model.contributors [ Contributor { name = ContributorName "", email = ContributorEmail "", url = ContributorUrl "" } ] }
-      , focusAfterAdd model.contributors "contributor-name-"
+      , Cmd.batch
+        [ focusAfterAdd model.contributors "contributor-name-"
+        , vibrate ()
+        ]
       )
 
     RemoveContributor index ->
       ( { model | contributors = List.Extra.removeAt index model.contributors }
-      , focusBeforeRemove model.contributors "contributor-name-"
+      , Cmd.batch
+        [ focusBeforeRemove model.contributors "contributor-name-"
+        , vibrate ()
+        ]
       )
 
     UpdateContributorName index name ->
@@ -1884,7 +1914,10 @@ update message model =
 
     AddFunding ->
       ( { model | fundings = List.append model.fundings [ Funding { kind = FundingKind "", url = FundingUrl "" } ] }
-      , focusAfterAdd model.fundings "funding-type-"
+      , Cmd.batch
+        [ focusAfterAdd model.fundings "funding-type-"
+        , vibrate ()
+        ]
       )
 
     UpdateFundingKind index kind ->
@@ -1899,17 +1932,26 @@ update message model =
 
     RemoveFunding index ->
       ( { model | fundings = List.Extra.removeAt index model.fundings }
-      , focusBeforeRemove model.fundings "funding-type-"
+      , Cmd.batch
+        [ focusBeforeRemove model.fundings "funding-type-"
+        , vibrate ()
+        ]
       )
 
     AddScript ->
       ( { model | scripts = List.append model.scripts [ Script { key = ScriptKey "", command = ScriptCommand "" } ] }
-      , focusAfterAdd model.scripts "script-key-"
+      , Cmd.batch 
+        [ focusAfterAdd model.scripts "script-key-"
+        , vibrate ()
+        ]
       )
 
     RemoveScript index ->
       ( { model | scripts = List.Extra.removeAt index model.scripts }
-      , focusBeforeRemove model.scripts "script-key-"
+      , Cmd.batch
+        [ focusBeforeRemove model.scripts "script-key-"
+        , vibrate ()
+        ]
       )
 
     UpdateScriptKey index key ->
@@ -1924,12 +1966,18 @@ update message model =
 
     AddConfiguration ->
       ( { model | configurations = List.append model.configurations [ Configuration { key = ConfigurationKey "", value = ConfigurationValue "" } ] }
-      , focusAfterAdd model.configurations "configuration-key-"
+      , Cmd.batch
+        [ focusAfterAdd model.configurations "configuration-key-"
+        , vibrate ()
+        ]
       )
 
     RemoveConfiguration index ->
       ( { model | configurations = List.Extra.removeAt index model.configurations }
-      , focusBeforeRemove model.configurations "configuration-key-"
+      , Cmd.batch
+        [ focusBeforeRemove model.configurations "configuration-key-"
+        , vibrate ()
+        ]
       )
 
     UpdateConfigurationKey index key ->
@@ -1944,12 +1992,18 @@ update message model =
 
     AddDependency ->
       ( { model | dependencies = List.append model.dependencies [ Dependency { key = DependencyKey "", value = DependencyValue "" } ] }
-      , focusAfterAdd model.dependencies "dependency-name-"
+      , Cmd.batch
+        [ focusAfterAdd model.dependencies "dependency-name-"
+        , vibrate ()
+        ]
       )
 
     RemoveDependency index ->
       ( { model | dependencies = List.Extra.removeAt index model.dependencies }
-      , focusBeforeRemove model.dependencies "dependency-name-"
+      , Cmd.batch
+        [ focusBeforeRemove model.dependencies "dependency-name-"
+        , vibrate ()
+        ]
       )
 
     UpdateDependencyKey index key ->
@@ -1964,7 +2018,10 @@ update message model =
 
     AddDevelopmentDependency ->
       ( { model | developmentDependencies = List.append model.developmentDependencies [ DevelopmentDependency { key = DevelopmentDependencyKey "", value = DevelopmentDependencyValue "" } ] }
-      , focusAfterAdd model.developmentDependencies "development-dependency-name-"
+      , Cmd.batch
+        [ focusAfterAdd model.developmentDependencies "development-dependency-name-"
+        , vibrate ()
+        ]
       )
 
     UpdateDevelopmentDependencyValue index value ->
@@ -1979,12 +2036,18 @@ update message model =
 
     RemoveDevelopmentDependency index ->
       ( { model | developmentDependencies = List.Extra.removeAt index model.developmentDependencies }
-      , focusBeforeRemove model.developmentDependencies "development-dependency-name-"
+      , Cmd.batch
+        [ focusBeforeRemove model.developmentDependencies "development-dependency-name-"
+        , vibrate ()
+        ]
       )
 
     AddPeerDependency ->
       ( { model | peerDependencies = List.append model.peerDependencies [ PeerDependency { key = PeerDependencyKey "", value = PeerDependencyValue "" } ] }
-      , focusAfterAdd model.peerDependencies "peer-dependency-name-"
+      , Cmd.batch
+        [ focusAfterAdd model.peerDependencies "peer-dependency-name-"
+        , vibrate ()
+        ]
       )
 
     UpdatePeerDependencyKey index key ->
@@ -1999,17 +2062,26 @@ update message model =
 
     RemovePeerDependency index ->
       ( { model | peerDependencies = List.Extra.removeAt index model.peerDependencies }
-      , focusBeforeRemove model.peerDependencies "peer-dependency-name-"
+      , Cmd.batch 
+        [ focusBeforeRemove model.peerDependencies "peer-dependency-name-"
+        , vibrate ()
+        ]
       )
 
     AddBundledDependency ->
       ( { model | bundledDependencies = List.append model.bundledDependencies [ BundledDependency { key = BundledDependencyKey "", value = BundledDependencyValue "" } ] }
-      , focusAfterAdd model.bundledDependencies "bundled-dependency-name-"
+      , Cmd.batch
+        [ focusAfterAdd model.bundledDependencies "bundled-dependency-name-"
+        , vibrate ()
+        ]
       )
 
     RemoveBundledDependency index ->
       ( { model | bundledDependencies = List.Extra.removeAt index model.bundledDependencies }
-      , focusBeforeRemove model.bundledDependencies "bundled-dependency-name-"
+      , Cmd.batch
+        [ focusBeforeRemove model.bundledDependencies "bundled-dependency-name-"
+        , vibrate ()
+        ]
       )
 
     UpdateBundledDependencyKey index key ->
@@ -2024,7 +2096,10 @@ update message model =
 
     AddOptionalDependency ->
       ( { model | optionalDependencies = List.append model.optionalDependencies [ OptionalDependency { key = OptionalDependencyKey "", value = OptionalDependencyValue "" } ] }
-      , focusAfterAdd model.optionalDependencies "optional-dependency-name-"
+      , Cmd.batch
+        [ focusAfterAdd model.optionalDependencies "optional-dependency-name-"
+        , vibrate ()
+        ]
       )
 
     UpdateOptionalDependencyKey index key ->
@@ -2039,17 +2114,26 @@ update message model =
   
     RemoveOptionalDependency index ->
       ( { model | optionalDependencies = List.Extra.removeAt index model.optionalDependencies }
-      , focusBeforeRemove model.optionalDependencies "optional-dependency-name-"
+      , Cmd.batch
+        [ focusBeforeRemove model.optionalDependencies "optional-dependency-name-"
+        , vibrate ()
+        ]
       )
 
     AddWorkspace ->
       ( { model | workspaces = List.append model.workspaces [ Workspace "" ] } 
-      , focusAfterAdd model.workspaces "workspace-"
+      , Cmd.batch
+        [ focusAfterAdd model.workspaces "workspace-"
+        , vibrate ()
+        ]
       )
 
     RemoveWorkspace index ->
       ( { model | workspaces = List.Extra.removeAt index model.workspaces }
-      , focusBeforeRemove model.workspaces "workspace-"
+      , Cmd.batch
+        [ focusBeforeRemove model.workspaces "workspace-"
+        , vibrate ()
+        ]
       )
 
     UpdateWorkspace index workspace ->
@@ -2372,6 +2456,12 @@ init flags =
     }
   , Cmd.none
   )
+
+
+-- PORTS
+
+
+port vibrate : () -> Cmd message
 
 
 -- TYPES ( MODEL )
