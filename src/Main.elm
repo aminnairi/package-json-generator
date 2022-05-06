@@ -75,6 +75,7 @@ view model =
     , viewPeerDependencies model.peerDependencies
     , viewBundledDependencies model.bundledDependencies
     , viewOptionalDependencies model.optionalDependencies
+    , Html.button [ Html.Events.onClick CopyToClipboard ] [ Html.text "Copy" ]
     , viewModel model
     ]
 
@@ -2176,6 +2177,9 @@ update message model =
       , Cmd.none
       )
 
+    CopyToClipboard ->
+      ( model, copyToClipboard <| encodeModel model )
+
 
 updateAccess : String -> Access
 updateAccess access =
@@ -2462,6 +2466,13 @@ init flags =
 
 
 port vibrate : () -> Cmd message
+
+
+-- TODO
+port saveToFile : String -> Cmd message
+
+
+port copyToClipboard : String -> Cmd message
 
 
 -- TYPES ( MODEL )
@@ -2832,3 +2843,4 @@ type Message
   | UpdateExampleDirectory String
   | UpdateTestDirectory String
   | UpdateSpaces String
+  | CopyToClipboard
