@@ -1,0 +1,28 @@
+{
+  "background_color": "#ffffff",
+  "description": "Generate your package.json configuration from your browser.",
+  "dir": "ltr",
+  "display": "standalone",
+  "lang": "en-US",
+  "name": "Package JSON Generator",
+  "short_name": "Package JSON Generator",
+  "orientation": "portrait-primary",
+  "prefer_related_applications": false,
+  "scope": "/package-json-generator",
+  "start_url": "/package-json-generator",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "sizes": "512x512",
+      "type": "image/png",
+      "src": "./icon.png",
+      "purpose": "any"
+    },
+    {
+      "sizes": "144x144",
+      "type": "image/png",
+      "src": "./icon.png",
+      "purpose": "any"
+    }
+  ]
+}
