@@ -34,8 +34,12 @@
 
       window.document.head.appendChild(link);
 
-      Elm.Main.init({
+      const elm = Elm.Main.init({
         node: document.getElementById("elm")
+      });
+
+      elm.ports.vibrate.subscribe(() => {
+        window.navigator.vibrate(100);
       });
     </script>
   </body>
