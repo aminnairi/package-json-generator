@@ -12,6 +12,7 @@
             "elm/json": "1.1.3",
             "elm-community/html-extra": "3.4.0",
             "elm-community/list-extra": "8.5.2",
+            "garados007/triple": "1.0.0",
             "pilatch/flip": "1.0.0"
         },
         "indirect": {
