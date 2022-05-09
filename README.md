@@ -8,6 +8,13 @@ Generate package.json files directly from your browser.
 
 See [aminnairi.github.io/package-json-generator](https://aminnairi.github.io/package-json/).
 
+## Shortcuts
+
+Shortcut | Description
+---|---
+`CONTROL + ALT + a` | Copy to clipboard
+`CONTROL + ALT + s` | Save to disk
+
 ## Contributing
 
 For getting started editing this project, see [`CONTRIBUTING.md`](./CONTRIBUTING.md).
