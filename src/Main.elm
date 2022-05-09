@@ -5,6 +5,7 @@ port module Main exposing ( main )
 
 
 import Browser
+import Browser.Events
 import Browser.Dom
 import Html exposing ( Html, Attribute )
 import Html.Attributes
@@ -19,13 +20,13 @@ import Flip
 -- MAIN
 
 
-main : Program () Model Message
+main : Program Int Model Message
 main =
   Browser.element
     { init    = init
     , update  = update
     , view    = view
-    , subscriptions = always Sub.none
+    , subscriptions = subscriptions
     }
 
 
@@ -35,48 +36,94 @@ main =
 view : Model -> Html Message
 view model =
   Html.div
-    [ Html.Attributes.style "min-height" "100vh"
-    , Html.Attributes.style "max-width" "600px"
+    [ Html.Attributes.style "max-height" "100vh"
+    , Html.Attributes.style "display" "flex"
+    , Html.Attributes.style "flex-direction" ( if model.windowWidth < tabletWidthBreakpoint then "column" else "row" )
+    , Html.Attributes.style "max-width" "1200px"
     , Html.Attributes.style "margin" "0 auto"
     ]
-    [ Html.h1
-      [ Html.Attributes.style "font-family" "Poppins"
-      , Html.Attributes.style "margin" "20px 0 20px 0"
-      , Html.Attributes.style "padding" "0"
-      , Html.Attributes.style "font-weight" "200"
-      , Html.Attributes.style "text-align" "center"
+    [ Html.div
+      [ Html.Attributes.style "flex" "1"
+      , Html.Attributes.style "max-height" ( if model.windowWidth < tabletWidthBreakpoint then "unset" else "100vh" )
+      , Html.Attributes.style "overflow-y" ( if model.windowWidth < tabletWidthBreakpoint then "unset" else "scroll" )
       ]
-      [ Html.text "package.json generator" ]
-    , viewAccess model.access
-    , viewSpaces model.spaces
-    , viewName model.name
-    , viewDescription model.description
-    , viewVersion model.version
-    , viewHomepage model.homepage
-    , viewLicense model.license
-    , viewMain model.main
-    , viewBrowser model.browser
-    , viewBugs model.bugs
-    , viewAuthor model.author
-    , viewRepository model.repository
-    , viewEngines model.engines
-    , viewDirectories model.directories
-    , viewCpus model.cpus
-    , viewOperatingSystems model.operatingSystems
-    , viewFiles model.files
-    , viewKeywords model.keywords
-    , viewWorkspaces model.workspaces
-    , viewContributors model.contributors
-    , viewFundings model.fundings
-    , viewScripts model.scripts
-    , viewConfigurations model.configurations
-    , viewDependencies model.dependencies
-    , viewDevelopmentDependencies model.developmentDependencies
-    , viewPeerDependencies model.peerDependencies
-    , viewBundledDependencies model.bundledDependencies
-    , viewOptionalDependencies model.optionalDependencies
-    , Html.button [ Html.Events.onClick CopyToClipboard ] [ Html.text "Copy" ]
-    , viewModel model
+      [ Html.h1
+        [ Html.Attributes.style "font-family" "Poppins"
+        , Html.Attributes.style "margin" "20px 0 20px 0"
+        , Html.Attributes.style "padding" "0"
+        , Html.Attributes.style "font-weight" "200"
+        , Html.Attributes.style "text-align" "center"
+        ]
+        [ Html.text "package.json generator" ]
+      , viewAccess model.access
+      , viewSpaces model.spaces
+      , viewName model.name
+      , viewDescription model.description
+      , viewVersion model.version
+      , viewHomepage model.homepage
+      , viewLicense model.license
+      , viewMain model.main
+      , viewBrowser model.browser
+      , viewBugs model.bugs
+      , viewAuthor model.author
+      , viewRepository model.repository
+      , viewEngines model.engines
+      , viewDirectories model.directories
+      , viewCpus model.cpus
+      , viewOperatingSystems model.operatingSystems
+      , viewFiles model.files
+      , viewKeywords model.keywords
+      , viewWorkspaces model.workspaces
+      , viewContributors model.contributors
+      , viewFundings model.fundings
+      , viewScripts model.scripts
+      , viewConfigurations model.configurations
+      , viewDependencies model.dependencies
+      , viewDevelopmentDependencies model.developmentDependencies
+      , viewPeerDependencies model.peerDependencies
+      , viewBundledDependencies model.bundledDependencies
+      , viewOptionalDependencies model.optionalDependencies
+      , viewActions model
+      ]
+    , Html.div
+      [ Html.Attributes.style "flex" "1"
+      , Html.Attributes.style "max-height" ( if model.windowWidth < tabletWidthBreakpoint then "unset" else "100vh" )
+      , Html.Attributes.style "overflow-y" ( if model.windowWidth < tabletWidthBreakpoint then "unset" else "scroll" )
+      ]
+      [ viewModel model ]
+    ]
+
+
+viewNotification : String -> Html Message
+viewNotification notification =
+  Html.small
+    [ Html.Attributes.style "display" "block"
+    , Html.Attributes.style "text-align" "center"
+    , Html.Attributes.style "font-family" "Poppins"
+    , Html.Attributes.style "font-weight" "300"
+    ]
+    [ Html.text notification ]
+
+
+viewActions : Model -> Html Message
+viewActions model =
+  Html.div
+    [ Html.Attributes.style "display" "flex"
+    , Html.Attributes.style "flex-direction" "column"
+    , Html.Attributes.style "justify-content" "center"
+    , Html.Attributes.style "align-items" "center"
+    ]
+    [ viewSecondLevelTitle [] [ Html.text "Actions" ]
+    , viewNotification model.notification
+    , Html.div
+      [ Html.Attributes.style "display" "flex"
+      , Html.Attributes.style "flex-direction" "row"
+      , Html.Attributes.style "justify-content" "center"
+      , Html.Attributes.style "align-items" "center"
+      ]
+      [ viewButton [ Html.Events.onClick CopyToClipboard ] [ Html.text "Copy" ]
+      -- , viewButton [] [ Html.text "Save as" ]
+      ]
     ]
 
 
@@ -1243,6 +1290,14 @@ viewSelect attributes children =
 -- VIEW HELPERS
 
 
+tabletWidthBreakpoint : Int
+tabletWidthBreakpoint =
+  900
+
+
+-- JSON
+
+
 encodeModel : Model -> String
 encodeModel model =
   Json.Encode.encode ( encodeSpaces model.spaces )
@@ -1711,95 +1766,151 @@ update : Message -> Model -> ( Model, Cmd Message )
 update message model =
   case message of
     None ->
-      ( model, Cmd.none )
+      ( { model | notification = "" }
+      , Cmd.none
+      )
 
     UpdateName name ->
-      ( { model | name = ( Name name ) }
+      ( { model
+          | name = ( Name name )
+          , notification = ""
+        }
       , Cmd.none
       )
 
     UpdateDescription description ->
-      ( { model | description = ( Description description ) }
+      ( { model
+          | description = ( Description description )
+          , notification = ""
+        }
       , Cmd.none
       )
 
     UpdateVersion version ->
-      ( { model | version = ( Version version ) }
+      ( { model
+          | version = ( Version version )
+          , notification = ""
+        }
       , Cmd.none
       )
 
     UpdateHomepage homepage ->
-      ( { model | homepage = ( Homepage homepage ) }
+      ( { model
+          | homepage = ( Homepage homepage )
+          , notification = ""
+        }
       , Cmd.none
       )
 
     UpdateLicense license ->
-      ( { model | license = ( License license ) }
+      ( { model
+          | license = ( License license )
+          , notification = ""
+        }
       , Cmd.none
       )
 
     UpdateMain entrypoint ->
-      ( { model | main = ( Main entrypoint ) }
+      ( { model
+          | main = ( Main entrypoint )
+          , notification = ""
+        }
       , Cmd.none
       )
 
     UpdateBrowser browser ->
-      ( { model | browser = ( Browser browser ) }
+      ( { model
+          | browser = ( Browser browser )
+          , notification = ""
+        }
       , Cmd.none
       )
 
     UpdateAccess access ->
-      ( { model | access = updateAccess access }
+      ( { model
+          | access = updateAccess access
+          , notification = ""
+        }
       , Cmd.none
       )
 
     UpdateBugsUrl url ->
-      ( { model | bugs = updateBugsUrl ( BugsUrl url ) model.bugs }
+      ( { model
+          | bugs = updateBugsUrl ( BugsUrl url ) model.bugs
+          , notification = ""
+        }
       , Cmd.none
       )
 
     UpdateBugsEmail email ->
-      ( { model | bugs = updateBugsEmail ( BugsEmail email ) model.bugs }
+      ( { model
+          | bugs = updateBugsEmail ( BugsEmail email ) model.bugs
+          , notification = ""
+        }
       , Cmd.none
       )
 
     UpdateAuthorName name ->
-      ( { model | author = updateAuthorName ( AuthorName name ) model.author }
+      ( { model
+          | author = updateAuthorName ( AuthorName name ) model.author
+          , notification = ""
+        }
       , Cmd.none
       )
 
     UpdateAuthorEmail email ->
-      ( { model | author = updateAuthorEmail ( AuthorEmail email ) model.author }
+      ( { model
+          | author = updateAuthorEmail ( AuthorEmail email ) model.author
+          , notification = ""
+        }
       , Cmd.none
       )
 
     UpdateAuthorUrl url ->
-      ( { model | author = updateAuthorUrl ( AuthorUrl url ) model.author }
+      ( { model
+          | author = updateAuthorUrl ( AuthorUrl url ) model.author
+          , notification = ""
+        }
       , Cmd.none
       )
 
     UpdateRepositoryKind kind ->
-      ( { model | repository = updateRepositoryKind ( RepositoryKind kind ) model.repository }
+      ( { model
+          | repository = updateRepositoryKind ( RepositoryKind kind ) model.repository
+          , notification = ""
+        }
       , Cmd.none
       )
 
     UpdateRepositoryUrl url ->
-      ( { model | repository = updateRepositoryUrl ( RepositoryUrl url ) model.repository }
+      ( { model
+          | repository = updateRepositoryUrl ( RepositoryUrl url ) model.repository
+          , notification = ""
+        }
       , Cmd.none
       )
 
     UpdateEnginesNode node ->
-      ( { model | engines = updateNodeEngine ( NodeEngine node ) model.engines }
+      ( { model
+          | engines = updateNodeEngine ( NodeEngine node ) model.engines
+          , notification = ""
+        }
       , Cmd.none
       )
 
     UpdateEnginesNpm npm ->
-      ( { model | engines = updateNpmEngine ( NpmEngine npm ) model.engines }
+      ( { model
+          | engines = updateNpmEngine ( NpmEngine npm ) model.engines
+          , notification = ""
+        }
       , Cmd.none
       )
 
     AddCpu ->
-      ( { model | cpus = List.append model.cpus [ Cpu "" ] }
+      ( { model
+          | cpus = List.append model.cpus [ Cpu "" ]
+          , notification = ""
+        }
       , Cmd.batch
         [ focusAfterAdd model.cpus "cpu-"
         , vibrate ()
@@ -1807,12 +1918,18 @@ update message model =
       )
 
     UpdateCpu index value ->
-      ( { model | cpus = List.Extra.updateAt index ( always ( Cpu value ) ) model.cpus }
+      ( { model
+          | cpus = List.Extra.updateAt index ( always ( Cpu value ) ) model.cpus
+          , notification = ""
+        }
       , Cmd.none
       )
 
     RemoveCpu index ->
-      ( { model | cpus = List.Extra.removeAt index model.cpus }
+      ( { model
+          | cpus = List.Extra.removeAt index model.cpus
+          , notification = ""
+        }
       , Cmd.batch
         [ focusBeforeRemove model.cpus "cpu-"
         , vibrate ()
@@ -1820,7 +1937,10 @@ update message model =
       )
 
     AddOperatingSystem ->
-      ( { model | operatingSystems = List.append model.operatingSystems [ OperatingSystem "" ] }
+      ( { model
+          | operatingSystems = List.append model.operatingSystems [ OperatingSystem "" ]
+          , notification = ""
+        }
       , Cmd.batch
         [ focusAfterAdd model.operatingSystems "operating-system-"
         , vibrate ()
@@ -1828,12 +1948,18 @@ update message model =
       )
 
     UpdateOperatingSystem index operatingSystem ->
-      ( { model | operatingSystems = List.Extra.updateAt index ( always ( OperatingSystem operatingSystem ) ) model.operatingSystems }
+      ( { model
+          | operatingSystems = List.Extra.updateAt index ( always ( OperatingSystem operatingSystem ) ) model.operatingSystems
+          , notification = ""
+        }
       , Cmd.none
       )
 
     RemoveOperatingSystem index ->
-      ( { model | operatingSystems = List.Extra.removeAt index model.operatingSystems }
+      ( { model
+          | operatingSystems = List.Extra.removeAt index model.operatingSystems
+          , notification = ""
+        }
       , Cmd.batch
         [ focusBeforeRemove model.operatingSystems "operating-system-"
         , vibrate ()
@@ -1841,7 +1967,10 @@ update message model =
       )
 
     AddFile ->
-      ( { model | files = List.append model.files [ File "" ] }
+      ( { model
+          | files = List.append model.files [ File "" ]
+          , notification = ""
+        }
       , Cmd.batch
         [ focusAfterAdd model.files "file-"
         , vibrate ()
@@ -1849,12 +1978,18 @@ update message model =
       )
 
     UpdateFile index value ->
-      ( { model | files = List.Extra.updateAt index ( always ( File value ) ) model.files }
+      ( { model
+          | files = List.Extra.updateAt index ( always ( File value ) ) model.files
+          , notification = ""
+        }
       , Cmd.none
       )
 
     RemoveFile index ->
-      ( { model | files = List.Extra.removeAt index model.files }
+      ( { model
+          | files = List.Extra.removeAt index model.files
+          , notification = ""
+        }
       , Cmd.batch 
         [ focusBeforeRemove model.files "cpu-"
         , vibrate ()
@@ -1862,7 +1997,10 @@ update message model =
       )
 
     AddKeyword ->
-      ( { model | keywords = List.append model.keywords [ Keyword "" ] }
+      ( { model
+          | keywords = List.append model.keywords [ Keyword "" ]
+          , notification = ""
+        }
       , Cmd.batch
         [ focusAfterAdd model.keywords "keyword-"
         , vibrate ()
@@ -1870,12 +2008,18 @@ update message model =
       )
 
     UpdateKeyword index keyword ->
-      ( { model | keywords = List.Extra.updateAt index ( always ( Keyword keyword ) ) model.keywords }
+      ( { model
+          | keywords = List.Extra.updateAt index ( always ( Keyword keyword ) ) model.keywords
+          , notification = ""
+        }
       , Cmd.none
       )
 
     RemoveKeyword index ->
-      ( { model | keywords = List.Extra.removeAt index model.keywords }
+      ( { model
+          | keywords = List.Extra.removeAt index model.keywords
+          , notification = ""
+        }
       , Cmd.batch
         [ focusBeforeRemove model.keywords "keyword-"
         , vibrate ()
@@ -1883,7 +2027,10 @@ update message model =
       )
 
     AddContributor ->
-      ( { model | contributors = List.append model.contributors [ Contributor { name = ContributorName "", email = ContributorEmail "", url = ContributorUrl "" } ] }
+      ( { model
+          | contributors = List.append model.contributors [ Contributor { name = ContributorName "", email = ContributorEmail "", url = ContributorUrl "" } ]
+          , notification = ""
+        }
       , Cmd.batch
         [ focusAfterAdd model.contributors "contributor-name-"
         , vibrate ()
@@ -1891,7 +2038,10 @@ update message model =
       )
 
     RemoveContributor index ->
-      ( { model | contributors = List.Extra.removeAt index model.contributors }
+      ( { model
+          | contributors = List.Extra.removeAt index model.contributors
+          , notification = ""
+        }
       , Cmd.batch
         [ focusBeforeRemove model.contributors "contributor-name-"
         , vibrate ()
@@ -1899,7 +2049,10 @@ update message model =
       )
 
     UpdateContributorName index name ->
-      ( { model | contributors = List.Extra.updateAt index ( updateContributorName ( ContributorName name ) ) model.contributors }
+      ( { model
+          | contributors = List.Extra.updateAt index ( updateContributorName ( ContributorName name ) ) model.contributors
+          , notification = ""
+        }
       , Cmd.none
       )
 
@@ -1909,12 +2062,18 @@ update message model =
       )
 
     UpdateContributorUrl index url ->
-      ( { model | contributors = List.Extra.updateAt index ( updateContributorUrl ( ContributorUrl url ) ) model.contributors }
+      ( { model
+          | contributors = List.Extra.updateAt index ( updateContributorUrl ( ContributorUrl url ) ) model.contributors
+          , notification = ""
+        }
       , Cmd.none
       )
 
     AddFunding ->
-      ( { model | fundings = List.append model.fundings [ Funding { kind = FundingKind "", url = FundingUrl "" } ] }
+      ( { model
+          | fundings = List.append model.fundings [ Funding { kind = FundingKind "", url = FundingUrl "" } ]
+          , notification = ""
+        }
       , Cmd.batch
         [ focusAfterAdd model.fundings "funding-type-"
         , vibrate ()
@@ -1922,17 +2081,26 @@ update message model =
       )
 
     UpdateFundingKind index kind ->
-      ( { model | fundings = List.Extra.updateAt index ( updateFundingKind ( FundingKind kind ) ) model.fundings }
+      ( { model
+          | fundings = List.Extra.updateAt index ( updateFundingKind ( FundingKind kind ) ) model.fundings
+          , notification = ""
+        }
       , Cmd.none
       )
 
     UpdateFundingUrl index url ->
-      ( { model | fundings = List.Extra.updateAt index ( updateFundingUrl ( FundingUrl url ) ) model.fundings }
+      ( { model
+          | fundings = List.Extra.updateAt index ( updateFundingUrl ( FundingUrl url ) ) model.fundings
+          , notification = ""
+        }
       , Cmd.none
       )
 
     RemoveFunding index ->
-      ( { model | fundings = List.Extra.removeAt index model.fundings }
+      ( { model
+          | fundings = List.Extra.removeAt index model.fundings
+          , notification = ""
+        }
       , Cmd.batch
         [ focusBeforeRemove model.fundings "funding-type-"
         , vibrate ()
@@ -1940,7 +2108,10 @@ update message model =
       )
 
     AddScript ->
-      ( { model | scripts = List.append model.scripts [ Script { key = ScriptKey "", command = ScriptCommand "" } ] }
+      ( { model
+          | scripts = List.append model.scripts [ Script { key = ScriptKey "", command = ScriptCommand "" } ]
+          , notification = ""
+        }
       , Cmd.batch 
         [ focusAfterAdd model.scripts "script-key-"
         , vibrate ()
@@ -1948,7 +2119,10 @@ update message model =
       )
 
     RemoveScript index ->
-      ( { model | scripts = List.Extra.removeAt index model.scripts }
+      ( { model
+          | scripts = List.Extra.removeAt index model.scripts
+          , notification = ""
+        }
       , Cmd.batch
         [ focusBeforeRemove model.scripts "script-key-"
         , vibrate ()
@@ -1956,17 +2130,26 @@ update message model =
       )
 
     UpdateScriptKey index key ->
-      ( { model | scripts = List.Extra.updateAt index ( updateScriptKey ( ScriptKey key ) ) model.scripts }
+      ( { model
+          | scripts = List.Extra.updateAt index ( updateScriptKey ( ScriptKey key ) ) model.scripts
+          , notification = ""
+        }
       , Cmd.none
       )
 
     UpdateScriptCommand index command ->
-      ( { model | scripts = List.Extra.updateAt index ( updateScriptCommand ( ScriptCommand command ) ) model.scripts }
+      ( { model
+          | scripts = List.Extra.updateAt index ( updateScriptCommand ( ScriptCommand command ) ) model.scripts
+          , notification = ""
+        }
       , Cmd.none
       )
 
     AddConfiguration ->
-      ( { model | configurations = List.append model.configurations [ Configuration { key = ConfigurationKey "", value = ConfigurationValue "" } ] }
+      ( { model
+          | configurations = List.append model.configurations [ Configuration { key = ConfigurationKey "", value = ConfigurationValue "" } ]
+          , notification = ""
+        }
       , Cmd.batch
         [ focusAfterAdd model.configurations "configuration-key-"
         , vibrate ()
@@ -1974,7 +2157,10 @@ update message model =
       )
 
     RemoveConfiguration index ->
-      ( { model | configurations = List.Extra.removeAt index model.configurations }
+      ( { model
+          | configurations = List.Extra.removeAt index model.configurations
+          , notification = ""
+        }
       , Cmd.batch
         [ focusBeforeRemove model.configurations "configuration-key-"
         , vibrate ()
@@ -1982,17 +2168,26 @@ update message model =
       )
 
     UpdateConfigurationKey index key ->
-      ( { model | configurations = List.Extra.updateAt index ( updateConfigurationKey ( ConfigurationKey key ) ) model.configurations }
+      ( { model
+          | configurations = List.Extra.updateAt index ( updateConfigurationKey ( ConfigurationKey key ) ) model.configurations
+          , notification = ""
+        }
       , Cmd.none
       )
 
     UpdateConfigurationValue index value ->
-      ( { model | configurations = List.Extra.updateAt index ( updateConfigurationValue ( ConfigurationValue value ) ) model.configurations }
+      ( { model
+          | configurations = List.Extra.updateAt index ( updateConfigurationValue ( ConfigurationValue value ) ) model.configurations
+          , notification = ""
+        }
       , Cmd.none
       )
 
     AddDependency ->
-      ( { model | dependencies = List.append model.dependencies [ Dependency { key = DependencyKey "", value = DependencyValue "" } ] }
+      ( { model
+          | dependencies = List.append model.dependencies [ Dependency { key = DependencyKey "", value = DependencyValue "" } ]
+          , notification = ""
+        }
       , Cmd.batch
         [ focusAfterAdd model.dependencies "dependency-name-"
         , vibrate ()
@@ -2000,7 +2195,10 @@ update message model =
       )
 
     RemoveDependency index ->
-      ( { model | dependencies = List.Extra.removeAt index model.dependencies }
+      ( { model
+          | dependencies = List.Extra.removeAt index model.dependencies
+          , notification = ""
+        }
       , Cmd.batch
         [ focusBeforeRemove model.dependencies "dependency-name-"
         , vibrate ()
@@ -2008,17 +2206,26 @@ update message model =
       )
 
     UpdateDependencyKey index key ->
-      ( { model | dependencies = List.Extra.updateAt index ( updateDependencyKey ( DependencyKey key ) ) model.dependencies }
+      ( { model
+          | dependencies = List.Extra.updateAt index ( updateDependencyKey ( DependencyKey key ) ) model.dependencies
+          , notification = ""
+        }
       , Cmd.none
       )
     
     UpdateDependencyValue index value ->
-      ( { model | dependencies = List.Extra.updateAt index ( updateDependencyValue ( DependencyValue value ) ) model.dependencies }
+      ( { model
+          | dependencies = List.Extra.updateAt index ( updateDependencyValue ( DependencyValue value ) ) model.dependencies
+          , notification = ""
+        }
       , Cmd.none
       )
 
     AddDevelopmentDependency ->
-      ( { model | developmentDependencies = List.append model.developmentDependencies [ DevelopmentDependency { key = DevelopmentDependencyKey "", value = DevelopmentDependencyValue "" } ] }
+      ( { model
+          | developmentDependencies = List.append model.developmentDependencies [ DevelopmentDependency { key = DevelopmentDependencyKey "", value = DevelopmentDependencyValue "" } ]
+          , notification = ""
+        }
       , Cmd.batch
         [ focusAfterAdd model.developmentDependencies "development-dependency-name-"
         , vibrate ()
@@ -2026,17 +2233,26 @@ update message model =
       )
 
     UpdateDevelopmentDependencyValue index value ->
-      ( { model | developmentDependencies = List.Extra.updateAt index ( updateDevelopmentDependencyValue ( DevelopmentDependencyValue value ) ) model.developmentDependencies }
+      ( { model
+            | developmentDependencies = List.Extra.updateAt index ( updateDevelopmentDependencyValue ( DevelopmentDependencyValue value ) ) model.developmentDependencies
+            , notification = ""
+        }
       , Cmd.none
       )
 
     UpdateDevelopmentDependencyKey index key ->
-      ( { model | developmentDependencies = List.Extra.updateAt index ( updateDevelopmentDependencyKey ( DevelopmentDependencyKey key ) ) model.developmentDependencies }
+      ( { model
+          | developmentDependencies = List.Extra.updateAt index ( updateDevelopmentDependencyKey ( DevelopmentDependencyKey key ) ) model.developmentDependencies
+          , notification = ""
+        }
       , Cmd.none
       )
 
     RemoveDevelopmentDependency index ->
-      ( { model | developmentDependencies = List.Extra.removeAt index model.developmentDependencies }
+      ( { model
+          | developmentDependencies = List.Extra.removeAt index model.developmentDependencies
+          , notification = ""
+        }
       , Cmd.batch
         [ focusBeforeRemove model.developmentDependencies "development-dependency-name-"
         , vibrate ()
@@ -2044,7 +2260,10 @@ update message model =
       )
 
     AddPeerDependency ->
-      ( { model | peerDependencies = List.append model.peerDependencies [ PeerDependency { key = PeerDependencyKey "", value = PeerDependencyValue "" } ] }
+      ( { model
+          | peerDependencies = List.append model.peerDependencies [ PeerDependency { key = PeerDependencyKey "", value = PeerDependencyValue "" } ]
+          , notification = ""
+        }
       , Cmd.batch
         [ focusAfterAdd model.peerDependencies "peer-dependency-name-"
         , vibrate ()
@@ -2052,17 +2271,26 @@ update message model =
       )
 
     UpdatePeerDependencyKey index key ->
-      ( { model | peerDependencies = List.Extra.updateAt index ( updatePeerDependencyKey ( PeerDependencyKey key ) ) model.peerDependencies }
+      ( { model
+          | peerDependencies = List.Extra.updateAt index ( updatePeerDependencyKey ( PeerDependencyKey key ) ) model.peerDependencies
+          , notification = ""
+        }
       , Cmd.none
       )
 
     UpdatePeerDependencyValue index value ->
-      ( { model | peerDependencies = List.Extra.updateAt index ( updatePeerDependencyValue ( PeerDependencyValue value ) ) model.peerDependencies }
+      ( { model
+          | peerDependencies = List.Extra.updateAt index ( updatePeerDependencyValue ( PeerDependencyValue value ) ) model.peerDependencies
+          , notification = ""
+        }
       , Cmd.none
       )
 
     RemovePeerDependency index ->
-      ( { model | peerDependencies = List.Extra.removeAt index model.peerDependencies }
+      ( { model
+          | peerDependencies = List.Extra.removeAt index model.peerDependencies
+          , notification = ""
+        }
       , Cmd.batch 
         [ focusBeforeRemove model.peerDependencies "peer-dependency-name-"
         , vibrate ()
@@ -2070,7 +2298,10 @@ update message model =
       )
 
     AddBundledDependency ->
-      ( { model | bundledDependencies = List.append model.bundledDependencies [ BundledDependency { key = BundledDependencyKey "", value = BundledDependencyValue "" } ] }
+      ( { model
+          | bundledDependencies = List.append model.bundledDependencies [ BundledDependency { key = BundledDependencyKey "", value = BundledDependencyValue "" } ]
+          , notification = ""
+        }
       , Cmd.batch
         [ focusAfterAdd model.bundledDependencies "bundled-dependency-name-"
         , vibrate ()
@@ -2078,7 +2309,10 @@ update message model =
       )
 
     RemoveBundledDependency index ->
-      ( { model | bundledDependencies = List.Extra.removeAt index model.bundledDependencies }
+      ( { model
+          | bundledDependencies = List.Extra.removeAt index model.bundledDependencies
+          , notification = ""
+        }
       , Cmd.batch
         [ focusBeforeRemove model.bundledDependencies "bundled-dependency-name-"
         , vibrate ()
@@ -2086,17 +2320,26 @@ update message model =
       )
 
     UpdateBundledDependencyKey index key ->
-      ( { model | bundledDependencies = List.Extra.updateAt index ( updateBundledDependencyKey ( BundledDependencyKey key ) ) model.bundledDependencies }
+      ( { model
+          | bundledDependencies = List.Extra.updateAt index ( updateBundledDependencyKey ( BundledDependencyKey key ) ) model.bundledDependencies
+          , notification = ""
+        }
       , Cmd.none
       )
 
     UpdateBundledDependencyValue index value ->
-      ( { model | bundledDependencies = List.Extra.updateAt index ( updateBundledDependencyValue ( BundledDependencyValue value ) ) model.bundledDependencies }
+      ( { model
+          | bundledDependencies = List.Extra.updateAt index ( updateBundledDependencyValue ( BundledDependencyValue value ) ) model.bundledDependencies
+          , notification = ""
+        }
       , Cmd.none
       )
 
     AddOptionalDependency ->
-      ( { model | optionalDependencies = List.append model.optionalDependencies [ OptionalDependency { key = OptionalDependencyKey "", value = OptionalDependencyValue "" } ] }
+      ( { model
+          | optionalDependencies = List.append model.optionalDependencies [ OptionalDependency { key = OptionalDependencyKey "", value = OptionalDependencyValue "" } ]
+          , notification = ""
+        }
       , Cmd.batch
         [ focusAfterAdd model.optionalDependencies "optional-dependency-name-"
         , vibrate ()
@@ -2104,17 +2347,26 @@ update message model =
       )
 
     UpdateOptionalDependencyKey index key ->
-      ( { model | optionalDependencies = List.Extra.updateAt index ( updateOptionalDependencyKey ( OptionalDependencyKey key ) ) model.optionalDependencies }
+      ( { model
+          | optionalDependencies = List.Extra.updateAt index ( updateOptionalDependencyKey ( OptionalDependencyKey key ) ) model.optionalDependencies
+          , notification = ""
+        }
       , Cmd.none
       )
 
     UpdateOptionalDependencyValue index value ->
-      ( { model | optionalDependencies = List.Extra.updateAt index ( updateOptionalDependencyValue ( OptionalDependencyValue value ) ) model.optionalDependencies }
+      ( { model
+          | optionalDependencies = List.Extra.updateAt index ( updateOptionalDependencyValue ( OptionalDependencyValue value ) ) model.optionalDependencies
+          , notification = ""
+        }
       , Cmd.none
       )
   
     RemoveOptionalDependency index ->
-      ( { model | optionalDependencies = List.Extra.removeAt index model.optionalDependencies }
+      ( { model
+          | optionalDependencies = List.Extra.removeAt index model.optionalDependencies
+          , notification = ""
+        }
       , Cmd.batch
         [ focusBeforeRemove model.optionalDependencies "optional-dependency-name-"
         , vibrate ()
@@ -2122,7 +2374,10 @@ update message model =
       )
 
     AddWorkspace ->
-      ( { model | workspaces = List.append model.workspaces [ Workspace "" ] } 
+      ( { model
+          | workspaces = List.append model.workspaces [ Workspace "" ]
+          , notification = ""
+        } 
       , Cmd.batch
         [ focusAfterAdd model.workspaces "workspace-"
         , vibrate ()
@@ -2130,7 +2385,10 @@ update message model =
       )
 
     RemoveWorkspace index ->
-      ( { model | workspaces = List.Extra.removeAt index model.workspaces }
+      ( { model
+          | workspaces = List.Extra.removeAt index model.workspaces
+          , notification = ""
+        }
       , Cmd.batch
         [ focusBeforeRemove model.workspaces "workspace-"
         , vibrate ()
@@ -2138,47 +2396,84 @@ update message model =
       )
 
     UpdateWorkspace index workspace ->
-      ( { model | workspaces = List.Extra.updateAt index ( always ( Workspace workspace ) ) model.workspaces }
+      ( { model
+          | workspaces = List.Extra.updateAt index ( always ( Workspace workspace ) ) model.workspaces
+          , notification = ""
+        }
       , Cmd.none
       )
 
     UpdateLibraryDirectory libraryDirectory ->
-      ( { model | directories = updateLibraryDirectory ( LibraryDirectory libraryDirectory ) model.directories }
+      ( { model
+          | directories = updateLibraryDirectory ( LibraryDirectory libraryDirectory ) model.directories
+          , notification = ""
+        }
       , Cmd.none
       )
 
     UpdateBinaryDirectory binaryDirectory ->
-      ( { model | directories = updateBinaryDirectory ( BinaryDirectory binaryDirectory ) model.directories }
+      ( { model
+          | directories = updateBinaryDirectory ( BinaryDirectory binaryDirectory ) model.directories
+          , notification = ""
+        }
       , Cmd.none
       )
 
     UpdateManualDirectory manualDirectory ->
-      ( { model | directories = updateManualDirectory ( ManualDirectory manualDirectory ) model.directories }
+      ( { model
+          | directories = updateManualDirectory ( ManualDirectory manualDirectory ) model.directories
+          , notification = ""
+        }
       , Cmd.none
       )
 
     UpdateDocumentationDirectory documentationDirectory ->
-      ( { model | directories = updateDocumentationDirectory ( DocumentationDirectory documentationDirectory ) model.directories }
+      ( { model
+          | directories = updateDocumentationDirectory ( DocumentationDirectory documentationDirectory ) model.directories
+          , notification = ""
+        }
       , Cmd.none
       )
 
     UpdateExampleDirectory exampleDirectory ->
-      ( { model | directories = updateExampleDirectory ( ExampleDirectory exampleDirectory ) model.directories }
+      ( { model
+          | directories = updateExampleDirectory ( ExampleDirectory exampleDirectory ) model.directories
+          , notification = ""
+        }
       , Cmd.none
       )
 
     UpdateTestDirectory testDirectory ->
-      ( { model | directories = updateTestDirectory ( TestDirectory testDirectory ) model.directories }
+      ( { model
+          | directories = updateTestDirectory ( TestDirectory testDirectory ) model.directories
+          , notification = ""
+        }
       , Cmd.none
       )
 
     UpdateSpaces spaces ->
-      ( { model | spaces = updateSpaces spaces }
+      ( { model
+          | spaces = updateSpaces spaces
+          , notification = ""
+        }
       , Cmd.none
       )
 
     CopyToClipboard ->
-      ( model, copyToClipboard <| encodeModel model )
+      ( { model | notification = "" }, copyToClipboard <| encodeModel model )
+
+    CopyToClipboardNotification notification ->
+      ( { model | notification = notification }
+      , Cmd.none
+      )
+
+    WindowResized width height ->
+      ( { model
+          | windowWidth = width
+          , notification = ""
+        }
+      , Cmd.none
+      )
 
 
 updateAccess : String -> Access
@@ -2399,12 +2694,45 @@ focusBeforeRemove list identifier =
     )
 
 
+-- SUBSCRIPTIONS
+
+
+subscriptions : Model -> Sub Message
+subscriptions _ =
+  Sub.batch
+    [ copyToClipboardNotification CopyToClipboardNotification
+    , Browser.Events.onResize WindowResized
+    ]
+
+
+
+-- OUTGOING PORTS
+
+
+port vibrate : () -> Cmd message
+
+
+-- TODO
+port saveToFile : String -> Cmd message
+
+
+port copyToClipboard : String -> Cmd message
+
+
+-- INCOMING PORTS
+
+
+port copyToClipboardNotification : ( String -> message ) -> Sub message
+
+
 -- INIT
 
 
-init : () -> ( Model, Cmd Message )
-init flags =
-  ( { name = Name ""
+init : Int -> ( Model, Cmd Message )
+init windowWidth =
+  ( { windowWidth = windowWidth
+    , notification = ""
+    , name = Name ""
     , description = Description ""
     , version = Version ""
     , homepage = Homepage ""
@@ -2462,24 +2790,13 @@ init flags =
   )
 
 
--- PORTS
-
-
-port vibrate : () -> Cmd message
-
-
--- TODO
-port saveToFile : String -> Cmd message
-
-
-port copyToClipboard : String -> Cmd message
-
-
 -- TYPES ( MODEL )
 
 
 type alias Model =
-  { name : Name
+  { windowWidth : Int
+  , notification : String
+  , name : Name
   , description : Description
   , version : Version
   , homepage : Homepage
@@ -2526,34 +2843,44 @@ type Directories =
     }
 
 
-type LibraryDirectory = LibraryDirectory String
+type LibraryDirectory =
+  LibraryDirectory String
 
 
-type BinaryDirectory = BinaryDirectory String
+type BinaryDirectory =
+  BinaryDirectory String
 
 
-type ManualDirectory = ManualDirectory String
+type ManualDirectory = 
+  ManualDirectory String
 
 
-type DocumentationDirectory = DocumentationDirectory String
+type DocumentationDirectory =
+  DocumentationDirectory String
 
 
-type ExampleDirectory = ExampleDirectory String
+type ExampleDirectory =
+  ExampleDirectory String
 
 
-type TestDirectory = TestDirectory String
+type TestDirectory =
+  TestDirectory String
 
 
-type Keyword = Keyword String
+type Keyword =
+  Keyword String
 
 
-type File = File String
+type File =
+  File String
 
 
-type OperatingSystem = OperatingSystem String
+type OperatingSystem =
+  OperatingSystem String
 
 
-type Cpu = Cpu String
+type Cpu =
+  Cpu String
 
 
 type Access
@@ -2561,28 +2888,36 @@ type Access
   | Public
 
 
-type Browser = Browser String
+type Browser =
+  Browser String
 
 
-type Main = Main String
+type Main =
+  Main String
 
 
-type License = License String
+type License =
+  License String
 
 
-type Homepage = Homepage String
+type Homepage =
+  Homepage String
 
 
-type Version = Version String
+type Version =
+  Version String
 
 
-type Description = Description String
+type Description =
+  Description String
 
 
-type Name = Name String
+type Name =
+  Name String
 
 
-type Workspace = Workspace String
+type Workspace =
+  Workspace String
 
 
 type Engines =
@@ -2592,10 +2927,12 @@ type Engines =
     }
 
 
-type NodeEngine = NodeEngine String
+type NodeEngine =
+  NodeEngine String
 
 
-type NpmEngine = NpmEngine String
+type NpmEngine =
+  NpmEngine String
 
 
 type Repository =
@@ -2605,10 +2942,12 @@ type Repository =
     }
 
 
-type RepositoryKind = RepositoryKind String
+type RepositoryKind =
+  RepositoryKind String
 
 
-type RepositoryUrl = RepositoryUrl String
+type RepositoryUrl =
+  RepositoryUrl String
 
 
 type Author =
@@ -2619,13 +2958,16 @@ type Author =
     }
 
 
-type AuthorName = AuthorName String
+type AuthorName =
+  AuthorName String
 
 
-type AuthorUrl = AuthorUrl String
+type AuthorUrl =
+  AuthorUrl String
 
 
-type AuthorEmail = AuthorEmail String
+type AuthorEmail =
+  AuthorEmail String
 
 
 type Bugs =
@@ -2635,10 +2977,12 @@ type Bugs =
     }
 
 
-type BugsUrl = BugsUrl String
+type BugsUrl =
+  BugsUrl String
 
 
-type BugsEmail = BugsEmail String
+type BugsEmail =
+  BugsEmail String
 
 
 type OptionalDependency =
@@ -2648,10 +2992,12 @@ type OptionalDependency =
     }
 
 
-type OptionalDependencyKey = OptionalDependencyKey String
+type OptionalDependencyKey =
+  OptionalDependencyKey String
 
 
-type OptionalDependencyValue = OptionalDependencyValue String
+type OptionalDependencyValue =
+  OptionalDependencyValue String
 
 
 type BundledDependency =
@@ -2661,10 +3007,12 @@ type BundledDependency =
     }
 
 
-type BundledDependencyKey = BundledDependencyKey String
+type BundledDependencyKey =
+  BundledDependencyKey String
 
 
-type BundledDependencyValue = BundledDependencyValue String
+type BundledDependencyValue =
+  BundledDependencyValue String
 
 
 type PeerDependency =
@@ -2674,10 +3022,12 @@ type PeerDependency =
     }
 
 
-type PeerDependencyKey = PeerDependencyKey String
+type PeerDependencyKey =
+  PeerDependencyKey String
 
 
-type PeerDependencyValue = PeerDependencyValue String
+type PeerDependencyValue =
+  PeerDependencyValue String
 
 
 type DevelopmentDependency =
@@ -2687,10 +3037,12 @@ type DevelopmentDependency =
     }
 
 
-type DevelopmentDependencyValue = DevelopmentDependencyValue String
+type DevelopmentDependencyValue =
+  DevelopmentDependencyValue String
 
 
-type DevelopmentDependencyKey = DevelopmentDependencyKey String
+type DevelopmentDependencyKey =
+  DevelopmentDependencyKey String
 
 
 type Dependency =
@@ -2700,10 +3052,12 @@ type Dependency =
     }
 
 
-type DependencyKey = DependencyKey String
+type DependencyKey =
+  DependencyKey String
 
 
-type DependencyValue = DependencyValue String
+type DependencyValue =
+  DependencyValue String
 
 
 type Configuration =
@@ -2713,10 +3067,12 @@ type Configuration =
     }
 
 
-type ConfigurationKey = ConfigurationKey String
+type ConfigurationKey =
+  ConfigurationKey String
 
 
-type ConfigurationValue = ConfigurationValue String
+type ConfigurationValue =
+  ConfigurationValue String
 
 
 type Script =
@@ -2726,10 +3082,12 @@ type Script =
     }
 
 
-type ScriptKey = ScriptKey String
+type ScriptKey =
+  ScriptKey String
 
 
-type ScriptCommand = ScriptCommand String
+type ScriptCommand =
+  ScriptCommand String
 
 
 type Funding =
@@ -2739,10 +3097,12 @@ type Funding =
     }
 
 
-type FundingKind = FundingKind String
+type FundingKind =
+  FundingKind String
 
 
-type FundingUrl = FundingUrl String
+type FundingUrl =
+  FundingUrl String
 
 
 type Contributor =
@@ -2753,13 +3113,16 @@ type Contributor =
     }
 
 
-type ContributorName = ContributorName String
+type ContributorName = 
+  ContributorName String
 
 
-type ContributorEmail = ContributorEmail String
+type ContributorEmail =
+  ContributorEmail String
 
 
-type ContributorUrl = ContributorUrl String
+type ContributorUrl =
+  ContributorUrl String
 
 
 -- TYPES ( MESSAGE )
@@ -2844,3 +3207,5 @@ type Message
   | UpdateTestDirectory String
   | UpdateSpaces String
   | CopyToClipboard
+  | CopyToClipboardNotification String
+  | WindowResized Int Int
