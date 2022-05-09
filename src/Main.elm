@@ -11,10 +11,12 @@ import Html exposing ( Html, Attribute )
 import Html.Attributes
 import Html.Events
 import Json.Encode
+import Json.Decode
 import List.Extra
 import Html.Events.Extra
 import Task
 import Flip
+import Triple
 
 
 -- MAIN
@@ -122,7 +124,7 @@ viewActions model =
       , Html.Attributes.style "align-items" "center"
       ]
       [ viewButton [ Html.Events.onClick CopyToClipboard ] [ Html.text "Copy" ]
-      -- , viewButton [] [ Html.text "Save as" ]
+      , viewButton [ Html.Events.onClick SaveToDisk ] [ Html.text "Save as" ]
       ]
     ]
 
@@ -2460,7 +2462,12 @@ update message model =
       )
 
     CopyToClipboard ->
-      ( { model | notification = "" }, copyToClipboard <| encodeModel model )
+      ( { model | notification = "" }
+      , Cmd.batch
+        [ copyToClipboard <| encodeModel model
+        , vibrate ()
+        ]
+      )
 
     CopyToClipboardNotification notification ->
       ( { model | notification = notification }
@@ -2473,6 +2480,14 @@ update message model =
           , notification = ""
         }
       , Cmd.none
+      )
+
+    SaveToDisk ->
+      ( { model | notification = "" }
+      , Cmd.batch
+        [ model |> encodeModel |> saveToDisk
+        , vibrate ()
+        ]
       )
 
 
@@ -2702,8 +2717,22 @@ subscriptions _ =
   Sub.batch
     [ copyToClipboardNotification CopyToClipboardNotification
     , Browser.Events.onResize WindowResized
+    , onControlAltKeyPressed "a" CopyToClipboard
+    , onControlAltKeyPressed "s" SaveToDisk
     ]
 
+
+-- SUBSCRIPTIONS HELPERS
+
+
+onControlAltKeyPressed : String -> Message -> Sub Message
+onControlAltKeyPressed key message =
+    Json.Decode.map3 Triple.triple
+        (Json.Decode.field "ctrlKey" Json.Decode.bool)
+        (Json.Decode.field "altKey" Json.Decode.bool)
+        (Json.Decode.field "key" Json.Decode.string)
+        |> Json.Decode.andThen (\( control, alt, keyCode ) -> if control && alt && keyCode == key then Json.Decode.succeed message else Json.Decode.fail ("Control or " ++ key ++ " not pressed") )
+        |> Browser.Events.onKeyDown
 
 
 -- OUTGOING PORTS
@@ -2712,8 +2741,7 @@ subscriptions _ =
 port vibrate : () -> Cmd message
 
 
--- TODO
-port saveToFile : String -> Cmd message
+port saveToDisk : String -> Cmd message
 
 
 port copyToClipboard : String -> Cmd message
@@ -3209,3 +3237,4 @@ type Message
   | CopyToClipboard
   | CopyToClipboardNotification String
   | WindowResized Int Int
+  | SaveToDisk
