@@ -8,3 +8,5 @@
 - Help buttons
 - Slimest encoded package.json possible
 - Navigation bar with sources & issue
+- Import package.json
+- Drag and drop package.json
