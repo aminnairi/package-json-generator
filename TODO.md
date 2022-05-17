@@ -7,3 +7,4 @@
 - Web API Broadcast channel synchronization
 - Help buttons
 - Slimest encoded package.json possible
+- Navigation bar with sources & issue
