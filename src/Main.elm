@@ -457,6 +457,9 @@ viewHomepage ( Homepage homepage ) =
   Html.div
     []
     [ viewSecondLevelTitle [] [ Html.text "Home page" ]
+    , viewLink
+      [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#homepage" ]
+      [ viewCenteredButton [] [ Html.text "help" ] ]
     , viewInputField
       [ Html.Attributes.for "homepage" ]
       [ Html.text "Home page" ]
@@ -475,6 +478,9 @@ viewVersion ( Version version ) =
   Html.div
     []
     [ viewSecondLevelTitle [] [ Html.text "Version" ]
+    , viewLink
+      [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#version" ]
+      [ viewCenteredButton [] [ Html.text "help" ] ]
     , viewInputField
       [ Html.Attributes.for "version" ]
       [ Html.text "Version" ]
@@ -493,6 +499,9 @@ viewDescription ( Description description ) =
   Html.div
     []
     [ viewSecondLevelTitle [] [ Html.text "Description" ]
+    , viewLink
+      [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#description" ]
+      [ viewCenteredButton [] [ Html.text "help" ] ]
     , viewInputField
       [ Html.Attributes.for "description" ]
       [ Html.text "Description" ]
@@ -511,6 +520,9 @@ viewName ( Name name ) =
   Html.div
     []
     [ viewSecondLevelTitle [] [ Html.text "Name" ]
+    , viewLink
+      [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#name" ]
+      [ viewCenteredButton [] [ Html.text "help" ] ]
     , viewInputField
       [ Html.Attributes.for "name" ]
       [ Html.text "Name" ]
@@ -1220,6 +1232,19 @@ viewInput attributes children =
       , Html.Attributes.style "border" "1px solid black"
       , Html.Attributes.style "border-radius" "5px"
       , Html.Attributes.style "width" "100%"
+      ]
+      attributes
+    )
+    children
+
+
+viewLink : List ( Attribute Message ) -> List ( Html Message ) -> Html Message
+viewLink attributes children =
+  Html.a
+    ( List.append
+      [ Html.Attributes.style "text-decoration" "none"
+      , Html.Attributes.style "color" "inherit"
+      , Html.Attributes.target "blank"
       ]
       attributes
     )
