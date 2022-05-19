@@ -9,4 +9,4 @@
 - Navigation bar with sources & issue
 - Import package.json
 - Drag and drop package.json
-- Reset button (global & per field)
+- Reset button per field
