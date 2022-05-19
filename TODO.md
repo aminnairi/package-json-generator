@@ -10,4 +10,3 @@
 - Import package.json
 - Drag and drop package.json
 - Reset button (global & per field)
-- Better type for the flags
