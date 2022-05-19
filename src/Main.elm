@@ -57,6 +57,7 @@ view model =
         , Html.Attributes.style "text-align" "center"
         ]
         [ Html.text "package.json generator" ]
+      , viewCenteredButton [ Html.Events.onClick Reset ] [ Html.text "reset" ]
       , viewSpaces model.spaces
       , viewAccess model.access
       , viewName model.name
@@ -2639,6 +2640,9 @@ update message model =
         ]
       )
 
+    Reset ->
+      init model.windowWidth
+
 
 updateAccess : String -> Access
 updateAccess access =
@@ -3394,3 +3398,4 @@ type Message
   | CopyToClipboardNotification String
   | WindowResized Int Int
   | SaveToDisk
+  | Reset
