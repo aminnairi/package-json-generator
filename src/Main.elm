@@ -450,9 +450,13 @@ viewBrowser ( Browser browser ) =
   Html.div
     []
     [ viewSecondLevelTitle [] [ Html.text "Browser" ]
-    , viewLink
-      [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#browser" ]
-      [ viewCenteredButton [] [ Html.text "help" ] ]
+    , viewRow
+      []
+      [ viewLink
+        [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#browser" ]
+        [ viewCenteredButton [] [ Html.text "help" ] ]
+      , viewButton [ Html.Events.onClick ResetBrowser ] [ Html.text "Reset" ]
+      ]
     , viewInputField
       [ Html.Attributes.for "browser" ]
       [ Html.text "Browser" ]
@@ -471,9 +475,13 @@ viewMain ( Main entrypoint ) =
   Html.div
     []
     [ viewSecondLevelTitle [] [ Html.text "Main" ]
-    , viewLink
-      [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#main" ]
-      [ viewCenteredButton [] [ Html.text "help" ] ]
+    , viewRow
+      []
+      [ viewLink
+        [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#main" ]
+        [ viewCenteredButton [] [ Html.text "help" ] ]
+      , viewButton [ Html.Events.onClick ResetMain ] [ Html.text "Reset" ]
+      ]
     , viewInputField
       [ Html.Attributes.for "main" ]
       [ Html.text "Main" ]
@@ -492,9 +500,13 @@ viewLicense ( License license ) =
   Html.div
     []
     [ viewSecondLevelTitle [] [ Html.text "License" ]
-    , viewLink
-      [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#license" ]
-      [ viewCenteredButton [] [ Html.text "help" ] ]
+    , viewRow
+      []
+      [ viewLink
+        [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#license" ]
+        [ viewCenteredButton [] [ Html.text "help" ] ]
+      , viewButton [ Html.Events.onClick ResetLicense ] [ Html.text "Reset" ]
+      ]
     , viewInputField
       [ Html.Attributes.for "license" ]
       [ Html.text "License" ]
@@ -513,9 +525,13 @@ viewHomepage ( Homepage homepage ) =
   Html.div
     []
     [ viewSecondLevelTitle [] [ Html.text "Home page" ]
-    , viewLink
-      [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#homepage" ]
-      [ viewCenteredButton [] [ Html.text "help" ] ]
+    , viewRow
+      []
+      [ viewLink
+        [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#homepage" ]
+        [ viewCenteredButton [] [ Html.text "help" ] ]
+      , viewButton [ Html.Events.onClick ResetHomepage ] [ Html.text "Reset" ]
+      ]
     , viewInputField
       [ Html.Attributes.for "homepage" ]
       [ Html.text "Home page" ]
@@ -534,9 +550,13 @@ viewVersion ( Version version ) =
   Html.div
     []
     [ viewSecondLevelTitle [] [ Html.text "Version" ]
-    , viewLink
-      [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#version" ]
-      [ viewCenteredButton [] [ Html.text "help" ] ]
+    , viewRow
+      []
+      [ viewLink
+        [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#version" ]
+        [ viewCenteredButton [] [ Html.text "help" ] ]
+      , viewButton [ Html.Events.onClick ResetVersion ] [ Html.text "Reset" ]
+      ]
     , viewInputField
       [ Html.Attributes.for "version" ]
       [ Html.text "Version" ]
@@ -555,9 +575,13 @@ viewDescription ( Description description ) =
   Html.div
     []
     [ viewSecondLevelTitle [] [ Html.text "Description" ]
-    , viewLink
-      [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#description" ]
-      [ viewCenteredButton [] [ Html.text "help" ] ]
+    , viewRow
+      []
+      [ viewLink
+        [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#description" ]
+        [ viewCenteredButton [] [ Html.text "help" ] ]
+      , viewButton [ Html.Events.onClick ResetDescription ] [ Html.text "Reset" ]
+      ]
     , viewInputField
       [ Html.Attributes.for "description" ]
       [ Html.text "Description" ]
@@ -576,9 +600,13 @@ viewName ( Name name ) =
   Html.div
     []
     [ viewSecondLevelTitle [] [ Html.text "Name" ]
-    , viewLink
-      [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#name" ]
-      [ viewCenteredButton [] [ Html.text "help" ] ]
+    , viewRow
+      []
+      [ viewLink
+        [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#name" ]
+        [ viewCenteredButton [] [ Html.text "help" ] ]
+      , viewButton [ Html.Events.onClick ResetName ] [ Html.text "Reset" ]
+      ]
     , viewInputField
       [ Html.Attributes.for "name" ]
       [ Html.text "Name" ]
@@ -599,8 +627,8 @@ viewAccess access =
     []
     [ viewSecondLevelTitle [] [ Html.text "Access" ]
     , viewLink
-      [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/using-npm/config#access" ]
-      [ viewCenteredButton [] [ Html.text "help" ] ]
+        [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/using-npm/config#access" ]
+        [ viewCenteredButton [] [ Html.text "help" ] ]
     , viewSelect
       [ Html.Attributes.value <| viewAccessValue access
       , Html.Events.Extra.onChange UpdateAccess
@@ -708,9 +736,13 @@ viewAuthor ( Author author ) =
   Html.div
     []
     [ viewSecondLevelTitle [] [ Html.text "Author" ]
-    , viewLink
-      [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#people-fields-author-contributors" ]
-      [ viewCenteredButton [] [ Html.text "help" ] ]
+    , viewRow
+      []
+      [ viewLink
+        [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#people-fields-author-contributors" ]
+        [ viewCenteredButton [] [ Html.text "help" ] ]
+      , viewButton [ Html.Events.onClick ResetAuthor ] [ Html.text "Reset" ]
+      ]
     , viewAuthorName author.name
     , viewAuthorUrl author.url
     , viewAuthorEmail author.email
@@ -764,9 +796,13 @@ viewBugs ( Bugs bugs ) =
   Html.div
     []
     [ viewSecondLevelTitle [] [ Html.text "Bugs" ]
-    , viewLink
-      [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#bugs" ]
-      [ viewCenteredButton [] [ Html.text "help" ] ]
+    , viewRow
+      []
+      [ viewLink
+        [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#bugs" ]
+        [ viewCenteredButton [] [ Html.text "help" ] ]
+      , viewButton [ Html.Events.onClick ResetBugs ] [ Html.text "Reset" ]
+      ]
     , viewBugsUrl bugs.url
     , viewBugsEmail bugs.email
     ]
@@ -2643,6 +2679,51 @@ update message model =
     Reset ->
       init model.windowWidth
 
+    ResetName ->
+      ( { model | name = Name "" }
+      , Cmd.none
+      )
+
+    ResetDescription ->
+      ( { model | description = Description "" }
+      , Cmd.none
+      )
+
+    ResetVersion ->
+      ( { model | version = Version "" }
+      , Cmd.none
+      )
+
+    ResetHomepage ->
+      ( { model | homepage = Homepage "" }
+      , Cmd.none
+      )
+
+    ResetLicense ->
+      ( { model | license = License "" }
+      , Cmd.none
+      )
+
+    ResetMain ->
+      ( { model | main = Main "" }
+      , Cmd.none
+      )
+
+    ResetBrowser ->
+      ( { model | browser = Browser "" }
+      , Cmd.none
+      )
+
+    ResetBugs ->
+      ( { model | bugs = Bugs { url = BugsUrl "" , email = BugsEmail "" } }
+      , Cmd.none
+      )
+
+    ResetAuthor ->
+      ( { model | author = Author { name = AuthorName "", url = AuthorUrl "", email = AuthorEmail ""} }
+      , Cmd.none
+      )
+
 
 updateAccess : String -> Access
 updateAccess access =
@@ -3399,3 +3480,12 @@ type Message
   | WindowResized Int Int
   | SaveToDisk
   | Reset
+  | ResetName
+  | ResetDescription
+  | ResetVersion
+  | ResetHomepage
+  | ResetLicense
+  | ResetMain
+  | ResetBrowser
+  | ResetBugs
+  | ResetAuthor
