@@ -5,7 +5,7 @@ include .env
 DOCKER_COMPOSE_RUN_OPTIONS=--rm
 
 ifeq (${CI},true)
-	DOCKER_COMPOSE_RUN_OPTIONS=--rm --user root -T
+	DOCKER_COMPOSE_RUN_OPTIONS=--rm -T
 endif
 
 build:
