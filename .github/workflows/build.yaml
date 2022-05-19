@@ -13,8 +13,8 @@ jobs:
       - name: Setup
         run: cp .env.example .env
 
-      - name: Echo
-        run: id -u
+      - name: User identifier setup
+        run: sed "s/DOCKER_USER_IDENTIFIER=.*/DOCKER_USER_IDENTIFIER=\"$(id -u)\"/g" .env
 
       - name: Build
-        run: sudo make production
+        run: make production
