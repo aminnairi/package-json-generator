@@ -9,6 +9,5 @@
 - Navigation bar with sources & issue
 - Import package.json
 - Drag and drop package.json
-- Vite configuration
 - Reset button (global & per field)
 - Better type for the flags
