@@ -5,7 +5,6 @@
 - Share query parameter
 - Web API Share button
 - Web API Broadcast channel synchronization
-- Help buttons
 - Slimest encoded package.json possible
 - Navigation bar with sources & issue
 - Import package.json
