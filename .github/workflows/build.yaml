@@ -14,7 +14,7 @@ jobs:
         run: cp .env.example .env
 
       - name: User identifier setup
-        run: sed "s/DOCKER_USER_IDENTIFIER=.*/DOCKER_USER_IDENTIFIER=\"$(id -u)\"/g" .env
+        run: sed -i "s/DOCKER_USER_IDENTIFIER=.*/DOCKER_USER_IDENTIFIER=\"$(id -u)\"/g" .env
 
       - name: Build
         run: make production
