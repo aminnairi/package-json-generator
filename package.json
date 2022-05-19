@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "development": "vite",
+    "production": "vite build"
+  },
+  "devDependencies": {
+    "elm": "0.19.1-5",
+    "vite": "2.9.9",
+    "vite-plugin-elm": "2.6.1"
+  }
+}

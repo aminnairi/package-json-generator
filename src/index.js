@@ -1,4 +1,4 @@
-"use strict";
+import { Elm } from "./Main.elm";
 
 // writeStringToDisk :: String -> IO ()
 const writeStringToDisk = string => {

@@ -261,7 +261,13 @@ viewWorkspaces workspaces =
     []
     <| List.append
         [ viewSecondLevelTitle [] [ Html.text "Workspaces" ]
-        , viewCenteredButton [ Html.Events.onClick AddWorkspace ] [ Html.text "Add" ]
+        , viewRow
+          []
+          [ viewButton [ Html.Events.onClick AddWorkspace ] [ Html.text "Add" ]
+          , viewLink
+            [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#workspaces" ]
+            [ viewCenteredButton [] [ Html.text "help" ] ]
+          ]
         ]
         <| List.indexedMap viewWorkspace workspaces
 
@@ -290,7 +296,13 @@ viewKeywords keywords =
     []
     <| List.append
         [ viewSecondLevelTitle [] [ Html.text "Keywords" ]
-        , viewCenteredButton [ Html.Events.onClick AddKeyword ] [ Html.text "Add" ]
+        , viewRow
+          []
+          [ viewButton [ Html.Events.onClick AddKeyword ] [ Html.text "Add" ]
+          , viewLink
+            [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#keywords" ]
+            [ viewCenteredButton [] [ Html.text "help" ] ]
+          ]
         ]
         <| List.indexedMap viewKeyword keywords
 
@@ -319,7 +331,13 @@ viewFiles files =
     []
     <| List.append
         [ viewSecondLevelTitle [] [ Html.text "Files" ]
-        , viewCenteredButton [ Html.Events.onClick AddFile ] [ Html.text "Add" ]
+        , viewRow
+          []
+          [ viewButton [ Html.Events.onClick AddFile ] [ Html.text "Add" ]
+          , viewLink
+            [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#files" ]
+            [ viewCenteredButton [] [ Html.text "help" ] ]
+          ]
         ]
         <| List.indexedMap viewFile files
 
@@ -348,7 +366,13 @@ viewOperatingSystems operatingSystems =
     []
     <| List.append
         [ viewSecondLevelTitle [] [ Html.text "Operating systems" ]
-        , viewCenteredButton [ Html.Events.onClick AddOperatingSystem ] [ Html.text "Add" ]
+        , viewRow
+          []
+          [ viewButton [ Html.Events.onClick AddOperatingSystem ] [ Html.text "Add" ]
+          , viewLink
+            [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#os" ]
+            [ viewCenteredButton [] [ Html.text "help" ] ]
+          ]
         ]
         <| List.indexedMap viewOperatingSystem operatingSystems
 
@@ -371,13 +395,32 @@ viewOperatingSystem index ( OperatingSystem operatingSystem ) =
     ]
 
 
+viewRow : List ( Attribute Message ) -> List ( Html Message ) -> Html Message
+viewRow attributes children =
+  Html.div
+    ( List.append
+      [ Html.Attributes.style "display" "flex"
+      , Html.Attributes.style "flex-direction" "row"
+      , Html.Attributes.style "justify-content" "center"
+      , Html.Attributes.style "align-items" "center"
+      ]
+      attributes
+    )
+    children
+
 viewCpus : List Cpu -> Html Message
 viewCpus cpus =
   Html.div
     []
     <| List.append
         [ viewSecondLevelTitle [] [ Html.text "CPUs" ]
-        , viewCenteredButton [ Html.Events.onClick AddCpu ] [ Html.text "Add" ]
+        , viewRow
+          []
+          [ viewButton [ Html.Events.onClick AddCpu ] [ Html.text "Add" ]
+          , viewLink
+            [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#cpu" ]
+            [ viewCenteredButton [] [ Html.text "help" ] ]
+          ]
         ]
         <| List.indexedMap viewCpu cpus
 
@@ -554,6 +597,9 @@ viewAccess access =
   Html.div
     []
     [ viewSecondLevelTitle [] [ Html.text "Access" ]
+    , viewLink
+      [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/using-npm/config#access" ]
+      [ viewCenteredButton [] [ Html.text "help" ] ]
     , viewSelect
       [ Html.Attributes.value <| viewAccessValue access
       , Html.Events.Extra.onChange UpdateAccess
@@ -1102,7 +1148,13 @@ viewFundings fundings =
     []
     <| List.append
         [ viewSecondLevelTitle [] [ Html.text "Fundings" ]
-        , viewCenteredButton [ Html.Events.onClick AddFunding ] [ Html.text "Add" ]
+        , viewRow
+          []
+          [ viewButton [ Html.Events.onClick AddFunding ] [ Html.text "Add" ]
+          , viewLink
+            [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#funding" ]
+            [ viewCenteredButton [] [ Html.text "help" ] ]
+          ]
         ]
         <| List.indexedMap viewFunding fundings
 
@@ -1150,7 +1202,13 @@ viewContributors contributors =
   Html.div []
     <| List.append
         [ viewSecondLevelTitle [] [ Html.text "Contributors" ]
-        , viewCenteredButton [ Html.Events.onClick AddContributor ] [ Html.text "Add" ]
+        , viewRow
+          []
+          [ viewButton [ Html.Events.onClick AddContributor ] [ Html.text "Add" ]
+          , viewLink
+            [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#people-fields-author-contributors" ]
+            [ viewCenteredButton [] [ Html.text "help" ] ]
+          ]
         ]
         <| List.indexedMap viewContributor contributors
 

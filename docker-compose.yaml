@@ -8,24 +8,20 @@ services:
       dockerfile: Dockerfile
       args:
         DOCKER_USER_IDENTIFIER: $DOCKER_USER_IDENTIFIER
-        NODE_VERSION: $NODE_VERSION
-        NODE_DISTRIBUTION: $NODE_DISTRIBUTION
-        ELM_VERSION: $ELM_VERSION
-        ELM_DISTRIBUTION: $ELM_DISTRIBUTION
+        DOCKER_NODE_VERSION: $DOCKER_NODE_VERSION
+        DOCKER_NODE_DISTRIBUTION: $DOCKER_NODE_DISTRIBUTION
+        DOCKER_ELM_VERSION: $DOCKER_ELM_VERSION
+        DOCKER_ELM_DISTRIBUTION: $DOCKER_ELM_DISTRIBUTION
     entrypoint: elm
     user: user
     tty: true
     stdin_open: true
     working_dir: /home/user
     ports:
-      - $ELM_REACTOR_PORT:$ELM_REACTOR_PORT
+      - $VITE_SERVER_HOST:$VITE_SERVER_PORT:$VITE_SERVER_PORT
     volumes:
       - .:/home/user
 
-  uglifyjs:
+  npm:
     extends: elm
-    entrypoint: uglifyjs
-
-  sh:
-    extends: elm
-    entrypoint: ""
+    entrypoint: npm
