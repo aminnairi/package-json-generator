@@ -57,8 +57,8 @@ view model =
         , Html.Attributes.style "text-align" "center"
         ]
         [ Html.text "package.json generator" ]
-      , viewAccess model.access
       , viewSpaces model.spaces
+      , viewAccess model.access
       , viewName model.name
       , viewDescription model.description
       , viewVersion model.version
@@ -708,7 +708,7 @@ viewAuthor ( Author author ) =
     []
     [ viewSecondLevelTitle [] [ Html.text "Author" ]
     , viewLink
-      [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#author" ]
+      [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#people-fields-author-contributors" ]
       [ viewCenteredButton [] [ Html.text "help" ] ]
     , viewAuthorName author.name
     , viewAuthorUrl author.url
@@ -805,7 +805,13 @@ viewOptionalDependencies optionalDependencies =
     []
     <| List.append
         [ viewSecondLevelTitle [] [ Html.text "Optional dependencies" ]
-        , viewCenteredButton [ Html.Events.onClick AddOptionalDependency ] [ Html.text "Add" ]
+        , viewRow
+          []
+          [ viewButton [ Html.Events.onClick AddOptionalDependency ] [ Html.text "Add" ]
+          , viewLink
+            [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#optionaldependencies" ]
+            [ viewCenteredButton [] [ Html.text "help" ] ]
+          ]
         ]
         <| List.indexedMap viewOptionalDependency optionalDependencies
 
@@ -854,7 +860,13 @@ viewBundledDependencies bundledDependencies =
     []
     <| List.append
         [ viewSecondLevelTitle [] [ Html.text "Bundled dependencies" ]
-        , viewCenteredButton [ Html.Events.onClick AddBundledDependency ] [ Html.text "Add" ]
+        , viewRow
+          []
+          [ viewButton [ Html.Events.onClick AddBundledDependency ] [ Html.text "Add" ]
+          , viewLink
+            [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#bundleddependencies" ]
+            [ viewCenteredButton [] [ Html.text "help" ] ]
+          ]
         ]
         <| List.indexedMap viewBundledDependency bundledDependencies
 
@@ -903,7 +915,13 @@ viewPeerDependencies peerDependencies =
     []
     <| List.append
         [ viewSecondLevelTitle [] [ Html.text "Peer dependencies" ]
-        , viewCenteredButton [ Html.Events.onClick AddPeerDependency ] [ Html.text "Add" ]
+        , viewRow
+          []
+          [ viewButton [ Html.Events.onClick AddPeerDependency ] [ Html.text "Add" ]
+          , viewLink
+            [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#peerdependencies" ]
+            [ viewCenteredButton [] [ Html.text "help" ] ]
+          ]
         ]
         <| List.indexedMap viewPeerDependency peerDependencies
 
@@ -952,7 +970,13 @@ viewDevelopmentDependencies developmentDependencies =
     []
     <| List.append
         [ viewSecondLevelTitle [] [ Html.text "Development dependencies" ]
-        , viewCenteredButton [ Html.Events.onClick AddDevelopmentDependency ] [ Html.text "Add" ]
+        , viewRow
+          []
+          [ viewButton [ Html.Events.onClick AddDevelopmentDependency ] [ Html.text "Add" ]
+          , viewLink
+            [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#devdependencies" ]
+            [ viewCenteredButton [] [ Html.text "help" ] ]
+          ]
         ]
         <| List.indexedMap viewDevelopmentDependency developmentDependencies
 
@@ -1001,7 +1025,13 @@ viewDependencies dependencies =
     []
     <| List.append
         [ viewSecondLevelTitle [] [ Html.text "Dependencies" ]
-        , viewCenteredButton [ Html.Events.onClick AddDependency ] [ Html.text "Add" ]
+        , viewRow
+          []
+          [ viewButton [ Html.Events.onClick AddDependency ] [ Html.text "Add" ]
+          , viewLink
+            [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#dependencies" ]
+            [ viewCenteredButton [] [ Html.text "help" ] ]
+          ]
         ]
         <| List.indexedMap viewDependency dependencies
 
@@ -1050,7 +1080,13 @@ viewConfigurations configurations =
     []
     <| List.append
         [ viewSecondLevelTitle [] [ Html.text "Configurations" ]
-        , viewCenteredButton [ Html.Events.onClick AddConfiguration ] [ Html.text "Add" ]
+        , viewRow
+          []
+          [ viewButton [ Html.Events.onClick AddConfiguration ] [ Html.text "Add" ]
+          , viewLink
+            [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#config" ]
+            [ viewCenteredButton [] [ Html.text "help" ] ]
+          ]
         ]
         <| List.indexedMap viewConfiguration configurations
 
@@ -1099,7 +1135,13 @@ viewScripts scripts =
     []
     <| List.append
         [ viewSecondLevelTitle [] [ Html.text "Scripts" ]
-        , viewCenteredButton [ Html.Events.onClick AddScript ] [ Html.text "Add" ]
+        , viewRow
+          []
+          [ viewButton [ Html.Events.onClick AddScript ] [ Html.text "Add" ]
+          , viewLink
+            [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#scripts" ]
+            [ viewCenteredButton [] [ Html.text "help" ] ]
+          ]
         ]
         <| List.indexedMap viewScript scripts
 
