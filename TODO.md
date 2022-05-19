@@ -11,3 +11,4 @@
 - Import package.json
 - Drag and drop package.json
 - Vite configuration
+- Reset button (global & per field)

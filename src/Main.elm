@@ -159,6 +159,9 @@ viewDirectories ( Directories directories ) =
   Html.div
     []
     [ viewSecondLevelTitle [] [ Html.text "Directories" ]
+    , viewLink
+      [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#directories" ]
+      [ viewCenteredButton [] [ Html.text "help" ] ]
     , viewLibraryDirectory directories.library
     , viewBinaryDirectory directories.binary
     , viewManualDirectory directories.manual
@@ -403,6 +406,9 @@ viewBrowser ( Browser browser ) =
   Html.div
     []
     [ viewSecondLevelTitle [] [ Html.text "Browser" ]
+    , viewLink
+      [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#browser" ]
+      [ viewCenteredButton [] [ Html.text "help" ] ]
     , viewInputField
       [ Html.Attributes.for "browser" ]
       [ Html.text "Browser" ]
@@ -421,6 +427,9 @@ viewMain ( Main entrypoint ) =
   Html.div
     []
     [ viewSecondLevelTitle [] [ Html.text "Main" ]
+    , viewLink
+      [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#main" ]
+      [ viewCenteredButton [] [ Html.text "help" ] ]
     , viewInputField
       [ Html.Attributes.for "main" ]
       [ Html.text "Main" ]
@@ -439,6 +448,9 @@ viewLicense ( License license ) =
   Html.div
     []
     [ viewSecondLevelTitle [] [ Html.text "License" ]
+    , viewLink
+      [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#license" ]
+      [ viewCenteredButton [] [ Html.text "help" ] ]
     , viewInputField
       [ Html.Attributes.for "license" ]
       [ Html.text "License" ]
@@ -567,6 +579,9 @@ viewEngines ( Engines engines ) =
   Html.div
     []
     [ viewSecondLevelTitle [] [ Html.text "Engines" ]
+    , viewLink
+      [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#engines" ]
+      [ viewCenteredButton [] [ Html.text "help" ] ]
     , viewNodeEngine engines.node
     , viewNpmEngine engines.npm
     ]
@@ -605,6 +620,9 @@ viewRepository ( Repository repository ) =
   Html.div
     []
     [ viewSecondLevelTitle [] [ Html.text "Repository" ]
+    , viewLink
+      [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#repository" ]
+      [ viewCenteredButton [] [ Html.text "help" ] ]
     , viewRepositoryKind repository.kind
     , viewRepositoryUrl repository.url
     ]
@@ -643,6 +661,9 @@ viewAuthor ( Author author ) =
   Html.div
     []
     [ viewSecondLevelTitle [] [ Html.text "Author" ]
+    , viewLink
+      [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#author" ]
+      [ viewCenteredButton [] [ Html.text "help" ] ]
     , viewAuthorName author.name
     , viewAuthorUrl author.url
     , viewAuthorEmail author.email
@@ -696,6 +717,9 @@ viewBugs ( Bugs bugs ) =
   Html.div
     []
     [ viewSecondLevelTitle [] [ Html.text "Bugs" ]
+    , viewLink
+      [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#bugs" ]
+      [ viewCenteredButton [] [ Html.text "help" ] ]
     , viewBugsUrl bugs.url
     , viewBugsEmail bugs.email
     ]
