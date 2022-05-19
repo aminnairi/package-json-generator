@@ -2905,7 +2905,7 @@ port copyToClipboardNotification : ( String -> message ) -> Sub message
 -- INIT
 
 
-init : Int -> ( Model, Cmd Message )
+init : Flags -> ( Model, Cmd Message )
 init windowWidth =
   ( { windowWidth = windowWidth
     , notification = ""
@@ -2965,6 +2965,13 @@ init windowWidth =
     }
   , Cmd.none
   )
+
+
+-- TYPES ( Flags )
+
+
+type alias Flags =
+  Int
 
 
 -- TYPES ( MODEL )
