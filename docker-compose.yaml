@@ -4,7 +4,7 @@ services:
   elm:
     env_file: .env
     build:
-      context: .
+      context: ./docker
       dockerfile: Dockerfile
       args:
         DOCKER_USER_IDENTIFIER: $DOCKER_USER_IDENTIFIER
