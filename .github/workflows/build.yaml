@@ -13,5 +13,8 @@ jobs:
       - name: Setup
         run: cp .env.example .env
 
+      - name: Echo
+        run: id -u
+
       - name: Build
         run: sudo make production
