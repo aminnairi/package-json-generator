@@ -7,5 +7,50 @@
     "elm": "0.19.1-5",
     "vite": "2.9.9",
     "vite-plugin-elm": "2.6.1"
-  }
+  },
+  "private": true,
+  "name": "@aminnairi/package-json-generator",
+  "description": "Generate package.json files directly from your browser.",
+  "version": "0.1.0",
+  "homepage": "https://github.com/aminnairi/package-json-generator#readme",
+  "license": "GPL-3.0-or-later",
+  "main": "",
+  "browser": "",
+  "bugs": {
+    "url": "https://github.com/aminnairi/package-json-generator/issues",
+    "email": ""
+  },
+  "author": {
+    "name": "Amin NAIRI",
+    "url": "https://github.com/aminnairi",
+    "email": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aminnairi/package-json-generator.git"
+  },
+  "engines": {
+    "node": "",
+    "npm": ""
+  },
+  "directories": {
+    "lib": "",
+    "bin": "",
+    "man": "",
+    "doc": "",
+    "example": "",
+    "test": ""
+  },
+  "cpu": [],
+  "os": [],
+  "files": [],
+  "keywords": [],
+  "workspaces": [],
+  "contributors": [],
+  "fundings": [],
+  "config": {},
+  "dependencies": {},
+  "peerDependencies": {},
+  "bundledDependencies": {},
+  "optionalDependencies": {}
 }
