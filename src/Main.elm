@@ -160,9 +160,13 @@ viewDirectories ( Directories directories ) =
   Html.div
     []
     [ viewSecondLevelTitle [] [ Html.text "Directories" ]
-    , viewLink
-      [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#directories" ]
-      [ viewCenteredButton [] [ Html.text "help" ] ]
+    , viewRow
+      []
+      [ viewLink
+        [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#directories" ]
+        [ viewCenteredButton [] [ Html.text "help" ] ]
+      , viewButton [ Html.Events.onClick ResetDirectories ] [ Html.text "Reset" ]
+      ]
     , viewLibraryDirectory directories.library
     , viewBinaryDirectory directories.binary
     , viewManualDirectory directories.manual
@@ -265,6 +269,7 @@ viewWorkspaces workspaces =
         , viewRow
           []
           [ viewButton [ Html.Events.onClick AddWorkspace ] [ Html.text "Add" ]
+          , viewButton [ Html.Events.onClick ResetWorkspaces ] [ Html.text "Reset" ]
           , viewLink
             [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#workspaces" ]
             [ viewCenteredButton [] [ Html.text "help" ] ]
@@ -300,6 +305,7 @@ viewKeywords keywords =
         , viewRow
           []
           [ viewButton [ Html.Events.onClick AddKeyword ] [ Html.text "Add" ]
+          , viewButton [ Html.Events.onClick ResetKeywords ] [ Html.text "Reset" ]
           , viewLink
             [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#keywords" ]
             [ viewCenteredButton [] [ Html.text "help" ] ]
@@ -335,6 +341,7 @@ viewFiles files =
         , viewRow
           []
           [ viewButton [ Html.Events.onClick AddFile ] [ Html.text "Add" ]
+          , viewButton [ Html.Events.onClick ResetFiles ] [ Html.text "Reset" ]
           , viewLink
             [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#files" ]
             [ viewCenteredButton [] [ Html.text "help" ] ]
@@ -370,6 +377,7 @@ viewOperatingSystems operatingSystems =
         , viewRow
           []
           [ viewButton [ Html.Events.onClick AddOperatingSystem ] [ Html.text "Add" ]
+          , viewButton [ Html.Events.onClick ResetOperatingSystems ] [ Html.text "Reset" ]
           , viewLink
             [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#os" ]
             [ viewCenteredButton [] [ Html.text "help" ] ]
@@ -418,6 +426,7 @@ viewCpus cpus =
         , viewRow
           []
           [ viewButton [ Html.Events.onClick AddCpu ] [ Html.text "Add" ]
+          , viewButton [ Html.Events.onClick ResetCpus ] [ Html.text "Reset" ]
           , viewLink
             [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#cpu" ]
             [ viewCenteredButton [] [ Html.text "help" ] ]
@@ -654,9 +663,13 @@ viewEngines ( Engines engines ) =
   Html.div
     []
     [ viewSecondLevelTitle [] [ Html.text "Engines" ]
-    , viewLink
-      [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#engines" ]
-      [ viewCenteredButton [] [ Html.text "help" ] ]
+    , viewRow
+      []
+      [ viewLink
+        [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#engines" ]
+        [ viewCenteredButton [] [ Html.text "help" ] ]
+      , viewButton [ Html.Events.onClick ResetEngines ] [ Html.text "Reset" ]
+      ]
     , viewNodeEngine engines.node
     , viewNpmEngine engines.npm
     ]
@@ -695,9 +708,13 @@ viewRepository ( Repository repository ) =
   Html.div
     []
     [ viewSecondLevelTitle [] [ Html.text "Repository" ]
-    , viewLink
-      [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#repository" ]
-      [ viewCenteredButton [] [ Html.text "help" ] ]
+    , viewRow
+      []
+      [ viewLink
+        [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#repository" ]
+        [ viewCenteredButton [] [ Html.text "help" ] ]
+      , viewButton [ Html.Events.onClick ResetRepository ] [ Html.text "Reset" ]
+      ]
     , viewRepositoryKind repository.kind
     , viewRepositoryUrl repository.url
     ]
@@ -845,6 +862,7 @@ viewOptionalDependencies optionalDependencies =
         , viewRow
           []
           [ viewButton [ Html.Events.onClick AddOptionalDependency ] [ Html.text "Add" ]
+          , viewButton [ Html.Events.onClick ResetOptionalDependencies ] [ Html.text "Reset" ]
           , viewLink
             [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#optionaldependencies" ]
             [ viewCenteredButton [] [ Html.text "help" ] ]
@@ -900,6 +918,7 @@ viewBundledDependencies bundledDependencies =
         , viewRow
           []
           [ viewButton [ Html.Events.onClick AddBundledDependency ] [ Html.text "Add" ]
+          , viewButton [ Html.Events.onClick ResetBundledDependencies ] [ Html.text "Reset" ]
           , viewLink
             [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#bundleddependencies" ]
             [ viewCenteredButton [] [ Html.text "help" ] ]
@@ -955,6 +974,7 @@ viewPeerDependencies peerDependencies =
         , viewRow
           []
           [ viewButton [ Html.Events.onClick AddPeerDependency ] [ Html.text "Add" ]
+          , viewButton [ Html.Events.onClick ResetPeerDependencies ] [ Html.text "Reset" ]
           , viewLink
             [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#peerdependencies" ]
             [ viewCenteredButton [] [ Html.text "help" ] ]
@@ -1010,6 +1030,7 @@ viewDevelopmentDependencies developmentDependencies =
         , viewRow
           []
           [ viewButton [ Html.Events.onClick AddDevelopmentDependency ] [ Html.text "Add" ]
+          , viewButton [ Html.Events.onClick ResetDevelopmentDependencies ] [ Html.text "Reset" ]
           , viewLink
             [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#devdependencies" ]
             [ viewCenteredButton [] [ Html.text "help" ] ]
@@ -1065,6 +1086,7 @@ viewDependencies dependencies =
         , viewRow
           []
           [ viewButton [ Html.Events.onClick AddDependency ] [ Html.text "Add" ]
+          , viewButton [ Html.Events.onClick ResetDependencies ] [ Html.text "Reset" ]
           , viewLink
             [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#dependencies" ]
             [ viewCenteredButton [] [ Html.text "help" ] ]
@@ -1120,6 +1142,7 @@ viewConfigurations configurations =
         , viewRow
           []
           [ viewButton [ Html.Events.onClick AddConfiguration ] [ Html.text "Add" ]
+          , viewButton [ Html.Events.onClick ResetConfigurations ] [ Html.text "Reset" ]
           , viewLink
             [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#config" ]
             [ viewCenteredButton [] [ Html.text "help" ] ]
@@ -1175,6 +1198,7 @@ viewScripts scripts =
         , viewRow
           []
           [ viewButton [ Html.Events.onClick AddScript ] [ Html.text "Add" ]
+          , viewButton [ Html.Events.onClick ResetScripts ] [ Html.text "Reset" ]
           , viewLink
             [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#scripts" ]
             [ viewCenteredButton [] [ Html.text "help" ] ]
@@ -1230,6 +1254,7 @@ viewFundings fundings =
         , viewRow
           []
           [ viewButton [ Html.Events.onClick AddFunding ] [ Html.text "Add" ]
+          , viewButton [ Html.Events.onClick ResetFundings ] [ Html.text "Reset" ]
           , viewLink
             [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#funding" ]
             [ viewCenteredButton [] [ Html.text "help" ] ]
@@ -1284,6 +1309,7 @@ viewContributors contributors =
         , viewRow
           []
           [ viewButton [ Html.Events.onClick AddContributor ] [ Html.text "Add" ]
+          , viewButton [ Html.Events.onClick ResetContributors ] [ Html.text "Reset" ]
           , viewLink
             [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#people-fields-author-contributors" ]
             [ viewCenteredButton [] [ Html.text "help" ] ]
@@ -2724,6 +2750,91 @@ update message model =
       , Cmd.none
       )
 
+    ResetRepository ->
+      ( { model | repository = Repository { kind = RepositoryKind "", url = RepositoryUrl "" } }
+      , Cmd.none
+      )
+
+    ResetEngines ->
+      ( { model | engines = Engines { node = NodeEngine "", npm = NpmEngine "" } }
+      , Cmd.none
+      )
+
+    ResetDirectories ->
+      ( { model | directories = Directories { library = LibraryDirectory "", binary = BinaryDirectory "", manual = ManualDirectory "", documentation = DocumentationDirectory "", example = ExampleDirectory "", test = TestDirectory "" } }
+      , Cmd.none
+      )
+
+    ResetCpus ->
+      ( { model | cpus = [] }
+      , Cmd.none
+      )
+
+    ResetOperatingSystems ->
+      ( { model | operatingSystems = [] }
+      , Cmd.none
+      )
+
+    ResetFiles ->
+      ( { model | files = [] }
+      , Cmd.none
+      )
+
+    ResetKeywords ->
+      ( { model | keywords = [] }
+      , Cmd.none
+      )
+
+    ResetWorkspaces ->
+      ( { model | workspaces = [] }
+      , Cmd.none
+      )
+
+    ResetContributors ->
+      ( { model | contributors = [] }
+      , Cmd.none
+      )
+
+    ResetFundings ->
+      ( { model | fundings = [] }
+      , Cmd.none
+      )
+
+    ResetScripts ->
+      ( { model | scripts = [] }
+      , Cmd.none
+      )
+
+    ResetConfigurations ->
+      ( { model | configurations = [] }
+      , Cmd.none
+      )
+
+    ResetDependencies ->
+      ( { model | dependencies = [] }
+      , Cmd.none
+      )
+
+    ResetDevelopmentDependencies ->
+      ( { model | developmentDependencies = [] }
+      , Cmd.none
+      )
+
+    ResetPeerDependencies ->
+      ( { model | peerDependencies = [] }
+      , Cmd.none
+      )
+
+    ResetBundledDependencies ->
+      ( { model | bundledDependencies = [] }
+      , Cmd.none
+      )
+
+    ResetOptionalDependencies ->
+      ( { model | optionalDependencies = [] }
+      , Cmd.none
+      )
+
 
 updateAccess : String -> Access
 updateAccess access =
@@ -3489,3 +3600,20 @@ type Message
   | ResetBrowser
   | ResetBugs
   | ResetAuthor
+  | ResetRepository
+  | ResetEngines
+  | ResetDirectories
+  | ResetCpus
+  | ResetOperatingSystems
+  | ResetFiles
+  | ResetKeywords
+  | ResetWorkspaces
+  | ResetContributors
+  | ResetFundings
+  | ResetScripts
+  | ResetConfigurations
+  | ResetDependencies
+  | ResetDevelopmentDependencies
+  | ResetPeerDependencies
+  | ResetBundledDependencies
+  | ResetOptionalDependencies
