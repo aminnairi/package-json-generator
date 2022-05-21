@@ -8,6 +8,4 @@
 - Navigation bar with sources & issue
 - Import package.json
 - Drag and drop package.json
-- Focus field after reset whenever possible
-- Vibration on every button actions
-- Overflow y on mobile for the generated package json
+- Check label focusing its input
