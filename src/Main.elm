@@ -164,7 +164,7 @@ viewDirectories ( Directories directories ) =
       []
       [ viewLink
         [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#directories" ]
-        [ viewCenteredButton [] [ Html.text "help" ] ]
+        [ viewButton [] [ Html.text "help" ] ]
       , viewButton [ Html.Events.onClick ResetDirectories ] [ Html.text "Reset" ]
       ]
     , viewLibraryDirectory directories.library
@@ -272,7 +272,7 @@ viewWorkspaces workspaces =
           , viewButton [ Html.Events.onClick ResetWorkspaces ] [ Html.text "Reset" ]
           , viewLink
             [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#workspaces" ]
-            [ viewCenteredButton [] [ Html.text "help" ] ]
+            [ viewButton [] [ Html.text "help" ] ]
           ]
         ]
         <| List.indexedMap viewWorkspace workspaces
@@ -308,7 +308,7 @@ viewKeywords keywords =
           , viewButton [ Html.Events.onClick ResetKeywords ] [ Html.text "Reset" ]
           , viewLink
             [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#keywords" ]
-            [ viewCenteredButton [] [ Html.text "help" ] ]
+            [ viewButton [] [ Html.text "help" ] ]
           ]
         ]
         <| List.indexedMap viewKeyword keywords
@@ -344,7 +344,7 @@ viewFiles files =
           , viewButton [ Html.Events.onClick ResetFiles ] [ Html.text "Reset" ]
           , viewLink
             [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#files" ]
-            [ viewCenteredButton [] [ Html.text "help" ] ]
+            [ viewButton [] [ Html.text "help" ] ]
           ]
         ]
         <| List.indexedMap viewFile files
@@ -380,7 +380,7 @@ viewOperatingSystems operatingSystems =
           , viewButton [ Html.Events.onClick ResetOperatingSystems ] [ Html.text "Reset" ]
           , viewLink
             [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#os" ]
-            [ viewCenteredButton [] [ Html.text "help" ] ]
+            [ viewButton [] [ Html.text "help" ] ]
           ]
         ]
         <| List.indexedMap viewOperatingSystem operatingSystems
@@ -429,7 +429,7 @@ viewCpus cpus =
           , viewButton [ Html.Events.onClick ResetCpus ] [ Html.text "Reset" ]
           , viewLink
             [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#cpu" ]
-            [ viewCenteredButton [] [ Html.text "help" ] ]
+            [ viewButton [] [ Html.text "help" ] ]
           ]
         ]
         <| List.indexedMap viewCpu cpus
@@ -463,7 +463,7 @@ viewBrowser ( Browser browser ) =
       []
       [ viewLink
         [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#browser" ]
-        [ viewCenteredButton [] [ Html.text "help" ] ]
+        [ viewButton [] [ Html.text "help" ] ]
       , viewButton [ Html.Events.onClick ResetBrowser ] [ Html.text "Reset" ]
       ]
     , viewInputField
@@ -488,7 +488,7 @@ viewMain ( Main entrypoint ) =
       []
       [ viewLink
         [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#main" ]
-        [ viewCenteredButton [] [ Html.text "help" ] ]
+        [ viewButton [] [ Html.text "help" ] ]
       , viewButton [ Html.Events.onClick ResetMain ] [ Html.text "Reset" ]
       ]
     , viewInputField
@@ -513,7 +513,7 @@ viewLicense ( License license ) =
       []
       [ viewLink
         [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#license" ]
-        [ viewCenteredButton [] [ Html.text "help" ] ]
+        [ viewButton [] [ Html.text "help" ] ]
       , viewButton [ Html.Events.onClick ResetLicense ] [ Html.text "Reset" ]
       ]
     , viewInputField
@@ -538,7 +538,7 @@ viewHomepage ( Homepage homepage ) =
       []
       [ viewLink
         [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#homepage" ]
-        [ viewCenteredButton [] [ Html.text "help" ] ]
+        [ viewButton [] [ Html.text "help" ] ]
       , viewButton [ Html.Events.onClick ResetHomepage ] [ Html.text "Reset" ]
       ]
     , viewInputField
@@ -563,7 +563,7 @@ viewVersion ( Version version ) =
       []
       [ viewLink
         [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#version" ]
-        [ viewCenteredButton [] [ Html.text "help" ] ]
+        [ viewButton [] [ Html.text "help" ] ]
       , viewButton [ Html.Events.onClick ResetVersion ] [ Html.text "Reset" ]
       ]
     , viewInputField
@@ -588,7 +588,7 @@ viewDescription ( Description description ) =
       []
       [ viewLink
         [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#description" ]
-        [ viewCenteredButton [] [ Html.text "help" ] ]
+        [ viewButton [] [ Html.text "help" ] ]
       , viewButton [ Html.Events.onClick ResetDescription ] [ Html.text "Reset" ]
       ]
     , viewInputField
@@ -613,7 +613,7 @@ viewName ( Name name ) =
       []
       [ viewLink
         [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#name" ]
-        [ viewCenteredButton [] [ Html.text "help" ] ]
+        [ viewButton [] [ Html.text "help" ] ]
       , viewButton [ Html.Events.onClick ResetName ] [ Html.text "Reset" ]
       ]
     , viewInputField
@@ -667,7 +667,7 @@ viewEngines ( Engines engines ) =
       []
       [ viewLink
         [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#engines" ]
-        [ viewCenteredButton [] [ Html.text "help" ] ]
+        [ viewButton [] [ Html.text "help" ] ]
       , viewButton [ Html.Events.onClick ResetEngines ] [ Html.text "Reset" ]
       ]
     , viewNodeEngine engines.node
@@ -712,7 +712,7 @@ viewRepository ( Repository repository ) =
       []
       [ viewLink
         [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#repository" ]
-        [ viewCenteredButton [] [ Html.text "help" ] ]
+        [ viewButton [] [ Html.text "help" ] ]
       , viewButton [ Html.Events.onClick ResetRepository ] [ Html.text "Reset" ]
       ]
     , viewRepositoryKind repository.kind
@@ -757,7 +757,7 @@ viewAuthor ( Author author ) =
       []
       [ viewLink
         [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#people-fields-author-contributors" ]
-        [ viewCenteredButton [] [ Html.text "help" ] ]
+        [ viewButton [] [ Html.text "help" ] ]
       , viewButton [ Html.Events.onClick ResetAuthor ] [ Html.text "Reset" ]
       ]
     , viewAuthorName author.name
@@ -817,7 +817,7 @@ viewBugs ( Bugs bugs ) =
       []
       [ viewLink
         [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#bugs" ]
-        [ viewCenteredButton [] [ Html.text "help" ] ]
+        [ viewButton [] [ Html.text "help" ] ]
       , viewButton [ Html.Events.onClick ResetBugs ] [ Html.text "Reset" ]
       ]
     , viewBugsUrl bugs.url
@@ -865,7 +865,7 @@ viewOptionalDependencies optionalDependencies =
           , viewButton [ Html.Events.onClick ResetOptionalDependencies ] [ Html.text "Reset" ]
           , viewLink
             [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#optionaldependencies" ]
-            [ viewCenteredButton [] [ Html.text "help" ] ]
+            [ viewButton [] [ Html.text "help" ] ]
           ]
         ]
         <| List.indexedMap viewOptionalDependency optionalDependencies
@@ -921,7 +921,7 @@ viewBundledDependencies bundledDependencies =
           , viewButton [ Html.Events.onClick ResetBundledDependencies ] [ Html.text "Reset" ]
           , viewLink
             [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#bundleddependencies" ]
-            [ viewCenteredButton [] [ Html.text "help" ] ]
+            [ viewButton [] [ Html.text "help" ] ]
           ]
         ]
         <| List.indexedMap viewBundledDependency bundledDependencies
@@ -977,7 +977,7 @@ viewPeerDependencies peerDependencies =
           , viewButton [ Html.Events.onClick ResetPeerDependencies ] [ Html.text "Reset" ]
           , viewLink
             [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#peerdependencies" ]
-            [ viewCenteredButton [] [ Html.text "help" ] ]
+            [ viewButton [] [ Html.text "help" ] ]
           ]
         ]
         <| List.indexedMap viewPeerDependency peerDependencies
@@ -1033,7 +1033,7 @@ viewDevelopmentDependencies developmentDependencies =
           , viewButton [ Html.Events.onClick ResetDevelopmentDependencies ] [ Html.text "Reset" ]
           , viewLink
             [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#devdependencies" ]
-            [ viewCenteredButton [] [ Html.text "help" ] ]
+            [ viewButton [] [ Html.text "help" ] ]
           ]
         ]
         <| List.indexedMap viewDevelopmentDependency developmentDependencies
@@ -1089,7 +1089,7 @@ viewDependencies dependencies =
           , viewButton [ Html.Events.onClick ResetDependencies ] [ Html.text "Reset" ]
           , viewLink
             [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#dependencies" ]
-            [ viewCenteredButton [] [ Html.text "help" ] ]
+            [ viewButton [] [ Html.text "help" ] ]
           ]
         ]
         <| List.indexedMap viewDependency dependencies
@@ -1145,7 +1145,7 @@ viewConfigurations configurations =
           , viewButton [ Html.Events.onClick ResetConfigurations ] [ Html.text "Reset" ]
           , viewLink
             [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#config" ]
-            [ viewCenteredButton [] [ Html.text "help" ] ]
+            [ viewButton [] [ Html.text "help" ] ]
           ]
         ]
         <| List.indexedMap viewConfiguration configurations
@@ -1201,7 +1201,7 @@ viewScripts scripts =
           , viewButton [ Html.Events.onClick ResetScripts ] [ Html.text "Reset" ]
           , viewLink
             [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#scripts" ]
-            [ viewCenteredButton [] [ Html.text "help" ] ]
+            [ viewButton [] [ Html.text "help" ] ]
           ]
         ]
         <| List.indexedMap viewScript scripts
@@ -1257,7 +1257,7 @@ viewFundings fundings =
           , viewButton [ Html.Events.onClick ResetFundings ] [ Html.text "Reset" ]
           , viewLink
             [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#funding" ]
-            [ viewCenteredButton [] [ Html.text "help" ] ]
+            [ viewButton [] [ Html.text "help" ] ]
           ]
         ]
         <| List.indexedMap viewFunding fundings
@@ -1312,7 +1312,7 @@ viewContributors contributors =
           , viewButton [ Html.Events.onClick ResetContributors ] [ Html.text "Reset" ]
           , viewLink
             [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#people-fields-author-contributors" ]
-            [ viewCenteredButton [] [ Html.text "help" ] ]
+            [ viewButton [] [ Html.text "help" ] ]
           ]
         ]
         <| List.indexedMap viewContributor contributors
@@ -1447,7 +1447,7 @@ viewButton attributes children =
       , Html.Attributes.style "color" "black"
       , Html.Attributes.style "border-radius" "5px"
       , Html.Attributes.style "padding" "5px 10px"
-      , Html.Attributes.style "margin" "10px"
+      , Html.Attributes.style "margin" "5px"
       , Html.Attributes.style "cursor" "pointer"
       , Html.Attributes.style "text-transform" "uppercase"
       , Html.Attributes.style "font-weight" "400"
