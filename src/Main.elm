@@ -840,6 +840,7 @@ viewBugsUrl ( BugsUrl url ) =
     , Html.Attributes.for "bugs-url"
     , Html.Attributes.placeholder "https://github.com/user/repository/issues"
     , Html.Attributes.type_ "url"
+    , Html.Attributes.id "bugs-url"
     ]
     []
 
@@ -1397,7 +1398,12 @@ viewContributorUrl ( ContributorUrl contributorUrl ) =
 
 viewModel : Model -> Html Message
 viewModel model =
-  Html.pre [] [ Html.code [ Html.Attributes.style "font-size" "1rem" ] [ Html.text <| encodeModel model ] ]
+  Html.pre
+    [ Html.Attributes.style "overflow-x" "scroll" ]
+    [ Html.code
+      [ Html.Attributes.style "font-size" "1rem" ]
+      [ Html.text <| encodeModel model ]
+    ]
 
 
 viewInputField : List ( Attribute Message ) -> List ( Html Message ) -> List ( Attribute Message ) -> List ( Html Message ) -> Html Message
@@ -2747,136 +2753,172 @@ update message model =
       )
 
     Reset ->
-      init model.windowWidth
+      ( initialModel model.windowWidth, vibrate () )
 
     ResetName ->
       ( { model | name = Name "" }
-      , Cmd.none
+      , Cmd.batch
+        [ vibrate ()
+        , focusElementById "name"
+        ]
       )
 
     ResetDescription ->
       ( { model | description = Description "" }
-      , Cmd.none
+      , Cmd.batch
+        [ vibrate ()
+        , focusElementById "description"
+        ]
       )
 
     ResetVersion ->
       ( { model | version = Version "" }
-      , Cmd.none
+      , Cmd.batch
+        [ vibrate ()
+        , focusElementById "version"
+        ]
       )
 
     ResetHomepage ->
       ( { model | homepage = Homepage "" }
-      , Cmd.none
+      , Cmd.batch
+        [ vibrate ()
+        , focusElementById "homepage"
+        ]
       )
 
     ResetLicense ->
       ( { model | license = License "" }
-      , Cmd.none
+      , Cmd.batch
+        [ vibrate ()
+        , focusElementById "license"
+        ]
       )
 
     ResetMain ->
       ( { model | main = Main "" }
-      , Cmd.none
+      , Cmd.batch
+        [ vibrate ()
+        , focusElementById "main"
+        ]
       )
 
     ResetBrowser ->
       ( { model | browser = Browser "" }
-      , Cmd.none
+      , Cmd.batch
+        [ vibrate ()
+        , focusElementById "browser"
+        ]
       )
 
     ResetBugs ->
       ( { model | bugs = Bugs { url = BugsUrl "" , email = BugsEmail "" } }
-      , Cmd.none
+      , Cmd.batch
+        [ vibrate ()
+        , focusElementById "bugs-url"
+        ]
       )
 
     ResetAuthor ->
       ( { model | author = Author { name = AuthorName "", url = AuthorUrl "", email = AuthorEmail ""} }
-      , Cmd.none
+      , Cmd.batch
+        [ vibrate ()
+        , focusElementById "author-name"
+        ]
       )
 
     ResetRepository ->
       ( { model | repository = Repository { kind = RepositoryKind "", url = RepositoryUrl "" } }
-      , Cmd.none
+      , Cmd.batch
+        [ vibrate ()
+        , focusElementById "repository-type"
+        ]
       )
 
     ResetEngines ->
       ( { model | engines = Engines { node = NodeEngine "", npm = NpmEngine "" } }
-      , Cmd.none
+      , Cmd.batch
+        [ vibrate ()
+        , focusElementById "engines-node"
+        ]
       )
 
     ResetDirectories ->
       ( { model | directories = Directories { library = LibraryDirectory "", binary = BinaryDirectory "", manual = ManualDirectory "", documentation = DocumentationDirectory "", example = ExampleDirectory "", test = TestDirectory "" } }
-      , Cmd.none
+      , Cmd.batch
+        [ vibrate ()
+        , focusElementById "directories-library"
+        ]
       )
 
     ResetCpus ->
       ( { model | cpus = [] }
-      , Cmd.none
+      , vibrate ()
       )
 
     ResetOperatingSystems ->
       ( { model | operatingSystems = [] }
-      , Cmd.none
+      , vibrate ()
       )
 
     ResetFiles ->
       ( { model | files = [] }
-      , Cmd.none
+      , vibrate ()
       )
 
     ResetKeywords ->
       ( { model | keywords = [] }
-      , Cmd.none
+      , vibrate ()
       )
 
     ResetWorkspaces ->
       ( { model | workspaces = [] }
-      , Cmd.none
+      , vibrate ()
       )
 
     ResetContributors ->
       ( { model | contributors = [] }
-      , Cmd.none
+      , vibrate ()
       )
 
     ResetFundings ->
       ( { model | fundings = [] }
-      , Cmd.none
+      , vibrate ()
       )
 
     ResetScripts ->
       ( { model | scripts = [] }
-      , Cmd.none
+      , vibrate ()
       )
 
     ResetConfigurations ->
       ( { model | configurations = [] }
-      , Cmd.none
+      , vibrate ()
       )
 
     ResetDependencies ->
       ( { model | dependencies = [] }
-      , Cmd.none
+      , vibrate ()
       )
 
     ResetDevelopmentDependencies ->
       ( { model | developmentDependencies = [] }
-      , Cmd.none
+      , vibrate ()
       )
 
     ResetPeerDependencies ->
       ( { model | peerDependencies = [] }
-      , Cmd.none
+      , vibrate ()
       )
 
     ResetBundledDependencies ->
       ( { model | bundledDependencies = [] }
-      , Cmd.none
+      , vibrate ()
       )
 
     ResetOptionalDependencies ->
       ( { model | optionalDependencies = [] }
-      , Cmd.none
+      , vibrate ()
       )
 
 
@@ -3073,6 +3115,13 @@ updateContributorName ( ContributorName name ) ( Contributor contributor ) =
 -- COMMANDS
 
 
+focusElementById : String -> Cmd Message
+focusElementById identifier =
+  Task.attempt
+    ( always None )
+    ( Browser.Dom.focus identifier )
+
+
 focusAfterAdd : List a -> String -> Cmd Message
 focusAfterAdd list identifier =
   Task.attempt
@@ -3131,66 +3180,69 @@ port copyToClipboardNotification : ( String -> message ) -> Sub message
 -- INIT
 
 
+initialModel : Flags -> Model
+initialModel windowWidth =
+  { windowWidth = windowWidth
+  , notification = ""
+  , name = Name ""
+  , description = Description ""
+  , version = Version ""
+  , homepage = Homepage ""
+  , license = License ""
+  , main = Main ""
+  , browser = Browser ""
+  , access = Private
+  , bugs =
+      Bugs
+        { url = BugsUrl ""
+        , email = BugsEmail ""
+        }
+  , author =
+      Author
+        { name = AuthorName ""
+        , url = AuthorUrl ""
+        , email = AuthorEmail ""
+        }
+  , repository =
+      Repository
+        { kind = RepositoryKind ""
+        , url = RepositoryUrl ""
+        }
+  , engines =
+      Engines 
+        { node = NodeEngine ""
+        , npm = NpmEngine ""
+        }
+  , directories =
+      Directories
+        { library = LibraryDirectory ""
+        , binary = BinaryDirectory ""
+        , manual = ManualDirectory ""
+        , documentation = DocumentationDirectory ""
+        , example = ExampleDirectory ""
+        , test = TestDirectory ""
+        }
+  , cpus = []
+  , operatingSystems = []
+  , files = []
+  , keywords = []
+  , contributors = []
+  , fundings = []
+  , scripts = []
+  , configurations = []
+  , dependencies = []
+  , developmentDependencies = []
+  , peerDependencies = []
+  , bundledDependencies = []
+  , optionalDependencies = []
+  , workspaces = []
+  , spaces = TwoSpaces
+  }
+
+
 init : Flags -> ( Model, Cmd Message )
 init windowWidth =
-  ( { windowWidth = windowWidth
-    , notification = ""
-    , name = Name ""
-    , description = Description ""
-    , version = Version ""
-    , homepage = Homepage ""
-    , license = License ""
-    , main = Main ""
-    , browser = Browser ""
-    , access = Private
-    , bugs =
-        Bugs
-          { url = BugsUrl ""
-          , email = BugsEmail ""
-          }
-    , author =
-        Author
-          { name = AuthorName ""
-          , url = AuthorUrl ""
-          , email = AuthorEmail ""
-          }
-    , repository =
-        Repository
-          { kind = RepositoryKind ""
-          , url = RepositoryUrl ""
-          }
-    , engines =
-        Engines 
-          { node = NodeEngine ""
-          , npm = NpmEngine ""
-          }
-    , directories =
-        Directories
-          { library = LibraryDirectory ""
-          , binary = BinaryDirectory ""
-          , manual = ManualDirectory ""
-          , documentation = DocumentationDirectory ""
-          , example = ExampleDirectory ""
-          , test = TestDirectory ""
-          }
-    , cpus = []
-    , operatingSystems = []
-    , files = []
-    , keywords = []
-    , contributors = []
-    , fundings = []
-    , scripts = []
-    , configurations = []
-    , dependencies = []
-    , developmentDependencies = []
-    , peerDependencies = []
-    , bundledDependencies = []
-    , optionalDependencies = []
-    , workspaces = []
-    , spaces = TwoSpaces
-    }
-  , Cmd.none
-  )
+  ( initialModel windowWidth , Cmd.none )
 
 
 -- TYPES ( Flags )
