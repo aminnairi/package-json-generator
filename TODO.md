@@ -8,3 +8,4 @@
 - Navigation bar with sources & issue
 - Import package.json
 - Drag and drop package.json
+- Focus field after reset whenever possible
