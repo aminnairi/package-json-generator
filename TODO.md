@@ -1,6 +1,5 @@
 # Todo
 
-- Add field on ctrl+enter
 - Autosave to local storage
 - Share query parameter
 - Web API Share button
@@ -9,4 +8,3 @@
 - Navigation bar with sources & issue
 - Import package.json
 - Drag and drop package.json
-- Reset button per field
