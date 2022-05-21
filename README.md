@@ -12,8 +12,12 @@ See [aminnairi.github.io/package-json-generator](https://aminnairi.github.io/pac
 
 Shortcut | Description
 ---|---
-`CONTROL + ALT + a` | Copy to clipboard
-`CONTROL + ALT + s` | Save to disk
+`control + alt + a` | Copy to clipboard
+`control + alt + s` | Save to disk
+`control + alt + r` | Reset everything
+`control + alt + enter` | On a field after it has been added, add another field
+`control + alt + backspace` | On a field after it has been added, remove this field
+`control + alt + suppr` | On a field after it has been added, remove all fields
 
 ## Contributing
 
