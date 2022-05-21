@@ -8,7 +8,7 @@ const writeStringToDisk = string => {
     }
 
     if (Object.prototype.toString.call(window.showSaveFilePicker) !== "[object Function]") {
-      return Promise.reject(new Error("Device too old or not supported")); 
+      return Promise.reject(new Error("Device or browser not supported")); 
     }
 
     const promise = window.showSaveFilePicker({
@@ -16,7 +16,7 @@ const writeStringToDisk = string => {
     });
 
     if (Object.prototype.toString.call(promise) !== "[object Promise]") {
-      return Promise.reject(new Error("Device incorrectly supports this functionality"));
+      return Promise.reject(new Error("Device or browser incorrectly supports this functionality"));
     }
 
     return promise;
