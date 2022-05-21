@@ -290,6 +290,7 @@ viewWorkspace index ( Workspace workspace ) =
       , Html.Events.onInput <| UpdateWorkspace index
       , Html.Attributes.type_ "text"
       , Html.Attributes.placeholder "client, server, mobile, ..."
+      , Html.Events.on "keydown" ( onControlAltKey [ ( "Enter", AddWorkspace ), ( "Backspace", RemoveWorkspace index ), ( "Delete", ResetWorkspaces ) ] )
       ]
       []
     , viewButton [ Html.Events.onClick <| RemoveWorkspace index ] [ Html.text "Remove" ]
@@ -326,6 +327,7 @@ viewKeyword index ( Keyword keyword ) =
       , Html.Events.onInput <| UpdateKeyword index
       , Html.Attributes.type_ "text"
       , Html.Attributes.placeholder "node, browser, javascript, ..."
+      , Html.Events.on "keydown" ( onControlAltKey [ ( "Enter", AddKeyword ), ( "Backspace", RemoveKeyword index ), ( "Delete", ResetKeywords ) ] )
       ]
       []
     , viewButton [ Html.Events.onClick <| RemoveKeyword index ] [ Html.text "Remove" ]
@@ -362,6 +364,7 @@ viewFile index ( File file ) =
       , Html.Events.onInput <| UpdateFile index
       , Html.Attributes.type_ "text"
       , Html.Attributes.placeholder "./index.js, ./library/index.js, ./helpers/index.js, ..."
+      , Html.Events.on "keydown" ( onControlAltKey [ ( "Enter", AddFile ), ( "Backspace", RemoveFile index ), ( "Delete", ResetFiles ) ] )
       ]
       []
     , viewButton [ Html.Events.onClick <| RemoveFile index ] [ Html.text "Remove" ]
@@ -398,6 +401,7 @@ viewOperatingSystem index ( OperatingSystem operatingSystem ) =
       , Html.Events.onInput <| UpdateOperatingSystem index
       , Html.Attributes.type_ "text"
       , Html.Attributes.placeholder "linux, nt, darwin, ..."
+      , Html.Events.on "keydown" ( onControlAltKey [ ( "Enter", AddOperatingSystem ), ( "Backspace", RemoveOperatingSystem index ), ( "Delete", ResetOperatingSystems ) ] )
       ]
       []
     , viewButton [ Html.Events.onClick <| RemoveOperatingSystem index ] [ Html.text "Remove" ]
@@ -447,6 +451,7 @@ viewCpu index ( Cpu cpu ) =
       , Html.Events.onInput <| UpdateCpu index
       , Html.Attributes.type_ "text"
       , Html.Attributes.placeholder "x64, x86_64, arm, ..."
+      , Html.Events.on "keydown" ( onControlAltKey [ ( "Enter",  AddCpu ), ( "Backspace", ( RemoveCpu index ) ), ( "Delete", ResetCpus ) ] )
       ]
       []
     , viewButton [ Html.Events.onClick <| RemoveCpu index ] [ Html.text "Remove" ]
@@ -883,6 +888,7 @@ viewOptionalDependency index ( OptionalDependency optionalDependency ) =
       , Html.Attributes.id <| "optional-dependency-name-" ++ String.fromInt index 
       , Html.Attributes.type_ "text"
       , Html.Attributes.placeholder "react, react-dom, react-router-dom"
+      , Html.Events.on "keydown" ( onControlAltKey [ ( "Enter", AddOptionalDependency ), ( "Backspace", RemoveOptionalDependency index ), ( "Delete", ResetOptionalDependencies ) ] )
       ]
       []
     , viewInputField
@@ -893,6 +899,7 @@ viewOptionalDependency index ( OptionalDependency optionalDependency ) =
       , Html.Attributes.id <| "optional-dependency-value-" ++ String.fromInt index 
       , Html.Attributes.type_ "text"
       , Html.Attributes.placeholder "18.0.0, 6.1.4, 0.21.9"
+      , Html.Events.on "keydown" ( onControlAltKey [ ( "Enter", AddOptionalDependency ), ( "Backspace", RemoveOptionalDependency index ), ( "Delete", ResetOptionalDependencies ) ] )
       ]
       []
     , viewButton [ Html.Events.onClick <| RemoveOptionalDependency index ] [ Html.text "Remove" ]
@@ -939,6 +946,7 @@ viewBundledDependency index ( BundledDependency bundledDependency ) =
       , Html.Attributes.id <| "bundled-dependency-name-" ++ String.fromInt index 
       , Html.Attributes.type_ "text"
       , Html.Attributes.placeholder "react, react-dom, react-router-dom"
+      , Html.Events.on "keydown" ( onControlAltKey [ ( "Enter", AddBundledDependency ), ( "Backspace", RemoveBundledDependency index ), ( "Delete", ResetBundledDependencies ) ] )
       ]
       []
     , viewInputField
@@ -949,6 +957,7 @@ viewBundledDependency index ( BundledDependency bundledDependency ) =
       , Html.Attributes.id <| "bundled-dependency-value-" ++ String.fromInt index 
       , Html.Attributes.type_ "text"
       , Html.Attributes.placeholder "18.0.0, 6.1.4, 0.21.9"
+      , Html.Events.on "keydown" ( onControlAltKey [ ( "Enter", AddBundledDependency ), ( "Backspace", RemoveBundledDependency index ), ( "Delete", ResetBundledDependencies ) ] )
       ]
       []
     , viewButton [ Html.Events.onClick <| RemoveBundledDependency index ] [ Html.text "Remove" ]
@@ -995,6 +1004,7 @@ viewPeerDependency index ( PeerDependency peerDependency ) =
       , Html.Attributes.id <| "peer-dependency-name-" ++ String.fromInt index 
       , Html.Attributes.type_ "text"
       , Html.Attributes.placeholder "react, react-dom, react-router-dom"
+      , Html.Events.on "keydown" ( onControlAltKey [ ( "Enter", AddPeerDependency ), ( "Backspace", RemovePeerDependency index ), ( "Delete", ResetPeerDependencies ) ] )
       ]
       []
     , viewInputField
@@ -1005,6 +1015,7 @@ viewPeerDependency index ( PeerDependency peerDependency ) =
       , Html.Attributes.id <| "peer-dependency-value-" ++ String.fromInt index 
       , Html.Attributes.type_ "text"
       , Html.Attributes.placeholder "18.0.0, 6.1.4, 0.21.9"
+      , Html.Events.on "keydown" ( onControlAltKey [ ( "Enter", AddPeerDependency ), ( "Backspace", RemovePeerDependency index ), ( "Delete", ResetPeerDependencies ) ] )
       ]
       []
     , viewButton [ Html.Events.onClick <| RemovePeerDependency index ] [ Html.text "Remove" ]
@@ -1051,6 +1062,7 @@ viewDevelopmentDependency index ( DevelopmentDependency developmentDependency ) 
       , Html.Attributes.id <| "development-dependency-name-" ++ String.fromInt index 
       , Html.Attributes.type_ "text"
       , Html.Attributes.placeholder "react, react-dom, react-router-dom"
+      , Html.Events.on "keydown" ( onControlAltKey [ ( "Enter", AddDevelopmentDependency ), ( "Backspace", RemoveDevelopmentDependency index ), ( "Delete", ResetDevelopmentDependencies ) ] )
       ]
       []
     , viewInputField
@@ -1061,6 +1073,7 @@ viewDevelopmentDependency index ( DevelopmentDependency developmentDependency ) 
       , Html.Attributes.id <| "development-dependency-value-" ++ String.fromInt index 
       , Html.Attributes.type_ "text"
       , Html.Attributes.placeholder "18.0.0, 6.1.4, 0.21.9"
+      , Html.Events.on "keydown" ( onControlAltKey [ ( "Enter", AddDevelopmentDependency ), ( "Backspace", RemoveDevelopmentDependency index ), ( "Delete", ResetDevelopmentDependencies ) ] )
       ]
       []
     , viewButton [ Html.Events.onClick <| RemoveDevelopmentDependency index ] [ Html.text "Remove" ]
@@ -1107,6 +1120,7 @@ viewDependency index ( Dependency dependency ) =
       , Html.Attributes.id <| "dependency-name-" ++ String.fromInt index 
       , Html.Attributes.type_ "text"
       , Html.Attributes.placeholder "react, react-dom, react-router-dom"
+      , Html.Events.on "keydown" ( onControlAltKey [ ( "Enter", AddDependency ), ( "Backspace", RemoveDependency index ), ( "Delete", ResetDependencies ) ] )
       ]
       []
     , viewInputField
@@ -1117,6 +1131,7 @@ viewDependency index ( Dependency dependency ) =
       , Html.Attributes.id <| "dependency-value-" ++ String.fromInt index 
       , Html.Attributes.type_ "text"
       , Html.Attributes.placeholder "18.0.0, 6.1.4, 0.21.9"
+      , Html.Events.on "keydown" ( onControlAltKey [ ( "Enter", AddDependency ), ( "Backspace", RemoveDependency index ), ( "Delete", ResetDependencies ) ] )
       ]
       []
     , viewButton [ Html.Events.onClick <| RemoveDependency index ] [ Html.text "Remove" ]
@@ -1163,6 +1178,7 @@ viewConfiguration index ( Configuration configuration ) =
       , Html.Attributes.id <| "configuration-key-" ++ String.fromInt index 
       , Html.Attributes.type_ "text"
       , Html.Attributes.placeholder "port, host, url, ..."
+      , Html.Events.on "keydown" ( onControlAltKey [ ( "Enter", AddConfiguration ), ( "Backspace", RemoveConfiguration index ), ( "Delete", ResetConfigurations ) ] )
       ]
       []
     , viewInputField
@@ -1173,6 +1189,7 @@ viewConfiguration index ( Configuration configuration ) =
       , Html.Attributes.id <| "configuration-value-" ++ String.fromInt index 
       , Html.Attributes.type_ "text"
       , Html.Attributes.placeholder "8000, localhost, https://api.domain.com"
+      , Html.Events.on "keydown" ( onControlAltKey [ ( "Enter", AddConfiguration ), ( "Backspace", RemoveConfiguration index ), ( "Delete", ResetConfigurations ) ] )
       ]
       []
     , viewButton [ Html.Events.onClick <| RemoveConfiguration index ] [ Html.text "Remove" ]
@@ -1219,6 +1236,7 @@ viewScript index ( Script script ) =
       , Html.Attributes.id <| "script-key-" ++ String.fromInt index 
       , Html.Attributes.type_ "text"
       , Html.Attributes.placeholder "dev, prod, test, ..."
+      , Html.Events.on "keydown" ( onControlAltKey [ ( "Enter", AddScript ), ( "Backspace", RemoveScript index ), ( "Delete", ResetScripts ) ] )
       ]
       []
     , viewInputField
@@ -1229,6 +1247,7 @@ viewScript index ( Script script ) =
       , Html.Attributes.id <| "script-command-" ++ String.fromInt index 
       , Html.Attributes.type_ "text"
       , Html.Attributes.placeholder "vite, vite build, eslint, ..."
+      , Html.Events.on "keydown" ( onControlAltKey [ ( "Enter", AddScript ), ( "Backspace", RemoveScript index ), ( "Delete", ResetScripts ) ] )
       ]
       []
     , viewButton [ Html.Events.onClick <| RemoveScript index ] [ Html.text "Remove" ]
@@ -1275,6 +1294,7 @@ viewFunding index ( Funding funding ) =
       , Html.Attributes.id <| "funding-type-" ++ String.fromInt index 
       , Html.Attributes.type_ "text"
       , Html.Attributes.placeholder "individual, patreon, ..."
+      , Html.Events.on "keydown" ( onControlAltKey [ ( "Enter", AddFunding ), ( "Backspace", RemoveFunding index ), ( "Delete", ResetFundings ) ] )
       ]
       []
     , viewInputField
@@ -1285,6 +1305,7 @@ viewFunding index ( Funding funding ) =
       , Html.Attributes.id <| "funding-url-" ++ String.fromInt index 
       , Html.Attributes.type_ "url"
       , Html.Attributes.placeholder "https://patreon.com/user"
+      , Html.Events.on "keydown" ( onControlAltKey [ ( "Enter", AddFunding ), ( "Backspace", RemoveFunding index ), ( "Delete", ResetFundings ) ] )
       ]
       []
     , viewButton [ Html.Events.onClick <| RemoveFunding index ] [ Html.text "Remove" ]
@@ -1330,6 +1351,7 @@ viewContributor index ( Contributor contributor ) =
       , Html.Attributes.id <| "contributor-name-" ++ String.fromInt index 
       , Html.Attributes.type_ "text"
       , Html.Attributes.placeholder "John DOE"
+      , Html.Events.on "keydown" ( onControlAltKey [ ( "Enter", AddContributor ), ( "Backspace", RemoveContributor index ), ( "Delete", ResetContributors ) ] )
       ]
       []
     , viewInputField
@@ -1340,6 +1362,7 @@ viewContributor index ( Contributor contributor ) =
       , Html.Attributes.id <| "contributor-email-" ++ String.fromInt index 
       , Html.Attributes.type_ "email"
       , Html.Attributes.placeholder "johndoe@domain.com"
+      , Html.Events.on "keydown" ( onControlAltKey [ ( "Enter", AddContributor ), ( "Backspace", RemoveContributor index ), ( "Delete", ResetContributors ) ] )
       ]
       []
     , viewInputField
@@ -1350,6 +1373,7 @@ viewContributor index ( Contributor contributor ) =
       , Html.Attributes.id <| "contributor-url-" ++ String.fromInt index 
       , Html.Attributes.type_ "url"
       , Html.Attributes.placeholder "https://johndoe.com"
+      , Html.Events.on "keydown" ( onControlAltKey [ ( "Enter", AddContributor ), ( "Backspace", RemoveContributor index ), ( "Delete", ResetContributors ) ] )
       ]
       []
     , viewButton [ Html.Events.onClick <| RemoveContributor index ] [ Html.text "Remove" ]
@@ -1507,6 +1531,26 @@ viewSelect attributes children =
 tabletWidthBreakpoint : Int
 tabletWidthBreakpoint =
   900
+
+
+onControlAltKey : List ( String , Message ) -> Json.Decode.Decoder Message
+onControlAltKey keyMessages =
+  Json.Decode.map3 Triple.triple
+    ( Json.Decode.field "ctrlKey" Json.Decode.bool )
+    ( Json.Decode.field "altKey" Json.Decode.bool )
+    ( Json.Decode.field "key" Json.Decode.string )
+    |> Json.Decode.andThen
+      ( \( control, alt, keyCode ) ->
+        if not control && not alt then
+          Json.Decode.fail "Nor control, alt are pressed"
+
+        else
+          keyMessages
+            |> List.filter ( Tuple.first >> (==) keyCode )
+            |> List.head
+            |> Maybe.map ( Tuple.second >> Json.Decode.succeed )
+            |> Maybe.withDefault ( Json.Decode.fail "No matching key" )
+      )
 
 
 -- JSON
@@ -2205,7 +2249,7 @@ update message model =
           , notification = ""
         }
       , Cmd.batch 
-        [ focusBeforeRemove model.files "cpu-"
+        [ focusBeforeRemove model.files "file-"
         , vibrate ()
         ]
       )
@@ -3062,22 +3106,8 @@ subscriptions _ =
   Sub.batch
     [ copyToClipboardNotification CopyToClipboardNotification
     , Browser.Events.onResize WindowResized
-    , onControlAltKeyPressed "a" CopyToClipboard
-    , onControlAltKeyPressed "s" SaveToDisk
+    , Browser.Events.onKeyDown ( onControlAltKey [ ( "c", CopyToClipboard ), ( "s", SaveToDisk ), ( "r", Reset ) ] )
     ]
-
-
--- SUBSCRIPTIONS HELPERS
-
-
-onControlAltKeyPressed : String -> Message -> Sub Message
-onControlAltKeyPressed key message =
-    Json.Decode.map3 Triple.triple
-        (Json.Decode.field "ctrlKey" Json.Decode.bool)
-        (Json.Decode.field "altKey" Json.Decode.bool)
-        (Json.Decode.field "key" Json.Decode.string)
-        |> Json.Decode.andThen (\( control, alt, keyCode ) -> if control && alt && keyCode == key then Json.Decode.succeed message else Json.Decode.fail ("Control or " ++ key ++ " not pressed") )
-        |> Browser.Events.onKeyDown
 
 
 -- OUTGOING PORTS
