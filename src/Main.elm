@@ -38,63 +38,135 @@ main =
 
 view : Model -> Html Message
 view model =
-  Html.div
-    [ Html.Attributes.style "max-height" "100vh"
-    , Html.Attributes.style "display" "flex"
-    , Html.Attributes.style "flex-direction" ( if model.windowWidth < tabletWidthBreakpoint then "column" else "row" )
-    , Html.Attributes.style "max-width" "1200px"
-    , Html.Attributes.style "margin" "0 auto"
-    ]
-    [ Html.div
-      [ Html.Attributes.style "flex" "1"
-      , Html.Attributes.style "max-height" ( if model.windowWidth < tabletWidthBreakpoint then "unset" else "100vh" )
-      , Html.Attributes.style "overflow-y" ( if model.windowWidth < tabletWidthBreakpoint then "unset" else "scroll" )
+  viewContainer
+    []
+    [ viewHeader
+    , Html.div
+      [ Html.Attributes.style "display" "flex"
+      , Html.Attributes.style "flex-direction" ( if model.windowWidth < tabletWidthBreakpoint then "column" else "row" )
+      , Html.Attributes.style "height" ( if model.windowWidth < tabletWidthBreakpoint then "unset" else "calc(100vh - 50px)" )
       ]
-      [ Html.h1
-        [ Html.Attributes.style "font-family" "Poppins"
-        , Html.Attributes.style "margin" "20px 0 20px 0"
-        , Html.Attributes.style "padding" "0"
-        , Html.Attributes.style "font-weight" "200"
-        , Html.Attributes.style "text-align" "center"
+      [ Html.div
+        [ Html.Attributes.style "flex" "1"
+        , Html.Attributes.style "max-height" ( if model.windowWidth < tabletWidthBreakpoint then "unset" else "100vh" )
+        , Html.Attributes.style "overflow-y" ( if model.windowWidth < tabletWidthBreakpoint then "unset" else "scroll" )
         ]
-        [ Html.text "package.json generator" ]
-      , viewCenteredButton [ Html.Events.onClick Reset ] [ Html.text "reset" ]
-      , viewSpaces model.spaces
-      , viewAccess model.access
-      , viewName model.name
-      , viewDescription model.description
-      , viewVersion model.version
-      , viewHomepage model.homepage
-      , viewLicense model.license
-      , viewMain model.main
-      , viewBrowser model.browser
-      , viewBugs model.bugs
-      , viewAuthor model.author
-      , viewRepository model.repository
-      , viewEngines model.engines
-      , viewDirectories model.directories
-      , viewCpus model.cpus
-      , viewOperatingSystems model.operatingSystems
-      , viewFiles model.files
-      , viewKeywords model.keywords
-      , viewWorkspaces model.workspaces
-      , viewContributors model.contributors
-      , viewFundings model.fundings
-      , viewScripts model.scripts
-      , viewConfigurations model.configurations
-      , viewDependencies model.dependencies
-      , viewDevelopmentDependencies model.developmentDependencies
-      , viewPeerDependencies model.peerDependencies
-      , viewBundledDependencies model.bundledDependencies
-      , viewOptionalDependencies model.optionalDependencies
-      , viewActions model
+        [ viewCenteredButton [ Html.Events.onClick Reset ] [ Html.text "reset" ]
+        , viewSpaces model.spaces
+        , viewAccess model.access
+        , viewName model.name
+        , viewDescription model.description
+        , viewVersion model.version
+        , viewHomepage model.homepage
+        , viewLicense model.license
+        , viewMain model.main
+        , viewBrowser model.browser
+        , viewBugs model.bugs
+        , viewAuthor model.author
+        , viewRepository model.repository
+        , viewEngines model.engines
+        , viewDirectories model.directories
+        , viewCpus model.cpus
+        , viewOperatingSystems model.operatingSystems
+        , viewFiles model.files
+        , viewKeywords model.keywords
+        , viewWorkspaces model.workspaces
+        , viewContributors model.contributors
+        , viewFundings model.fundings
+        , viewScripts model.scripts
+        , viewConfigurations model.configurations
+        , viewDependencies model.dependencies
+        , viewDevelopmentDependencies model.developmentDependencies
+        , viewPeerDependencies model.peerDependencies
+        , viewBundledDependencies model.bundledDependencies
+        , viewOptionalDependencies model.optionalDependencies
+        , viewActions model
+        ]
+      , Html.div
+        [ Html.Attributes.style "flex" "1"
+        , Html.Attributes.style "max-height" ( if model.windowWidth < tabletWidthBreakpoint then "unset" else "100vh" )
+        , Html.Attributes.style "overflow-y" ( if model.windowWidth < tabletWidthBreakpoint then "unset" else "scroll" )
+        ]
+        [ viewHighlightedModel model ]
       ]
+    ]
+
+
+viewContainer : List ( Attribute Message ) -> List ( Html Message ) -> Html Message
+viewContainer attributes children =
+  Html.div
+    ( List.append
+      [ Html.Attributes.style "max-height" "100vh"
+      , Html.Attributes.style "display" "flex"
+      , Html.Attributes.style "flex-direction" "column"
+      , Html.Attributes.style "max-width" "1200px"
+      , Html.Attributes.style "margin" "0 auto"
+      ]
+      attributes
+    )
+    children
+
+
+viewHeader : Html Message
+viewHeader =
+  Html.header
+    [ Html.Attributes.style "height" "50px"
+    , Html.Attributes.style "width" "calc(100% - 20px)"
+    , Html.Attributes.style "color" "black"
+    , Html.Attributes.style "display" "flex"
+    , Html.Attributes.style "flex-direction" "row"
+    , Html.Attributes.style "justify-content" "center"
+    , Html.Attributes.style "align-items" "stretch"
+    , Html.Attributes.style "padding" "0 10px"
+    , Html.Attributes.style "border-bottom" "1px solid lightgrey"
+    ]
+    [ Html.a
+      [ Html.Attributes.style "font-family" "Poppins"
+      , Html.Attributes.style "font-weight" "200"
+      , Html.Attributes.style "font-size" "16px"
+      , Html.Attributes.href ""
+      , Html.Attributes.style "display" "flex"
+      , Html.Attributes.style "align-items" "center"
+      , Html.Attributes.style "justify-content" "center"
+      , Html.Attributes.style "text-decoration" "none"
+      , Html.Attributes.style "color" "inherit"
+      ]
+      [ Html.text "package.json generator" ]
     , Html.div
       [ Html.Attributes.style "flex" "1"
-      , Html.Attributes.style "max-height" ( if model.windowWidth < tabletWidthBreakpoint then "unset" else "100vh" )
-      , Html.Attributes.style "overflow-y" ( if model.windowWidth < tabletWidthBreakpoint then "unset" else "scroll" )
+      , Html.Attributes.style "display" "flex"
+      , Html.Attributes.style "flex-direction" "row"
+      , Html.Attributes.style "justify-content" "flex-end"
+      , Html.Attributes.style "align-items" "stretch"
+      , Html.Attributes.style "gap" "10px"
       ]
-      [ viewHighlightedModel model ]
+      [ Html.a
+        [ Html.Attributes.style "font-family" "Poppins"
+        , Html.Attributes.style "font-weight" "200"
+        , Html.Attributes.style "font-size" "13px"
+        , Html.Attributes.style "display" "flex"
+        , Html.Attributes.style "justify-content" "center"
+        , Html.Attributes.style "align-items" "center"
+        , Html.Attributes.target "blank"
+        , Html.Attributes.href "https://github.com/aminnairi/package-json-generator#readme"
+        , Html.Attributes.style "text-decoration" "none"
+        , Html.Attributes.style "color" "inherit"
+        ]
+        [ Html.text "GitHub" ]
+      , Html.a
+        [ Html.Attributes.style "font-family" "Poppins"
+        , Html.Attributes.style "font-weight" "200"
+        , Html.Attributes.style "font-size" "13px"
+        , Html.Attributes.style "display" "flex"
+        , Html.Attributes.style "justify-content" "center"
+        , Html.Attributes.style "align-items" "center"
+        , Html.Attributes.target "blank"
+        , Html.Attributes.href "https://github.com/aminnairi/package-json-generator/issues"
+        , Html.Attributes.style "text-decoration" "none"
+        , Html.Attributes.style "color" "inherit"
+        ]
+        [ Html.text "Bug" ]
+      ]
     ]
 
 
@@ -163,10 +235,10 @@ viewDirectories ( Directories directories ) =
     [ viewSecondLevelTitle [] [ Html.text "Directories" ]
     , viewRow
       []
-      [ viewLink
+      [ viewButton [ Html.Events.onClick ResetDirectories ] [ Html.text "Reset" ]
+      , viewLink
         [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#directories" ]
         [ viewButton [] [ Html.text "help" ] ]
-      , viewButton [ Html.Events.onClick ResetDirectories ] [ Html.text "Reset" ]
       ]
     , viewLibraryDirectory directories.library
     , viewBinaryDirectory directories.binary
@@ -467,10 +539,10 @@ viewBrowser ( Browser browser ) =
     [ viewSecondLevelTitle [] [ Html.text "Browser" ]
     , viewRow
       []
-      [ viewLink
+      [ viewButton [ Html.Events.onClick ResetBrowser ] [ Html.text "Reset" ]
+      , viewLink
         [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#browser" ]
         [ viewButton [] [ Html.text "help" ] ]
-      , viewButton [ Html.Events.onClick ResetBrowser ] [ Html.text "Reset" ]
       ]
     , viewInputField
       [ Html.Attributes.for "browser" ]
@@ -492,10 +564,10 @@ viewMain ( Main entrypoint ) =
     [ viewSecondLevelTitle [] [ Html.text "Main" ]
     , viewRow
       []
-      [ viewLink
+      [ viewButton [ Html.Events.onClick ResetMain ] [ Html.text "Reset" ]
+      , viewLink
         [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#main" ]
         [ viewButton [] [ Html.text "help" ] ]
-      , viewButton [ Html.Events.onClick ResetMain ] [ Html.text "Reset" ]
       ]
     , viewInputField
       [ Html.Attributes.for "main" ]
@@ -517,10 +589,10 @@ viewLicense ( License license ) =
     [ viewSecondLevelTitle [] [ Html.text "License" ]
     , viewRow
       []
-      [ viewLink
+      [ viewButton [ Html.Events.onClick ResetLicense ] [ Html.text "Reset" ]
+      , viewLink
         [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#license" ]
         [ viewButton [] [ Html.text "help" ] ]
-      , viewButton [ Html.Events.onClick ResetLicense ] [ Html.text "Reset" ]
       ]
     , viewInputField
       [ Html.Attributes.for "license" ]
@@ -542,10 +614,10 @@ viewHomepage ( Homepage homepage ) =
     [ viewSecondLevelTitle [] [ Html.text "Home page" ]
     , viewRow
       []
-      [ viewLink
+      [ viewButton [ Html.Events.onClick ResetHomepage ] [ Html.text "Reset" ]
+      , viewLink
         [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#homepage" ]
         [ viewButton [] [ Html.text "help" ] ]
-      , viewButton [ Html.Events.onClick ResetHomepage ] [ Html.text "Reset" ]
       ]
     , viewInputField
       [ Html.Attributes.for "homepage" ]
@@ -567,10 +639,10 @@ viewVersion ( Version version ) =
     [ viewSecondLevelTitle [] [ Html.text "Version" ]
     , viewRow
       []
-      [ viewLink
+      [ viewButton [ Html.Events.onClick ResetVersion ] [ Html.text "Reset" ]
+      , viewLink
         [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#version" ]
         [ viewButton [] [ Html.text "help" ] ]
-      , viewButton [ Html.Events.onClick ResetVersion ] [ Html.text "Reset" ]
       ]
     , viewInputField
       [ Html.Attributes.for "version" ]
@@ -592,10 +664,10 @@ viewDescription ( Description description ) =
     [ viewSecondLevelTitle [] [ Html.text "Description" ]
     , viewRow
       []
-      [ viewLink
+      [ viewButton [ Html.Events.onClick ResetDescription ] [ Html.text "Reset" ]
+      , viewLink
         [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#description" ]
         [ viewButton [] [ Html.text "help" ] ]
-      , viewButton [ Html.Events.onClick ResetDescription ] [ Html.text "Reset" ]
       ]
     , viewInputField
       [ Html.Attributes.for "description" ]
@@ -617,10 +689,10 @@ viewName ( Name name ) =
     [ viewSecondLevelTitle [] [ Html.text "Name" ]
     , viewRow
       []
-      [ viewLink
+      [ viewButton [ Html.Events.onClick ResetName ] [ Html.text "Reset" ]
+      , viewLink
         [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#name" ]
         [ viewButton [] [ Html.text "help" ] ]
-      , viewButton [ Html.Events.onClick ResetName ] [ Html.text "Reset" ]
       ]
     , viewInputField
       [ Html.Attributes.for "name" ]
@@ -671,10 +743,10 @@ viewEngines ( Engines engines ) =
     [ viewSecondLevelTitle [] [ Html.text "Engines" ]
     , viewRow
       []
-      [ viewLink
+      [ viewButton [ Html.Events.onClick ResetEngines ] [ Html.text "Reset" ]
+      , viewLink
         [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#engines" ]
         [ viewButton [] [ Html.text "help" ] ]
-      , viewButton [ Html.Events.onClick ResetEngines ] [ Html.text "Reset" ]
       ]
     , viewNodeEngine engines.node
     , viewNpmEngine engines.npm
@@ -716,10 +788,10 @@ viewRepository ( Repository repository ) =
     [ viewSecondLevelTitle [] [ Html.text "Repository" ]
     , viewRow
       []
-      [ viewLink
+      [ viewButton [ Html.Events.onClick ResetRepository ] [ Html.text "Reset" ]
+      , viewLink
         [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#repository" ]
         [ viewButton [] [ Html.text "help" ] ]
-      , viewButton [ Html.Events.onClick ResetRepository ] [ Html.text "Reset" ]
       ]
     , viewRepositoryKind repository.kind
     , viewRepositoryUrl repository.url
@@ -761,10 +833,10 @@ viewAuthor ( Author author ) =
     [ viewSecondLevelTitle [] [ Html.text "Author" ]
     , viewRow
       []
-      [ viewLink
+      [ viewButton [ Html.Events.onClick ResetAuthor ] [ Html.text "Reset" ]
+      , viewLink
         [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#people-fields-author-contributors" ]
         [ viewButton [] [ Html.text "help" ] ]
-      , viewButton [ Html.Events.onClick ResetAuthor ] [ Html.text "Reset" ]
       ]
     , viewAuthorName author.name
     , viewAuthorUrl author.url
@@ -821,10 +893,10 @@ viewBugs ( Bugs bugs ) =
     [ viewSecondLevelTitle [] [ Html.text "Bugs" ]
     , viewRow
       []
-      [ viewLink
+      [ viewButton [ Html.Events.onClick ResetBugs ] [ Html.text "Reset" ]
+      , viewLink
         [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#bugs" ]
         [ viewButton [] [ Html.text "help" ] ]
-      , viewButton [ Html.Events.onClick ResetBugs ] [ Html.text "Reset" ]
       ]
     , viewBugsUrl bugs.url
     , viewBugsEmail bugs.email
@@ -2078,102 +2150,262 @@ maybeEncodeBugsEmail ( BugsEmail email ) =
 
 maybeEncodeOptionalDependencies : List OptionalDependency -> Maybe ( String, Json.Encode.Value )
 maybeEncodeOptionalDependencies optionalDependencies =
-  Just ( "optionalDependencies", Json.Encode.object <| List.map encodeOptionalDependency optionalDependencies )
+  let
+    trimmedOptionalDependencies : List ( String, Json.Encode.Value )
+    trimmedOptionalDependencies =
+      List.filterMap maybeEncoreOptionalDependency optionalDependencies
+
+  in
+    case trimmedOptionalDependencies of
+      [] ->
+        Nothing
+
+      _ ->
+        Just ( "optionalDependencies", Json.Encode.object trimmedOptionalDependencies )
 
 
-encodeOptionalDependency : OptionalDependency -> ( String, Json.Encode.Value )
-encodeOptionalDependency ( OptionalDependency optionalDependency ) =
-  ( encodeOptionalDependencyKey optionalDependency.key, encodeOptionalDependencyValue optionalDependency.value )
+maybeEncoreOptionalDependency : OptionalDependency -> Maybe ( String, Json.Encode.Value )
+maybeEncoreOptionalDependency ( OptionalDependency optionalDependency ) =
+  let
+    trimmedOptionalDependencyKey : String
+    trimmedOptionalDependencyKey =
+      optionalDependency
+        |> .key
+        |> getOptionalDependencyKey
+        |> String.trim
+
+    trimmedOptionalDependencyValue : String
+    trimmedOptionalDependencyValue =
+      optionalDependency
+        |> .value
+        |> getOptionalDependencyValue
+        |> String.trim
+
+  in
+    case [trimmedOptionalDependencyKey, trimmedOptionalDependencyValue] of
+      ["", ""] ->
+        Nothing
+
+      _ ->
+        Just ( trimmedOptionalDependencyKey , Json.Encode.string trimmedOptionalDependencyValue )
 
 
-encodeOptionalDependencyKey : OptionalDependencyKey -> String
-encodeOptionalDependencyKey ( OptionalDependencyKey optionalDependencyKey ) =
+getOptionalDependencyKey : OptionalDependencyKey -> String
+getOptionalDependencyKey ( OptionalDependencyKey optionalDependencyKey ) =
   optionalDependencyKey
 
 
-encodeOptionalDependencyValue : OptionalDependencyValue -> Json.Encode.Value
-encodeOptionalDependencyValue ( OptionalDependencyValue optionalDependencyValue ) =
-  Json.Encode.string <| String.trim optionalDependencyValue
+getOptionalDependencyValue : OptionalDependencyValue -> String
+getOptionalDependencyValue ( OptionalDependencyValue optionalDependencyValue ) =
+  optionalDependencyValue
 
 
 maybeEncodeBundledDependencies : List BundledDependency -> Maybe ( String, Json.Encode.Value )
 maybeEncodeBundledDependencies bundledDependencies =
-  Just ( "bundledDependencies", Json.Encode.object <| List.map encodeBundledDependency bundledDependencies )
+  let
+    trimmedBundledDependencies : List ( String, Json.Encode.Value )
+    trimmedBundledDependencies =
+      List.filterMap maybeEncodeBundledDependency bundledDependencies
+
+  in
+    case trimmedBundledDependencies of
+      [] ->
+        Nothing
+
+      _ ->
+        Just ( "bundledDependencies", Json.Encode.object trimmedBundledDependencies )
 
 
-encodeBundledDependency : BundledDependency -> ( String, Json.Encode.Value )
-encodeBundledDependency ( BundledDependency bundledDependency ) =
-  ( encodeBundledDependencyKey bundledDependency.key, encodeBundledDependencyValue bundledDependency.value )
+maybeEncodeBundledDependency : BundledDependency -> Maybe ( String, Json.Encode.Value )
+maybeEncodeBundledDependency ( BundledDependency bundledDependency ) =
+  let
+    trimmedBundledDependencyKey : String
+    trimmedBundledDependencyKey =
+      bundledDependency
+        |> .key
+        |> getBundledDependencyKey
+        |> String.trim
+
+    trimmedBundledDependencyValue : String
+    trimmedBundledDependencyValue =
+      bundledDependency
+        |> .value
+        |> getBundledDependencyValue
+        |> String.trim
+
+  in
+    case [trimmedBundledDependencyKey, trimmedBundledDependencyValue] of
+      ["", ""] ->
+        Nothing
+
+      _ ->
+        Just ( trimmedBundledDependencyKey, Json.Encode.string trimmedBundledDependencyValue )
 
 
-encodeBundledDependencyKey : BundledDependencyKey -> String
-encodeBundledDependencyKey ( BundledDependencyKey bundledDependencyKey ) =
+getBundledDependencyKey : BundledDependencyKey -> String
+getBundledDependencyKey ( BundledDependencyKey bundledDependencyKey ) =
   bundledDependencyKey
 
 
-encodeBundledDependencyValue : BundledDependencyValue -> Json.Encode.Value
-encodeBundledDependencyValue ( BundledDependencyValue bundledDependencyValue ) =
-  Json.Encode.string <| String.trim bundledDependencyValue
+getBundledDependencyValue : BundledDependencyValue -> String
+getBundledDependencyValue ( BundledDependencyValue bundledDependencyValue ) =
+  bundledDependencyValue
 
 
 maybeEncodePeerDependencies : List PeerDependency -> Maybe ( String, Json.Encode.Value )
 maybeEncodePeerDependencies peerDependencies =
-  Just ( "peerDependencies", Json.Encode.object <| List.map encodePeerDependency peerDependencies )
+  let
+    trimmedPeerDependencies : List ( String, Json.Encode.Value )
+    trimmedPeerDependencies =
+      List.filterMap maybeEncodePeerDependency peerDependencies
+
+  in
+    case trimmedPeerDependencies of
+      [] ->
+        Nothing
+
+      _ ->
+        Just ( "peerDependencies", Json.Encode.object trimmedPeerDependencies )
 
 
-encodePeerDependency : PeerDependency -> ( String, Json.Encode.Value )
-encodePeerDependency ( PeerDependency peerDependency ) =
-  ( encodePeerDependencyKey peerDependency.key, encodePeerDependencyValue peerDependency.value )
+maybeEncodePeerDependency : PeerDependency -> Maybe ( String, Json.Encode.Value )
+maybeEncodePeerDependency ( PeerDependency peerDependency ) =
+  let
+    trimmedPeerDependencyKey : String
+    trimmedPeerDependencyKey =
+      peerDependency
+        |> .key
+        |> getPeerDependencyKey
+        |> String.trim
+
+    trimmedPeerDependencyValue : String
+    trimmedPeerDependencyValue =
+      peerDependency
+        |> .value
+        |> getPeerDependencyValue
+        |> String.trim
+
+  in
+    case [trimmedPeerDependencyKey, trimmedPeerDependencyValue] of
+      ["", ""] ->
+        Nothing
+
+      _ ->
+        Just ( trimmedPeerDependencyKey, Json.Encode.string trimmedPeerDependencyValue )
 
 
-encodePeerDependencyKey : PeerDependencyKey -> String
-encodePeerDependencyKey ( PeerDependencyKey peerDependencyKey ) =
+getPeerDependencyKey : PeerDependencyKey -> String
+getPeerDependencyKey ( PeerDependencyKey peerDependencyKey ) =
   peerDependencyKey
 
 
-encodePeerDependencyValue : PeerDependencyValue -> Json.Encode.Value
-encodePeerDependencyValue ( PeerDependencyValue peerDependencyValue ) =
-  Json.Encode.string <| String.trim peerDependencyValue
+getPeerDependencyValue : PeerDependencyValue -> String
+getPeerDependencyValue ( PeerDependencyValue peerDependencyValue ) =
+  peerDependencyValue
 
 
 maybeEncodeDependencies : List Dependency -> Maybe ( String, Json.Encode.Value )
 maybeEncodeDependencies dependencies =
-  Just ( "dependencies", Json.Encode.object <| List.map encodeDependency dependencies )
+  let
+    trimmedDependencies : List ( String, Json.Encode.Value )
+    trimmedDependencies =
+      List.filterMap maybeEncodeDependency dependencies
+
+  in
+    case trimmedDependencies of
+      [] ->
+        Nothing
+
+      _ ->
+        Just ( "dependencies", Json.Encode.object trimmedDependencies )
 
 
-encodeDependency : Dependency -> ( String, Json.Encode.Value )
-encodeDependency ( Dependency dependency ) =
-  ( encodeDependencyKey dependency.key, encodeDependencyValue dependency.value )
+maybeEncodeDependency : Dependency -> Maybe ( String, Json.Encode.Value )
+maybeEncodeDependency ( Dependency dependency ) =
+  let
+    trimmedDependencyKey : String
+    trimmedDependencyKey =
+      dependency
+        |> .key
+        |> getDependencyKey
+        |> String.trim
+
+    trimmedDependencyValue : String
+    trimmedDependencyValue =
+      dependency
+        |> .value
+        |> getDependencyValue
+        |> String.trim
+
+  in
+    case [trimmedDependencyKey, trimmedDependencyValue] of
+      ["", ""] ->
+        Nothing
+
+      _ ->
+        Just ( trimmedDependencyKey, Json.Encode.string trimmedDependencyValue )
 
 
-encodeDependencyKey : DependencyKey -> String
-encodeDependencyKey ( DependencyKey dependencyKey ) =
+getDependencyKey : DependencyKey -> String
+getDependencyKey ( DependencyKey dependencyKey ) =
   dependencyKey
 
 
-encodeDependencyValue : DependencyValue -> Json.Encode.Value
-encodeDependencyValue ( DependencyValue dependencyValue ) =
-  Json.Encode.string <| String.trim dependencyValue
+getDependencyValue : DependencyValue -> String
+getDependencyValue ( DependencyValue dependencyValue ) =
+  dependencyValue
 
 
 maybeEncodeDevelopmentDependencies : List DevelopmentDependency -> Maybe ( String, Json.Encode.Value )
 maybeEncodeDevelopmentDependencies developmentDependencies =
-  Just ( "devDependencies", Json.Encode.object <| List.map encodeDevelopmentDependency developmentDependencies )
+  let
+    trimmedDevelopmentDependencies : List ( String, Json.Encode.Value )
+    trimmedDevelopmentDependencies =
+      List.filterMap maybeEncodeDevelopmentDependency developmentDependencies
+
+  in
+    case trimmedDevelopmentDependencies of
+      [] ->
+        Nothing
+
+      _ ->
+        Just ( "devDependencies", Json.Encode.object trimmedDevelopmentDependencies )
 
 
-encodeDevelopmentDependency : DevelopmentDependency -> ( String, Json.Encode.Value )
-encodeDevelopmentDependency ( DevelopmentDependency developmentDependency ) =
-  ( encodeDevelopmentDependencyKey developmentDependency.key, encodeDevelopmentDependencyValue developmentDependency.value )
+maybeEncodeDevelopmentDependency : DevelopmentDependency -> Maybe ( String, Json.Encode.Value )
+maybeEncodeDevelopmentDependency ( DevelopmentDependency developmentDependency ) =
+  let
+    trimmedDevelopmentDependencyKey : String
+    trimmedDevelopmentDependencyKey =
+      developmentDependency
+        |> .key
+        |> getDevelopmentDependencyKey
+        |> String.trim
+
+    trimmedDevelopmentDependencyValue : String
+    trimmedDevelopmentDependencyValue =
+      developmentDependency
+        |> .value
+        |> getDevelopmentDependencyValue
+        |> String.trim
+
+  in
+    case [trimmedDevelopmentDependencyKey, trimmedDevelopmentDependencyValue] of
+      ["", ""] ->
+        Nothing
+
+      _ ->
+        Just ( trimmedDevelopmentDependencyKey, Json.Encode.string trimmedDevelopmentDependencyValue )
 
 
-encodeDevelopmentDependencyKey : DevelopmentDependencyKey -> String
-encodeDevelopmentDependencyKey ( DevelopmentDependencyKey developmentDependencyKey ) =
+getDevelopmentDependencyKey : DevelopmentDependencyKey -> String
+getDevelopmentDependencyKey ( DevelopmentDependencyKey developmentDependencyKey ) =
   developmentDependencyKey
 
 
-encodeDevelopmentDependencyValue : DevelopmentDependencyValue -> Json.Encode.Value
-encodeDevelopmentDependencyValue ( DevelopmentDependencyValue developmentDependencyValue ) =
-  Json.Encode.string <| String.trim developmentDependencyValue
+getDevelopmentDependencyValue : DevelopmentDependencyValue -> String
+getDevelopmentDependencyValue ( DevelopmentDependencyValue developmentDependencyValue ) =
+  developmentDependencyValue
 
 
 maybeEncodeAccess : Access -> Maybe ( String, Json.Encode.Value )
