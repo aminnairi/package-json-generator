@@ -2320,22 +2320,53 @@ encodeConfigurationValue ( ConfigurationValue configurationValue ) =
 
 maybeEncodeScripts : List Script -> Maybe ( String, Json.Encode.Value )
 maybeEncodeScripts scripts =
-  Just ( "scripts", Json.Encode.object <| List.map encodeScript scripts )
+  let
+    trimmedScripts : List ( String, Json.Encode.Value )
+    trimmedScripts =
+      scripts
+        |> List.filterMap maybeEncodeScript
+
+  in
+    case trimmedScripts of
+      [] ->
+        Nothing
+
+      _ ->
+        Just ( "scripts", Json.Encode.object trimmedScripts )
 
 
-encodeScript : Script -> ( String, Json.Encode.Value )
-encodeScript ( Script script ) =
-  ( encodeScriptKey script.key, encodeScriptCommand script.command )
+maybeEncodeScript : Script -> Maybe ( String, Json.Encode.Value )
+maybeEncodeScript ( Script script ) =
+  let
+    trimmedScriptKey : String
+    trimmedScriptKey =
+      script.key
+        |> getScriptKeyValue
+        |> String.trim
+
+    trimmedScriptCommand : String
+    trimmedScriptCommand =
+      script.command
+        |> getScriptCommandValue
+        |> String.trim
+
+  in
+    case [trimmedScriptKey, trimmedScriptCommand] of
+      ["", ""] ->
+        Nothing
+
+      _ ->
+        Just ( trimmedScriptKey, Json.Encode.string trimmedScriptCommand )
 
 
-encodeScriptKey : ScriptKey -> String
-encodeScriptKey ( ScriptKey scriptKey ) =
+getScriptKeyValue : ScriptKey -> String
+getScriptKeyValue ( ScriptKey scriptKey ) =
   scriptKey
 
 
-encodeScriptCommand : ScriptCommand -> Json.Encode.Value
-encodeScriptCommand ( ScriptCommand scriptCommand ) =
-  Json.Encode.string <| String.trim scriptCommand
+getScriptCommandValue : ScriptCommand -> String
+getScriptCommandValue ( ScriptCommand scriptCommand ) =
+  scriptCommand
 
 
 maybeEncodeFundings : List Funding -> Maybe ( String, Json.Encode.Value )
