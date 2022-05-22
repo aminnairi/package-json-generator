@@ -2340,54 +2340,156 @@ encodeScriptCommand ( ScriptCommand scriptCommand ) =
 
 maybeEncodeFundings : List Funding -> Maybe ( String, Json.Encode.Value )
 maybeEncodeFundings fundings =
-  Just ( "fundings", Json.Encode.list encodeFunding fundings )
+  let
+    trimmedFundings : List Json.Encode.Value
+    trimmedFundings =
+      fundings
+        |> List.filterMap maybeEncodeFunding
+
+  in
+    case trimmedFundings of
+      [] ->
+        Nothing
+
+      _ ->
+        Just ( "fundings", Json.Encode.list identity trimmedFundings )
 
 
-encodeFunding : Funding -> Json.Encode.Value
-encodeFunding ( Funding funding ) =
-  Json.Encode.object
-    [ encodeFundingKind funding.kind
-    , encodeFundingUrl funding.url
-    ]
+maybeEncodeFunding : Funding -> Maybe Json.Encode.Value
+maybeEncodeFunding ( Funding funding ) =
+  let
+    trimmedFunding : List ( String, Json.Encode.Value )
+    trimmedFunding =
+      List.filterMap identity
+        [ maybeEncodeFundingKind funding.kind
+        , maybeEncodeFundingUrl funding.url
+        ]
+
+  in
+    case trimmedFunding of
+      [] ->
+        Nothing
+
+      _ ->
+        Just ( Json.Encode.object trimmedFunding )
 
 
-encodeFundingKind : FundingKind -> ( String, Json.Encode.Value )
-encodeFundingKind ( FundingKind fundingKind ) =
-  ( "type", Json.Encode.string <| String.trim fundingKind )
+maybeEncodeFundingKind : FundingKind -> Maybe ( String, Json.Encode.Value )
+maybeEncodeFundingKind ( FundingKind fundingKind ) =
+  let
+    trimmedFundingKind : String
+    trimmedFundingKind =
+      String.trim fundingKind
+
+  in
+    case trimmedFundingKind of
+      "" ->
+        Nothing
+
+      _ ->
+        Just ( "type", Json.Encode.string trimmedFundingKind )
 
 
-encodeFundingUrl : FundingUrl -> ( String, Json.Encode.Value )
-encodeFundingUrl ( FundingUrl fundingUrl ) =
-  ( "url", Json.Encode.string <| String.trim fundingUrl )
+maybeEncodeFundingUrl : FundingUrl -> Maybe ( String, Json.Encode.Value )
+maybeEncodeFundingUrl ( FundingUrl fundingUrl ) =
+  let
+    trimmedFundingUrl : String
+    trimmedFundingUrl =
+      String.trim fundingUrl
+
+  in
+    case trimmedFundingUrl of
+      "" ->
+        Nothing
+
+      _ ->
+        Just ( "url", Json.Encode.string trimmedFundingUrl )
 
 
 maybeEncodeContributors : List Contributor -> Maybe ( String, Json.Encode.Value )
 maybeEncodeContributors contributors =
-  Just ( "contributors", Json.Encode.list encodeContributor contributors )
+  let
+    trimmedContributors : List Json.Encode.Value
+    trimmedContributors =
+      contributors
+        |> List.map maybeEncodeContributor
+        |> List.filterMap identity
+
+  in
+    case trimmedContributors of
+      [] ->
+        Nothing
+
+      _ ->
+        Just ( "contributors", Json.Encode.list identity trimmedContributors )
 
 
-encodeContributor : Contributor -> Json.Encode.Value
-encodeContributor ( Contributor contributor ) =
-  Json.Encode.object
-    [ encodeContributorName contributor.name
-    , encodeContributorEmail contributor.email
-    , encodeContributorUrl contributor.url
-    ]
+maybeEncodeContributor : Contributor -> Maybe Json.Encode.Value
+maybeEncodeContributor ( Contributor contributor ) =
+  let
+    trimmedContributor : List ( String, Json.Encode.Value )
+    trimmedContributor =
+      List.filterMap identity
+        [ maybeEncodeContributorName contributor.name
+        , maybeEncodeContributorEmail contributor.email
+        , maybeEncodeContributorUrl contributor.url
+        ]
+
+  in
+    case trimmedContributor of
+      [] ->
+        Nothing
+
+      _ ->
+       Just ( Json.Encode.object trimmedContributor )
 
 
-encodeContributorName : ContributorName -> ( String, Json.Encode.Value )
-encodeContributorName ( ContributorName contributorName ) =
-  ( "name", Json.Encode.string <| String.trim contributorName )
+maybeEncodeContributorName : ContributorName -> Maybe ( String, Json.Encode.Value )
+maybeEncodeContributorName ( ContributorName contributorName ) =
+  let
+    trimmedContributorName : String
+    trimmedContributorName =
+      String.trim contributorName
+
+  in
+    case trimmedContributorName of
+      "" ->
+        Nothing
+
+      _ ->
+        Just ( "name", Json.Encode.string trimmedContributorName )
 
 
-encodeContributorEmail : ContributorEmail -> ( String, Json.Encode.Value )
-encodeContributorEmail ( ContributorEmail contributorEmail ) =
-  ( "email", Json.Encode.string <| String.trim contributorEmail )
+maybeEncodeContributorEmail : ContributorEmail -> Maybe ( String, Json.Encode.Value )
+maybeEncodeContributorEmail ( ContributorEmail contributorEmail ) =
+  let
+    trimmedContributorEmail : String
+    trimmedContributorEmail =
+      String.trim contributorEmail
+
+  in
+    case trimmedContributorEmail of
+      "" ->
+        Nothing
+
+      _ ->
+        Just ( "email", Json.Encode.string trimmedContributorEmail )
 
 
-encodeContributorUrl : ContributorUrl -> ( String, Json.Encode.Value )
-encodeContributorUrl ( ContributorUrl contributorUrl ) =
-  ( "url", Json.Encode.string <| String.trim contributorUrl )
+maybeEncodeContributorUrl : ContributorUrl -> Maybe ( String, Json.Encode.Value )
+maybeEncodeContributorUrl ( ContributorUrl contributorUrl ) =
+  let
+    trimmedContributorUrl : String
+    trimmedContributorUrl =
+      String.trim contributorUrl
+
+  in
+    case trimmedContributorUrl of
+      "" ->
+        Nothing
+
+      _ ->
+        Just ( "url", Json.Encode.string trimmedContributorUrl )
 
 
 -- UPDATE
