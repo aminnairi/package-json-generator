@@ -13,9 +13,12 @@
             "elm-community/html-extra": "3.4.0",
             "elm-community/list-extra": "8.5.2",
             "garados007/triple": "1.0.0",
+            "pablohirafuji/elm-syntax-highlight": "3.4.1",
             "pilatch/flip": "1.0.0"
         },
         "indirect": {
+            "elm/parser": "1.1.0",
+            "elm/regex": "1.0.0",
             "elm/time": "1.0.0",
             "elm/url": "1.0.0",
             "elm/virtual-dom": "1.0.2"
