@@ -8,5 +8,4 @@
 - Navigation bar with sources & issue
 - Import package.json
 - Drag and drop package.json
-- Check label focusing its input
 - Reset before help
