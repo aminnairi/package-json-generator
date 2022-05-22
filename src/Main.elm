@@ -1578,33 +1578,34 @@ encodeModel : Model -> String
 encodeModel model =
   Json.Encode.encode ( encodeSpaces model.spaces )
     <| Json.Encode.object 
-        [ encodeAccess model.access
-        , encodeName model.name
-        , encodeDescription model.description
-        , encodeVersion model.version
-        , encodeHomepage model.homepage
-        , encodeLicense model.license
-        , encodeMain model.main
-        , encodeBrowser model.browser
-        , encodeBugs model.bugs
-        , encodeAuthor model.author
-        , encodeRepository model.repository
-        , encodeEngines model.engines
-        , encodeDirectories model.directories
-        , encodeCpus model.cpus
-        , encodeOperatingSystems model.operatingSystems
-        , encodeFiles model.files
-        , encodeKeywords model.keywords
-        , encodeWorkspaces model.workspaces
-        , encodeContributors model.contributors
-        , encodeFundings model.fundings
-        , encodeScripts model.scripts
-        , encodeConfigurations model.configurations
-        , encodeDependencies model.dependencies
-        , encodeDevelopmentDependencies model.developmentDependencies
-        , encodePeerDependencies model.peerDependencies
-        , encodeBundledDependencies model.bundledDependencies
-        , encodeOptionalDependencies model.optionalDependencies
+      <| List.filterMap identity
+        [ maybeEncodeAccess model.access
+        , maybeEncodeName model.name
+        , maybeEncodeDescription model.description
+        , maybeEncodeVersion model.version
+        , maybeEncodeHomepage model.homepage
+        , maybeEncodeLicense model.license
+        , maybeEncodeMain model.main
+        , maybeEncodeBrowser model.browser
+        , maybeEncodeBugs model.bugs
+        , maybeEncodeAuthor model.author
+        , maybeEncodeRepository model.repository
+        , maybeEncodeEngines model.engines
+        , maybeEncodeDirectories model.directories
+        , maybeEncodeCpus model.cpus
+        , maybeEncodeOperatingSystems model.operatingSystems
+        , maybeEncodeFiles model.files
+        , maybeEncodeKeywords model.keywords
+        , maybeEncodeWorkspaces model.workspaces
+        , maybeEncodeContributors model.contributors
+        , maybeEncodeFundings model.fundings
+        , maybeEncodeScripts model.scripts
+        , maybeEncodeConfigurations model.configurations
+        , maybeEncodeDependencies model.dependencies
+        , maybeEncodeDevelopmentDependencies model.developmentDependencies
+        , maybeEncodePeerDependencies model.peerDependencies
+        , maybeEncodeBundledDependencies model.bundledDependencies
+        , maybeEncodeOptionalDependencies model.optionalDependencies
         ]
 
 
@@ -1618,189 +1619,466 @@ encodeSpaces spaces =
       4
 
 
-encodeDirectories : Directories -> ( String, Json.Encode.Value )
-encodeDirectories ( Directories directories ) =
-  ( "directories"
-  , Json.Encode.object
-    [ encodeLibraryDirectory directories.library
-    , encodeBinaryDirectory directories.binary
-    , encodeManualDirectory directories.manual
-    , encodeDocumentationDirectory directories.documentation
-    , encodeExampleDirectory directories.example
-    , encodeTestDirectory directories.test
-    ]
-  )
+maybeEncodeDirectories : Directories -> Maybe ( String, Json.Encode.Value )
+maybeEncodeDirectories ( Directories directories ) =
+  let
+    trimmedDirectories : List ( String, Json.Encode.Value )
+    trimmedDirectories =
+      List.filterMap identity
+        [ maybeEncodeLibraryDirectory directories.library
+        , maybeEncodeBinaryDirectory directories.binary
+        , maybeEncodeManualDirectory directories.manual
+        , maybeEncodeDocumentationDirectory directories.documentation
+        , maybeEncodeExampleDirectory directories.example
+        , maybeEncodeTestDirectory directories.test
+        ]
+
+  in
+    case trimmedDirectories of
+      [] ->
+        Nothing
+
+      _ ->
+        Just ( "directories" , Json.Encode.object trimmedDirectories)
 
 
-encodeLibraryDirectory : LibraryDirectory -> ( String, Json.Encode.Value )
-encodeLibraryDirectory ( LibraryDirectory libraryDirectory ) =
-  ( "lib", Json.Encode.string <| String.trim libraryDirectory )
+maybeEncodeLibraryDirectory : LibraryDirectory -> Maybe ( String, Json.Encode.Value )
+maybeEncodeLibraryDirectory ( LibraryDirectory libraryDirectory ) =
+  let
+    trimmedLibraryDirectory : String
+    trimmedLibraryDirectory =
+      String.trim libraryDirectory
+
+  in
+    case trimmedLibraryDirectory of
+      "" ->
+        Nothing
+
+      _ ->
+        Just ( "lib", Json.Encode.string trimmedLibraryDirectory )
 
 
-encodeBinaryDirectory : BinaryDirectory -> ( String, Json.Encode.Value )
-encodeBinaryDirectory ( BinaryDirectory binaryDirectory ) =
-  ( "bin", Json.Encode.string <| String.trim binaryDirectory )
+maybeEncodeBinaryDirectory : BinaryDirectory -> Maybe ( String, Json.Encode.Value )
+maybeEncodeBinaryDirectory ( BinaryDirectory binaryDirectory ) =
+  let
+    trimmedBinaryDirectory : String
+    trimmedBinaryDirectory =
+      String.trim binaryDirectory
+
+  in
+    case trimmedBinaryDirectory of
+      "" ->
+        Nothing
+
+      _ ->
+        Just ( "bin", Json.Encode.string trimmedBinaryDirectory )
 
 
-encodeManualDirectory : ManualDirectory -> ( String, Json.Encode.Value )
-encodeManualDirectory ( ManualDirectory manualDirectory ) =
-  ( "man", Json.Encode.string <| String.trim manualDirectory )
+maybeEncodeManualDirectory : ManualDirectory -> Maybe ( String, Json.Encode.Value )
+maybeEncodeManualDirectory ( ManualDirectory manualDirectory ) =
+  let
+    trimmedManualDirectory : String
+    trimmedManualDirectory =
+      String.trim manualDirectory
+
+  in
+    case trimmedManualDirectory of
+      "" ->
+        Nothing
+
+      _ ->
+        Just ( "man", Json.Encode.string trimmedManualDirectory )
 
 
-encodeDocumentationDirectory : DocumentationDirectory -> ( String, Json.Encode.Value )
-encodeDocumentationDirectory ( DocumentationDirectory documentationDirectory ) =
-  ( "doc", Json.Encode.string <| String.trim documentationDirectory )
+maybeEncodeDocumentationDirectory : DocumentationDirectory -> Maybe ( String, Json.Encode.Value )
+maybeEncodeDocumentationDirectory ( DocumentationDirectory documentationDirectory ) =
+  let
+    trimmedDocumentationDirectory : String
+    trimmedDocumentationDirectory =
+      String.trim documentationDirectory
+
+  in
+    case trimmedDocumentationDirectory of
+      "" ->
+        Nothing
+
+      _ ->
+        Just ( "doc", Json.Encode.string trimmedDocumentationDirectory )
 
 
-encodeExampleDirectory : ExampleDirectory -> ( String, Json.Encode.Value )
-encodeExampleDirectory ( ExampleDirectory exampleDirectory ) =
-  ( "example", Json.Encode.string <| String.trim exampleDirectory )
+maybeEncodeExampleDirectory : ExampleDirectory -> Maybe ( String, Json.Encode.Value )
+maybeEncodeExampleDirectory ( ExampleDirectory exampleDirectory ) =
+  let
+    trimmedExampleDirectory : String
+    trimmedExampleDirectory =
+      String.trim exampleDirectory
+
+  in
+    case trimmedExampleDirectory of
+      "" ->
+        Nothing
+
+      _ ->
+        Just ( "example", Json.Encode.string trimmedExampleDirectory )
 
 
-encodeTestDirectory : TestDirectory -> ( String, Json.Encode.Value )
-encodeTestDirectory ( TestDirectory testDirectory ) =
-  ( "test", Json.Encode.string <| String.trim testDirectory )
+maybeEncodeTestDirectory : TestDirectory -> Maybe ( String, Json.Encode.Value )
+maybeEncodeTestDirectory ( TestDirectory testDirectory ) =
+  let
+    trimmedTestDirectory : String
+    trimmedTestDirectory =
+      String.trim testDirectory
+
+  in
+    case trimmedTestDirectory of
+      "" ->
+        Nothing
+
+      _ ->
+        Just ( "test", Json.Encode.string trimmedTestDirectory )
 
 
-encodeWorkspaces : List Workspace -> ( String, Json.Encode.Value )
-encodeWorkspaces workspaces =
-  ( "workspaces", Json.Encode.list encodeWorkspace workspaces )
+maybeEncodeWorkspaces : List Workspace -> Maybe ( String, Json.Encode.Value )
+maybeEncodeWorkspaces workspaces =
+  let
+    trimmedWorkspaces : List String
+    trimmedWorkspaces =
+      workspaces
+        |> List.map ( getWorkspaceValue >> String.trim )
+        |> List.filter ( String.isEmpty >> not )
+
+  in
+    case trimmedWorkspaces of
+      [] ->
+        Nothing
+
+      _ ->
+        Just ( "workspaces", Json.Encode.list Json.Encode.string trimmedWorkspaces )
 
 
-encodeWorkspace : Workspace -> Json.Encode.Value
-encodeWorkspace ( Workspace workspace ) =
-  Json.Encode.string <| String.trim workspace
+getWorkspaceValue : Workspace -> String
+getWorkspaceValue ( Workspace workspace ) =
+  workspace
 
 
-encodeFiles : List File -> ( String, Json.Encode.Value )
-encodeFiles files =
-  ( "files", Json.Encode.list encodeFile files )
+maybeEncodeFiles : List File -> Maybe ( String, Json.Encode.Value )
+maybeEncodeFiles files =
+  let
+    trimmedFiles : List String
+    trimmedFiles =
+      files
+        |> List.map ( getFileValue >> String.trim )
+        |> List.filter ( String.isEmpty >> not )
+
+  in
+    case trimmedFiles of
+      [] ->
+        Nothing
+
+      _ ->
+        Just ( "files", Json.Encode.list Json.Encode.string trimmedFiles )
 
 
-encodeFile : File -> Json.Encode.Value
-encodeFile ( File file ) =
-  Json.Encode.string <| String.trim file
+getFileValue : File -> String
+getFileValue ( File file ) =
+  file
 
 
-encodeKeywords : List Keyword -> ( String, Json.Encode.Value )
-encodeKeywords keywords =
-  ( "keywords", Json.Encode.list encodeKeyword keywords )
+maybeEncodeKeywords : List Keyword -> Maybe ( String, Json.Encode.Value )
+maybeEncodeKeywords keywords =
+  let
+    trimmedKeywords : List String
+    trimmedKeywords =
+      keywords
+        |> List.map ( getKeywordValue >> String.trim )
+        |> List.filter ( String.isEmpty >> not )
+
+  in
+    case trimmedKeywords of
+      [] ->
+        Nothing
+
+      _ ->
+        Just ( "keywords", Json.Encode.list Json.Encode.string trimmedKeywords )
 
 
-encodeKeyword : Keyword -> Json.Encode.Value
-encodeKeyword ( Keyword keyword ) =
-  Json.Encode.string <| String.trim keyword
+getKeywordValue : Keyword -> String
+getKeywordValue ( Keyword keyword ) =
+  keyword
 
 
-encodeOperatingSystems : List OperatingSystem -> ( String, Json.Encode.Value )
-encodeOperatingSystems operatingSystems =
-  ( "os", Json.Encode.list encodeOperatingSystem operatingSystems )
+maybeEncodeOperatingSystems : List OperatingSystem -> Maybe ( String, Json.Encode.Value )
+maybeEncodeOperatingSystems operatingSystems =
+  let
+    trimmedOperatingSystems : List String
+    trimmedOperatingSystems =
+      operatingSystems
+        |> List.map ( getOperatingSystemValue >> String.trim )
+        |> List.filter ( String.isEmpty >> not )
+
+  in
+    case trimmedOperatingSystems of
+      [] ->
+        Nothing
+
+      _ ->
+        Just ( "os", Json.Encode.list Json.Encode.string trimmedOperatingSystems )
 
 
-encodeOperatingSystem : OperatingSystem -> Json.Encode.Value
-encodeOperatingSystem ( OperatingSystem operatingSystem ) =
-  Json.Encode.string <| String.trim operatingSystem
+getOperatingSystemValue : OperatingSystem -> String
+getOperatingSystemValue ( OperatingSystem operatingSystem ) =
+  operatingSystem
 
 
-encodeCpus : List Cpu -> ( String, Json.Encode.Value )
-encodeCpus cpus =
-  ( "cpu", Json.Encode.list encodeCpu cpus )
+maybeEncodeCpus : List Cpu -> Maybe ( String, Json.Encode.Value )
+maybeEncodeCpus cpus =
+  let
+    trimmedCpus : List String
+    trimmedCpus =
+      cpus
+        |> List.map ( getCpuValue >> String.trim )
+        |> List.filter ( String.isEmpty >> not )
+
+  in
+    case trimmedCpus of
+      [] ->
+        Nothing
+
+      _ ->
+        Just ( "cpu", Json.Encode.list Json.Encode.string trimmedCpus )
 
 
-encodeCpu : Cpu -> Json.Encode.Value
-encodeCpu ( Cpu cpu ) =
-  Json.Encode.string <| String.trim cpu
+getCpuValue : Cpu -> String
+getCpuValue ( Cpu cpu ) =
+  cpu
+        
 
 
-encodeEngines : Engines -> ( String, Json.Encode.Value )
-encodeEngines ( Engines engines ) =
-  ( "engines"
-  , Json.Encode.object
-    [ encodeNodeEngine engines.node
-    , encodeNpmEngine engines.npm
-    ]
-  )
+maybeEncodeEngines : Engines -> Maybe ( String, Json.Encode.Value )
+maybeEncodeEngines ( Engines engines ) =
+  let
+    trimmedEngines : List ( String, Json.Encode.Value )
+    trimmedEngines =
+      List.filterMap identity
+        [ maybeEncodeNodeEngine engines.node
+        , maybeEncodeNpmEngine engines.npm
+        ]
+
+  in
+    case trimmedEngines of
+      [] ->
+        Nothing
+
+      _ ->
+        Just ( "engines" , Json.Encode.object trimmedEngines)
 
 
-encodeNodeEngine : NodeEngine -> ( String, Json.Encode.Value )
-encodeNodeEngine ( NodeEngine nodeEngine ) =
-  ( "node", Json.Encode.string <| String.trim nodeEngine )
+maybeEncodeNodeEngine : NodeEngine -> Maybe ( String, Json.Encode.Value )
+maybeEncodeNodeEngine ( NodeEngine nodeEngine ) =
+  let
+    trimmedNodeEngine : String
+    trimmedNodeEngine =
+      String.trim nodeEngine
+
+  in
+    case trimmedNodeEngine of
+      "" ->
+        Nothing
+
+      _ ->
+        Just ( "node", Json.Encode.string trimmedNodeEngine )
 
 
-encodeNpmEngine : NpmEngine -> ( String, Json.Encode.Value )
-encodeNpmEngine ( NpmEngine npmEngine ) =
-  ( "npm", Json.Encode.string <| String.trim npmEngine )
+maybeEncodeNpmEngine : NpmEngine -> Maybe ( String, Json.Encode.Value )
+maybeEncodeNpmEngine ( NpmEngine npmEngine ) =
+  let
+    trimmedNpmEngine : String
+    trimmedNpmEngine =
+      String.trim npmEngine
+
+  in
+    case trimmedNpmEngine of
+      "" ->
+        Nothing
+
+      _ ->
+        Just ( "npm", Json.Encode.string trimmedNpmEngine )
 
 
-encodeRepository : Repository -> ( String, Json.Encode.Value )
-encodeRepository ( Repository repository ) =
-  ( "repository"
-  , Json.Encode.object
-    [ encodeRepositoryKind repository.kind
-    , encodeRepositoryUrl repository.url
-    ]
-  )
+maybeEncodeRepository : Repository -> Maybe ( String, Json.Encode.Value )
+maybeEncodeRepository ( Repository repository ) =
+  let
+    trimmedRepository : List ( String, Json.Encode.Value )
+    trimmedRepository =
+      List.filterMap identity
+        [ maybeEncodeRepositoryKind repository.kind
+        , maybeEncodeRepositoryUrl repository.url
+        ]
+
+  in
+    case trimmedRepository of
+      [] ->
+        Nothing
+
+      _ ->
+        Just ( "repository" , Json.Encode.object trimmedRepository)
 
 
-encodeRepositoryKind : RepositoryKind -> ( String, Json.Encode.Value )
-encodeRepositoryKind ( RepositoryKind repositoryKind ) =
-  ( "type", Json.Encode.string <| String.trim repositoryKind )
+maybeEncodeRepositoryKind : RepositoryKind -> Maybe ( String, Json.Encode.Value )
+maybeEncodeRepositoryKind ( RepositoryKind repositoryKind ) =
+  let
+    trimmedRepositoryKind : String
+    trimmedRepositoryKind =
+      String.trim repositoryKind
+
+  in
+    case trimmedRepositoryKind of
+      "" ->
+        Nothing
+
+      _ ->
+        Just ( "type", Json.Encode.string trimmedRepositoryKind )
 
 
-encodeRepositoryUrl : RepositoryUrl -> ( String, Json.Encode.Value )
-encodeRepositoryUrl ( RepositoryUrl repositoryUrl ) =
-  ( "url", Json.Encode.string <| String.trim repositoryUrl )
+maybeEncodeRepositoryUrl : RepositoryUrl -> Maybe ( String, Json.Encode.Value )
+maybeEncodeRepositoryUrl ( RepositoryUrl repositoryUrl ) =
+  let
+    trimmedRepositoryUrl : String
+    trimmedRepositoryUrl =
+      String.trim repositoryUrl
+
+  in
+    case trimmedRepositoryUrl of
+      "" ->
+        Nothing
 
 
-encodeAuthor : Author -> ( String, Json.Encode.Value )
-encodeAuthor ( Author author ) =
-  ( "author"
-  , Json.Encode.object
-    [ encodeAuthorName author.name
-    , encodeAuthorUrl author.url
-    , encodeAuthorEmail author.email
-    ]
-  )
+      _ ->
+        Just ( "url", Json.Encode.string trimmedRepositoryUrl )
 
 
-encodeAuthorName : AuthorName -> ( String, Json.Encode.Value )
-encodeAuthorName ( AuthorName name ) =
-  ( "name", Json.Encode.string <| String.trim name )
+maybeEncodeAuthor : Author -> Maybe ( String, Json.Encode.Value )
+maybeEncodeAuthor ( Author author ) =
+  let
+    trimmedAuthor : List ( String, Json.Encode.Value )
+    trimmedAuthor =
+      List.filterMap identity
+        [ maybeEncodeAuthorName author.name
+        , maybeEncodeAuthorUrl author.url
+        , maybeEncodeAuthorEmail author.email
+        ]
+
+  in
+    case trimmedAuthor of
+      [] ->
+        Nothing
+
+      _ ->
+        Just ( "author" , Json.Encode.object trimmedAuthor)
 
 
-encodeAuthorUrl : AuthorUrl -> ( String, Json.Encode.Value )
-encodeAuthorUrl (AuthorUrl url ) =
-  ( "url", Json.Encode.string <| String.trim url )
+maybeEncodeAuthorName : AuthorName -> Maybe ( String, Json.Encode.Value )
+maybeEncodeAuthorName ( AuthorName name ) =
+  let
+    trimmedName : String
+    trimmedName =
+      String.trim name
+
+  in
+    case trimmedName of
+      "" ->
+        Nothing
+
+      _ ->
+        Just ( "name", Json.Encode.string trimmedName )
 
 
-encodeAuthorEmail : AuthorEmail -> ( String, Json.Encode.Value )
-encodeAuthorEmail ( AuthorEmail email ) =
-  ( "email", Json.Encode.string <| String.trim email )
+maybeEncodeAuthorUrl : AuthorUrl -> Maybe ( String, Json.Encode.Value )
+maybeEncodeAuthorUrl (AuthorUrl url ) =
+  let
+    trimmedUrl : String
+    trimmedUrl =
+      String.trim url
+
+  in
+    case trimmedUrl of
+      "" ->
+        Nothing
+
+      _ ->
+        Just ( "url", Json.Encode.string trimmedUrl )
 
 
-encodeBugs : Bugs -> ( String, Json.Encode.Value )
-encodeBugs ( Bugs bugs ) =
-  ( "bugs"
-  , Json.Encode.object
-    [ encodeBugsUrl bugs.url
-    , encodeBugsEmail bugs.email
-    ]
-  )
+maybeEncodeAuthorEmail : AuthorEmail -> Maybe ( String, Json.Encode.Value )
+maybeEncodeAuthorEmail ( AuthorEmail email ) =
+  let
+    trimmedEmail : String
+    trimmedEmail =
+      String.trim email
+
+  in
+    case trimmedEmail of
+      "" ->
+        Nothing
+
+      _ ->
+        Just ( "email", Json.Encode.string trimmedEmail )
 
 
-encodeBugsUrl : BugsUrl -> ( String, Json.Encode.Value )
-encodeBugsUrl ( BugsUrl url ) =
-  ( "url", Json.Encode.string <| String.trim url )
+maybeEncodeBugs : Bugs -> Maybe ( String, Json.Encode.Value )
+maybeEncodeBugs ( Bugs bugs ) =
+  let
+    trimmedBugs : List ( String, Json.Encode.Value )
+    trimmedBugs =
+      List.filterMap identity
+        [ maybeEncodeBugsUrl bugs.url
+        , maybeEncodeBugsEmail bugs.email
+        ]
+
+  in
+    case trimmedBugs of
+      [] ->
+        Nothing
+
+      _ ->
+        Just ( "bugs" , Json.Encode.object trimmedBugs )
 
 
-encodeBugsEmail : BugsEmail -> ( String, Json.Encode.Value )
-encodeBugsEmail ( BugsEmail email ) =
-  ( "email", Json.Encode.string <| String.trim email )
+maybeEncodeBugsUrl : BugsUrl -> Maybe ( String, Json.Encode.Value )
+maybeEncodeBugsUrl ( BugsUrl url ) =
+  let
+    trimmedUrl : String
+    trimmedUrl =
+      String.trim url
+
+  in
+    case trimmedUrl of
+      "" ->
+        Nothing
+
+      _ ->
+        Just ( "url", Json.Encode.string trimmedUrl )
 
 
-encodeOptionalDependencies : List OptionalDependency -> ( String, Json.Encode.Value )
-encodeOptionalDependencies optionalDependencies =
-  ( "optionalDependencies", Json.Encode.object <| List.map encodeOptionalDependency optionalDependencies )
+maybeEncodeBugsEmail : BugsEmail -> Maybe ( String, Json.Encode.Value )
+maybeEncodeBugsEmail ( BugsEmail email ) =
+  let
+    trimmedEmail : String
+    trimmedEmail =
+      String.trim email
+
+  in
+    case trimmedEmail of
+      "" ->
+        Nothing
+
+      _ ->
+        Just ( "email", Json.Encode.string trimmedEmail )
+
+
+maybeEncodeOptionalDependencies : List OptionalDependency -> Maybe ( String, Json.Encode.Value )
+maybeEncodeOptionalDependencies optionalDependencies =
+  Just ( "optionalDependencies", Json.Encode.object <| List.map encodeOptionalDependency optionalDependencies )
 
 
 encodeOptionalDependency : OptionalDependency -> ( String, Json.Encode.Value )
@@ -1818,9 +2096,9 @@ encodeOptionalDependencyValue ( OptionalDependencyValue optionalDependencyValue 
   Json.Encode.string <| String.trim optionalDependencyValue
 
 
-encodeBundledDependencies : List BundledDependency -> ( String, Json.Encode.Value )
-encodeBundledDependencies bundledDependencies =
-  ( "bundledDependencies", Json.Encode.object <| List.map encodeBundledDependency bundledDependencies )
+maybeEncodeBundledDependencies : List BundledDependency -> Maybe ( String, Json.Encode.Value )
+maybeEncodeBundledDependencies bundledDependencies =
+  Just ( "bundledDependencies", Json.Encode.object <| List.map encodeBundledDependency bundledDependencies )
 
 
 encodeBundledDependency : BundledDependency -> ( String, Json.Encode.Value )
@@ -1838,9 +2116,9 @@ encodeBundledDependencyValue ( BundledDependencyValue bundledDependencyValue ) =
   Json.Encode.string <| String.trim bundledDependencyValue
 
 
-encodePeerDependencies : List PeerDependency -> ( String, Json.Encode.Value )
-encodePeerDependencies peerDependencies =
-  ( "peerDependencies", Json.Encode.object <| List.map encodePeerDependency peerDependencies )
+maybeEncodePeerDependencies : List PeerDependency -> Maybe ( String, Json.Encode.Value )
+maybeEncodePeerDependencies peerDependencies =
+  Just ( "peerDependencies", Json.Encode.object <| List.map encodePeerDependency peerDependencies )
 
 
 encodePeerDependency : PeerDependency -> ( String, Json.Encode.Value )
@@ -1858,9 +2136,9 @@ encodePeerDependencyValue ( PeerDependencyValue peerDependencyValue ) =
   Json.Encode.string <| String.trim peerDependencyValue
 
 
-encodeDependencies : List Dependency -> ( String, Json.Encode.Value )
-encodeDependencies dependencies =
-  ( "dependencies", Json.Encode.object <| List.map encodeDependency dependencies )
+maybeEncodeDependencies : List Dependency -> Maybe ( String, Json.Encode.Value )
+maybeEncodeDependencies dependencies =
+  Just ( "dependencies", Json.Encode.object <| List.map encodeDependency dependencies )
 
 
 encodeDependency : Dependency -> ( String, Json.Encode.Value )
@@ -1878,9 +2156,9 @@ encodeDependencyValue ( DependencyValue dependencyValue ) =
   Json.Encode.string <| String.trim dependencyValue
 
 
-encodeDevelopmentDependencies : List DevelopmentDependency -> ( String, Json.Encode.Value )
-encodeDevelopmentDependencies developmentDependencies =
-  ( "devDependencies", Json.Encode.object <| List.map encodeDevelopmentDependency developmentDependencies )
+maybeEncodeDevelopmentDependencies : List DevelopmentDependency -> Maybe ( String, Json.Encode.Value )
+maybeEncodeDevelopmentDependencies developmentDependencies =
+  Just ( "devDependencies", Json.Encode.object <| List.map encodeDevelopmentDependency developmentDependencies )
 
 
 encodeDevelopmentDependency : DevelopmentDependency -> ( String, Json.Encode.Value )
@@ -1898,54 +2176,131 @@ encodeDevelopmentDependencyValue ( DevelopmentDependencyValue developmentDepende
   Json.Encode.string <| String.trim developmentDependencyValue
 
 
-encodeAccess : Access -> ( String, Json.Encode.Value )
-encodeAccess access =
+maybeEncodeAccess : Access -> Maybe ( String, Json.Encode.Value )
+maybeEncodeAccess access =
   case access of
     Private ->
-      ( "private", Json.Encode.bool True )
+      Just ( "private", Json.Encode.bool True )
 
     Public ->
-      ( "private", Json.Encode.bool False )
+      Nothing
 
 
-encodeBrowser : Browser -> ( String, Json.Encode.Value )
-encodeBrowser ( Browser browser ) =
-  ( "browser", Json.Encode.string <| String.trim browser )
+maybeEncodeBrowser : Browser -> Maybe ( String, Json.Encode.Value )
+maybeEncodeBrowser ( Browser browser ) =
+  let
+    trimmedBrowser : String
+    trimmedBrowser =
+      String.trim browser
+
+  in
+    case trimmedBrowser of
+      "" ->
+        Nothing
+
+      _ ->
+        Just ( "browser", Json.Encode.string trimmedBrowser )
 
 
-encodeMain : Main -> ( String, Json.Encode.Value )
-encodeMain ( Main entrypoint ) =
-  ( "main", Json.Encode.string <| String.trim entrypoint )
+maybeEncodeMain : Main -> Maybe ( String, Json.Encode.Value )
+maybeEncodeMain ( Main entrypoint ) =
+  let
+    trimmedEntrypoint : String
+    trimmedEntrypoint =
+      String.trim entrypoint
+
+  in
+    case trimmedEntrypoint of
+      "" ->
+        Nothing
+
+      _ ->
+        Just ( "main", Json.Encode.string trimmedEntrypoint )
 
 
-encodeLicense : License -> ( String, Json.Encode.Value )
-encodeLicense ( License license ) =
-  ( "license", Json.Encode.string <| String.trim license )
+maybeEncodeLicense : License -> Maybe ( String, Json.Encode.Value )
+maybeEncodeLicense ( License license ) =
+  let
+    trimmedLicense : String
+    trimmedLicense =
+      String.trim license
+
+  in
+    case trimmedLicense of
+      "" ->
+        Nothing
+
+      _ ->
+        Just ( "license", Json.Encode.string trimmedLicense )
 
 
-encodeHomepage : Homepage -> ( String, Json.Encode.Value )
-encodeHomepage ( Homepage homepage ) =
-  ( "homepage", Json.Encode.string <| String.trim homepage )
+maybeEncodeHomepage : Homepage -> Maybe ( String, Json.Encode.Value )
+maybeEncodeHomepage ( Homepage homepage ) =
+  let
+    trimmedHomepage : String
+    trimmedHomepage =
+      String.trim homepage
+
+  in
+    case trimmedHomepage of
+      "" ->
+        Nothing
+
+      _ ->
+        Just ( "homepage", Json.Encode.string trimmedHomepage )
 
 
-encodeVersion : Version -> ( String, Json.Encode.Value )
-encodeVersion ( Version version ) =
-  ( "version", Json.Encode.string <| String.trim version )
+maybeEncodeVersion : Version -> Maybe ( String, Json.Encode.Value )
+maybeEncodeVersion ( Version version ) =
+  let
+    trimmedVersion : String
+    trimmedVersion =
+      String.trim version
+
+  in
+    case trimmedVersion of
+      "" ->
+        Nothing
+
+      _ ->
+        Just ( "version", Json.Encode.string trimmedVersion )
 
 
-encodeDescription : Description -> ( String, Json.Encode.Value )
-encodeDescription ( Description description ) =
-  ( "description", Json.Encode.string <| String.trim description )
+maybeEncodeDescription : Description -> Maybe ( String, Json.Encode.Value )
+maybeEncodeDescription ( Description description ) =
+  let
+    trimmedDescription : String
+    trimmedDescription =
+      String.trim description
+
+  in
+    case trimmedDescription of
+      "" ->
+        Nothing
+
+      _ ->
+        Just ( "description", Json.Encode.string trimmedDescription )
 
 
-encodeName : Name -> ( String, Json.Encode.Value )
-encodeName ( Name name ) =
-  ( "name", Json.Encode.string <| String.trim name )
+maybeEncodeName : Name -> Maybe ( String, Json.Encode.Value )
+maybeEncodeName ( Name name ) =
+  let
+    trimmedName : String
+    trimmedName =
+      String.trim name
+
+  in
+    case trimmedName of
+      "" ->
+        Nothing
+
+      _ ->
+        Just ( "name", Json.Encode.string trimmedName )
 
 
-encodeConfigurations : List Configuration -> ( String, Json.Encode.Value )
-encodeConfigurations configurations =
-  ( "config", Json.Encode.object <| List.map encodeConfiguration configurations )
+maybeEncodeConfigurations : List Configuration -> Maybe ( String, Json.Encode.Value )
+maybeEncodeConfigurations configurations =
+  Just ( "config", Json.Encode.object <| List.map encodeConfiguration configurations )
 
 
 encodeConfiguration : Configuration -> ( String, Json.Encode.Value )
@@ -1963,9 +2318,9 @@ encodeConfigurationValue ( ConfigurationValue configurationValue ) =
   Json.Encode.string <| String.trim configurationValue
 
 
-encodeScripts : List Script -> ( String, Json.Encode.Value )
-encodeScripts scripts =
-  ( "scripts", Json.Encode.object <| List.map encodeScript scripts )
+maybeEncodeScripts : List Script -> Maybe ( String, Json.Encode.Value )
+maybeEncodeScripts scripts =
+  Just ( "scripts", Json.Encode.object <| List.map encodeScript scripts )
 
 
 encodeScript : Script -> ( String, Json.Encode.Value )
@@ -1983,9 +2338,9 @@ encodeScriptCommand ( ScriptCommand scriptCommand ) =
   Json.Encode.string <| String.trim scriptCommand
 
 
-encodeFundings : List Funding -> ( String, Json.Encode.Value )
-encodeFundings fundings =
-  ( "fundings", Json.Encode.list encodeFunding fundings )
+maybeEncodeFundings : List Funding -> Maybe ( String, Json.Encode.Value )
+maybeEncodeFundings fundings =
+  Just ( "fundings", Json.Encode.list encodeFunding fundings )
 
 
 encodeFunding : Funding -> Json.Encode.Value
@@ -2006,9 +2361,9 @@ encodeFundingUrl ( FundingUrl fundingUrl ) =
   ( "url", Json.Encode.string <| String.trim fundingUrl )
 
 
-encodeContributors : List Contributor -> ( String, Json.Encode.Value )
-encodeContributors contributors =
-  ( "contributors", Json.Encode.list encodeContributor contributors )
+maybeEncodeContributors : List Contributor -> Maybe ( String, Json.Encode.Value )
+maybeEncodeContributors contributors =
+  Just ( "contributors", Json.Encode.list encodeContributor contributors )
 
 
 encodeContributor : Contributor -> Json.Encode.Value
