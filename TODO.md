@@ -6,3 +6,4 @@
 - Web API Broadcast channel synchronization
 - Import package.json
 - Drag and drop package.json
+- Enter on any field goes to the next one
