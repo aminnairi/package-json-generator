@@ -2300,22 +2300,54 @@ maybeEncodeName ( Name name ) =
 
 maybeEncodeConfigurations : List Configuration -> Maybe ( String, Json.Encode.Value )
 maybeEncodeConfigurations configurations =
-  Just ( "config", Json.Encode.object <| List.map encodeConfiguration configurations )
+  let
+    trimmedConfigurations : List ( String, Json.Encode.Value )
+    trimmedConfigurations =
+      List.filterMap maybeEncodeConfiguration configurations
+
+  in
+    case trimmedConfigurations of
+      [] ->
+        Nothing
+
+      _ ->
+        Just ( "config", Json.Encode.object trimmedConfigurations )
 
 
-encodeConfiguration : Configuration -> ( String, Json.Encode.Value )
-encodeConfiguration ( Configuration configuration ) =
-  ( encodeConfigurationKey configuration.key, encodeConfigurationValue configuration.value )
+maybeEncodeConfiguration : Configuration -> Maybe ( String, Json.Encode.Value )
+maybeEncodeConfiguration ( Configuration configuration ) =
+  let
+    trimmedConfigurationKey : String
+    trimmedConfigurationKey =
+      configuration
+        |> .key
+        |> getConfigurationKey
+        |> String.trim
+
+    trimmedConfigurationValue : String
+    trimmedConfigurationValue =
+      configuration
+        |> .value
+        |> getConfigurationValue
+        |> String.trim
+
+  in
+    case [trimmedConfigurationKey, trimmedConfigurationValue] of
+      ["", ""] ->
+        Nothing
+
+      _ ->
+        Just ( trimmedConfigurationKey, Json.Encode.string trimmedConfigurationValue )
 
 
-encodeConfigurationKey : ConfigurationKey -> String
-encodeConfigurationKey ( ConfigurationKey configurationKey ) = 
+getConfigurationKey : ConfigurationKey -> String
+getConfigurationKey ( ConfigurationKey configurationKey ) = 
   configurationKey
 
 
-encodeConfigurationValue : ConfigurationValue -> Json.Encode.Value
-encodeConfigurationValue ( ConfigurationValue configurationValue ) =
-  Json.Encode.string <| String.trim configurationValue
+getConfigurationValue : ConfigurationValue -> String
+getConfigurationValue ( ConfigurationValue configurationValue ) =
+  configurationValue
 
 
 maybeEncodeScripts : List Script -> Maybe ( String, Json.Encode.Value )
