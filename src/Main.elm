@@ -17,6 +17,7 @@ import Html.Events.Extra
 import Task
 import Flip
 import Triple
+import SyntaxHighlight
 
 
 -- MAIN
@@ -93,7 +94,7 @@ view model =
       , Html.Attributes.style "max-height" ( if model.windowWidth < tabletWidthBreakpoint then "unset" else "100vh" )
       , Html.Attributes.style "overflow-y" ( if model.windowWidth < tabletWidthBreakpoint then "unset" else "scroll" )
       ]
-      [ viewModel model ]
+      [ viewHighlightedModel model ]
     ]
 
 
@@ -1394,6 +1395,17 @@ viewContributorName ( ContributorName contributorName ) =
 viewContributorUrl : ContributorUrl -> String
 viewContributorUrl ( ContributorUrl contributorUrl ) =
   contributorUrl
+
+
+viewHighlightedModel : Model -> Html Message
+viewHighlightedModel model =
+  Html.div []
+    [ SyntaxHighlight.useTheme SyntaxHighlight.gitHub
+    , encodeModel model
+        |> SyntaxHighlight.json
+        |> Result.map ( SyntaxHighlight.toBlockHtml ( Just 1 ) )
+        |> Result.withDefault ( viewModel model )
+    ]
 
 
 viewModel : Model -> Html Message
