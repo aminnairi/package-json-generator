@@ -10,4 +10,5 @@
 - Toast notification system
 - Add typing field
 - Add sideEffects field
+- Add module field
 - Access help button spanning too wide
