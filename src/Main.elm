@@ -50,6 +50,7 @@ view model =
         [ Html.Attributes.style "flex" "1"
         , Html.Attributes.style "max-height" ( if model.windowWidth < tabletWidthBreakpoint then "unset" else "100vh" )
         , Html.Attributes.style "overflow-y" ( if model.windowWidth < tabletWidthBreakpoint then "unset" else "scroll" )
+        , Html.Attributes.style "padding" "20px 0"
         ]
         [ viewCenteredButton [ Html.Events.onClick Reset ] [ Html.text "reset" ]
         , viewSpaces model.spaces
@@ -130,6 +131,7 @@ viewHeader =
       , Html.Attributes.style "justify-content" "center"
       , Html.Attributes.style "text-decoration" "none"
       , Html.Attributes.style "color" "inherit"
+      , Html.Attributes.style "height" "50px"
       ]
       [ Html.text "package.json generator" ]
     , Html.div
@@ -151,6 +153,7 @@ viewHeader =
         , Html.Attributes.href "https://github.com/aminnairi/package-json-generator#readme"
         , Html.Attributes.style "text-decoration" "none"
         , Html.Attributes.style "color" "inherit"
+        , Html.Attributes.style "height" "50px"
         ]
         [ Html.text "GitHub" ]
       , Html.a
@@ -164,6 +167,7 @@ viewHeader =
         , Html.Attributes.href "https://github.com/aminnairi/package-json-generator/issues"
         , Html.Attributes.style "text-decoration" "none"
         , Html.Attributes.style "color" "inherit"
+        , Html.Attributes.style "height" "50px"
         ]
         [ Html.text "Bug" ]
       ]
@@ -1471,7 +1475,8 @@ viewContributorUrl ( ContributorUrl contributorUrl ) =
 
 viewHighlightedModel : Model -> Html Message
 viewHighlightedModel model =
-  Html.div []
+  Html.div
+    [ Html.Attributes.style "padding" "20px" ]
     [ SyntaxHighlight.useTheme SyntaxHighlight.gitHub
     , encodeModel model
         |> SyntaxHighlight.json
