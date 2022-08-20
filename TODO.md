@@ -12,3 +12,7 @@
 - Add sideEffects field
 - Add module field
 - Access help button spanning too wide
+- Search packages on-the-fly using the NPM API
+- tests
+- Elm Review
+- ESLint
