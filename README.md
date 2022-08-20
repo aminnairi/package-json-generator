@@ -12,7 +12,7 @@ See [aminnairi.github.io/package-json-generator](https://aminnairi.github.io/pac
 
 Shortcut | Description
 ---|---
-`control + alt + a` | Copy to clipboard
+`control + alt + c` | Copy to clipboard
 `control + alt + s` | Save to disk
 `control + alt + r` | Reset everything
 `control + alt + enter` | On a field after it has been added, add another field
