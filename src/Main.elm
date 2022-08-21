@@ -3514,7 +3514,7 @@ update message model =
             , Cmd.none
             )
 
-        WindowResized width height ->
+        WindowResized width _ ->
             ( { model
                 | windowWidth = width
                 , notification = ""
@@ -3935,7 +3935,7 @@ subscriptions _ =
     Sub.batch
         [ copyToClipboardNotification CopyToClipboardNotification
         , Browser.Events.onResize WindowResized
-        , Browser.Events.onKeyDown ( onControlAltKey [ ( "c", CopyToClipboard ), ( "s", SaveToDisk ), ( "r", Reset ) ] )
+        , Browser.Events.onKeyDown (onControlAltKey [ ( "c", CopyToClipboard ), ( "s", SaveToDisk ), ( "r", Reset ) ])
         ]
 
 
