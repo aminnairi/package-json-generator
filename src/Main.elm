@@ -86,6 +86,7 @@ view model =
                 , viewLicense model.license
                 , viewMain model.main
                 , viewBrowser model.browser
+                , viewPackageManager model.packageManager
                 , viewBugs model.bugs
                 , viewAuthor model.author
                 , viewRepository model.repository
@@ -240,6 +241,31 @@ viewActions model =
             [ viewButton [ Html.Events.onClick CopyToClipboard ] [ Html.text "Copy" ]
             , viewButton [ Html.Events.onClick SaveToDisk ] [ Html.text "Save as" ]
             ]
+        ]
+
+
+viewPackageManager : PackageManager -> Html Message
+viewPackageManager (PackageManager packageManager) =
+    Html.div
+        []
+        [ viewSecondLevelTitle [] [ Html.text "Package Manager" ]
+        , viewRow
+            []
+            [ viewButton [ Html.Events.onClick ResetPackageManager ] [ Html.text "Reset" ]
+            , viewLink
+                [ Html.Attributes.href "https://nodejs.org/api/packages.html#packagemanager" ]
+                [ viewButton [] [ Html.text "help" ] ]
+            ]
+        , viewInputField
+            [ Html.Attributes.for "packageManager" ]
+            [ Html.text "Package Manager" ]
+            [ Html.Attributes.value packageManager
+            , Html.Attributes.id "packageManager"
+            , Html.Events.onInput UpdatePackageManager
+            , Html.Attributes.placeholder "Ex: npm, yarn, pnpm"
+            , Html.Attributes.type_ "text"
+            ]
+            []
         ]
 
 
@@ -1729,6 +1755,7 @@ encodeModel model =
                 , maybeEncodeLicense model.license
                 , maybeEncodeMain model.main
                 , maybeEncodeBrowser model.browser
+                , maybeEncodePackageManager model.packageManager
                 , maybeEncodeBugs model.bugs
                 , maybeEncodeAuthor model.author
                 , maybeEncodeRepository model.repository
@@ -2466,6 +2493,21 @@ maybeEncodeBrowser (Browser browser) =
             Just ( "browser", Json.Encode.string trimmedBrowser )
 
 
+maybeEncodePackageManager : PackageManager -> Maybe ( String, Json.Encode.Value )
+maybeEncodePackageManager (PackageManager packageManager) =
+    let
+        trimmedPackageManager : String
+        trimmedPackageManager =
+            String.trim packageManager
+    in
+    case trimmedPackageManager of
+        "" ->
+            Nothing
+
+        _ ->
+            Just ( "packageManager", Json.Encode.string trimmedPackageManager )
+
+
 maybeEncodeMain : Main -> Maybe ( String, Json.Encode.Value )
 maybeEncodeMain (Main entrypoint) =
     let
@@ -2815,6 +2857,14 @@ update message model =
         UpdateName name ->
             ( { model
                 | name = Name name
+                , notification = ""
+              }
+            , Cmd.none
+            )
+
+        UpdatePackageManager packageManager ->
+            ( { model
+                | packageManager = PackageManager packageManager
                 , notification = ""
               }
             , Cmd.none
@@ -3699,6 +3749,11 @@ update message model =
             , vibrate ()
             )
 
+        ResetPackageManager ->
+            ( { model | packageManager = PackageManager "" }
+            , vibrate ()
+            )
+
 
 updateAccess : String -> Access
 updateAccess access =
@@ -3974,6 +4029,7 @@ initialModel windowWidth =
     , license = License ""
     , main = Main ""
     , browser = Browser ""
+    , packageManager = PackageManager ""
     , access = Private
     , bugs =
         Bugs
@@ -4050,6 +4106,7 @@ type alias Model =
     , license : License
     , main : Main
     , browser : Browser
+    , packageManager : PackageManager
     , access : Access
     , bugs : Bugs
     , author : Author
@@ -4072,6 +4129,10 @@ type alias Model =
     , directories : Directories
     , spaces : Spaces
     }
+
+
+type PackageManager
+    = PackageManager String
 
 
 type Spaces
@@ -4395,6 +4456,7 @@ type Message
     | UpdateRepositoryUrl String
     | UpdateEnginesNode String
     | UpdateEnginesNpm String
+    | UpdatePackageManager String
     | AddCpu
     | RemoveCpu Int
     | UpdateCpu Int String
@@ -4485,3 +4547,4 @@ type Message
     | ResetPeerDependencies
     | ResetBundledDependencies
     | ResetOptionalDependencies
+    | ResetPackageManager
