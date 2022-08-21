@@ -78,6 +78,7 @@ view model =
                 ]
                 [ viewCenteredButton [ Html.Events.onClick Reset ] [ Html.text "reset" ]
                 , viewSpaces model.spaces
+                , viewModuleType model.moduleType
                 , viewAccess model.access
                 , viewName model.name
                 , viewDescription model.description
@@ -292,6 +293,35 @@ viewSpacesValue spaces =
 
         TwoSpaces ->
             "two-spaces"
+
+
+viewModuleType : ModuleType -> Html Message
+viewModuleType moduleType =
+    Html.div
+        []
+        [ viewSecondLevelTitle [] [ Html.text "Type" ]
+        , viewSelect
+            [ Html.Attributes.value <| viewModuleTypeValue moduleType
+            , Html.Events.Extra.onChange UpdateModuleType
+            ]
+            [ Html.option [ Html.Attributes.value <| viewModuleTypeValue UnknownModule ] [ Html.text "Unset" ]
+            , Html.option [ Html.Attributes.value <| viewModuleTypeValue EcmascriptModule ] [ Html.text "ECMAScript module" ]
+            , Html.option [ Html.Attributes.value <| viewModuleTypeValue CommonjsModule ] [ Html.text "CommonJS module" ]
+            ]
+        ]
+
+
+viewModuleTypeValue : ModuleType -> String
+viewModuleTypeValue moduleType =
+    case moduleType of
+        EcmascriptModule ->
+            "module"
+
+        CommonjsModule ->
+            "commonjs"
+
+        UnknownModule ->
+            ""
 
 
 viewDirectories : Directories -> Html Message
@@ -1748,6 +1778,7 @@ encodeModel model =
         Json.Encode.object <|
             List.filterMap identity
                 [ maybeEncodeAccess model.access
+                , maybeEncodeModuleType model.moduleType
                 , maybeEncodeName model.name
                 , maybeEncodeDescription model.description
                 , maybeEncodeVersion model.version
@@ -1786,6 +1817,19 @@ encodeSpaces spaces =
 
         FourSpaces ->
             4
+
+
+maybeEncodeModuleType : ModuleType -> Maybe ( String, Json.Encode.Value )
+maybeEncodeModuleType moduleType =
+    case moduleType of
+        EcmascriptModule ->
+            Just ( "type", Json.Encode.string (viewModuleTypeValue EcmascriptModule) )
+
+        CommonjsModule ->
+            Just ( "type", Json.Encode.string (viewModuleTypeValue CommonjsModule) )
+
+        UnknownModule ->
+            Nothing
 
 
 maybeEncodeDirectories : Directories -> Maybe ( String, Json.Encode.Value )
@@ -2862,6 +2906,14 @@ update message model =
             , Cmd.none
             )
 
+        UpdateModuleType moduleType ->
+            ( { model
+                | moduleType = updateModuleType moduleType
+                , notification = ""
+              }
+            , Cmd.none
+            )
+
         UpdatePackageManager packageManager ->
             ( { model
                 | packageManager = PackageManager packageManager
@@ -3775,6 +3827,19 @@ updateSpaces spaces =
             TwoSpaces
 
 
+updateModuleType : String -> ModuleType
+updateModuleType moduleType =
+    case moduleType of
+        "commonjs" ->
+            CommonjsModule
+
+        "module" ->
+            EcmascriptModule
+
+        _ ->
+            UnknownModule
+
+
 updateTestDirectory : TestDirectory -> Directories -> Directories
 updateTestDirectory (TestDirectory test) (Directories directories) =
     Directories { directories | test = TestDirectory test }
@@ -4030,6 +4095,7 @@ initialModel windowWidth =
     , main = Main ""
     , browser = Browser ""
     , packageManager = PackageManager ""
+    , moduleType = UnknownModule
     , access = Private
     , bugs =
         Bugs
@@ -4107,6 +4173,7 @@ type alias Model =
     , main : Main
     , browser : Browser
     , packageManager : PackageManager
+    , moduleType : ModuleType
     , access : Access
     , bugs : Bugs
     , author : Author
@@ -4129,6 +4196,12 @@ type alias Model =
     , directories : Directories
     , spaces : Spaces
     }
+
+
+type ModuleType
+    = CommonjsModule
+    | EcmascriptModule
+    | UnknownModule
 
 
 type PackageManager
@@ -4457,6 +4530,7 @@ type Message
     | UpdateEnginesNode String
     | UpdateEnginesNpm String
     | UpdatePackageManager String
+    | UpdateModuleType String
     | AddCpu
     | RemoveCpu Int
     | UpdateCpu Int String
