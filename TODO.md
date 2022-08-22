@@ -16,3 +16,5 @@
 - tests
 - Elm Review
 - ESLint
+- Add a global reset
+- Update directories to the latest package-json spec
