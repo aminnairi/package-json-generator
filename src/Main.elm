@@ -80,6 +80,7 @@ view model =
                 , viewSpaces model.spaces
                 , viewModuleType model.moduleType
                 , viewAccess model.access
+                , viewSideEffects model.sideEffects
                 , viewName model.name
                 , viewTypes model.types
                 , viewDescription model.description
@@ -858,14 +859,71 @@ viewAccess access =
         ]
 
 
+viewPublicAccessValue : String
+viewPublicAccessValue =
+    "public"
+
+
+viewPrivateAccessValue : String
+viewPrivateAccessValue =
+    "private"
+
+
 viewAccessValue : Access -> String
 viewAccessValue access =
     case access of
         Private ->
-            "private"
+            viewPrivateAccessValue
 
         Public ->
-            "public"
+            viewPublicAccessValue
+
+
+viewSideEffects : SideEffects -> Html Message
+viewSideEffects sideEffects =
+    Html.div
+        []
+        [ viewSecondLevelTitle [] [ Html.text "Side Effects" ]
+        , viewLink
+            [ Html.Attributes.href "https://webpack.js.org/guides/tree-shaking/#mark-the-file-as-side-effect-free" ]
+            [ viewCenteredButton [] [ Html.text "help" ] ]
+        , viewSelect
+            [ Html.Attributes.value <| viewSideEffectsValue sideEffects
+            , Html.Events.Extra.onChange UpdateSideEffects
+            ]
+            [ Html.option [ Html.Attributes.value <| viewSideEffectsValue UnsetSideEffects ] [ Html.text "Unset" ]
+            , Html.option [ Html.Attributes.value <| viewSideEffectsValue HasSideEffects ] [ Html.text "Has Side Effects" ]
+            , Html.option [ Html.Attributes.value <| viewSideEffectsValue HasNoSideEffects ] [ Html.text "Has No Side Effects" ]
+            ]
+        ]
+
+
+viewHasSideEffectsValue : String
+viewHasSideEffectsValue =
+    "hassideeffects"
+
+
+viewHasNoSideEffectsValue : String
+viewHasNoSideEffectsValue =
+    "hasnosideeffects"
+
+
+viewUnsetSideEffectsValue : String
+viewUnsetSideEffectsValue =
+    "unsetsideeffects"
+
+
+viewSideEffectsValue : SideEffects -> String
+viewSideEffectsValue sideEffects =
+    case sideEffects of
+        UnsetSideEffects ->
+            viewUnsetSideEffectsValue
+
+        HasSideEffects ->
+            viewHasSideEffectsValue
+
+        HasNoSideEffects ->
+            viewHasNoSideEffectsValue
 
 
 viewEngines : Engines -> Html Message
@@ -1804,6 +1862,7 @@ encodeModel model =
         Json.Encode.object <|
             List.filterMap identity
                 [ maybeEncodeAccess model.access
+                , maybeEncodeSideEffects model.sideEffects
                 , maybeEncodeModuleType model.moduleType
                 , maybeEncodeName model.name
                 , maybeEncodeTypes model.types
@@ -1834,6 +1893,24 @@ encodeModel model =
                 , maybeEncodeBundledDependencies model.bundledDependencies
                 , maybeEncodeOptionalDependencies model.optionalDependencies
                 ]
+
+
+sideEffectsFieldName : String
+sideEffectsFieldName =
+    "sideEffects"
+
+
+maybeEncodeSideEffects : SideEffects -> Maybe ( String, Json.Encode.Value )
+maybeEncodeSideEffects sideEffects =
+    case sideEffects of
+        UnsetSideEffects ->
+            Nothing
+
+        HasSideEffects ->
+            Just ( sideEffectsFieldName, Json.Encode.bool True )
+
+        HasNoSideEffects ->
+            Just ( sideEffectsFieldName, Json.Encode.bool False )
 
 
 encodeSpaces : Spaces -> Int
@@ -3027,6 +3104,13 @@ update message model =
             , Cmd.none
             )
 
+        UpdateSideEffects sideEffects ->
+            ( { model
+                | sideEffects = updateSideEffects sideEffects
+              }
+            , Cmd.none
+            )
+
         UpdateBugsUrl url ->
             ( { model
                 | bugs = updateBugsUrl (BugsUrl url) model.bugs
@@ -3865,12 +3949,23 @@ update message model =
 
 updateAccess : String -> Access
 updateAccess access =
-    case access of
-        "public" ->
-            Public
+    if viewPublicAccessValue == access then
+        Public
 
-        _ ->
-            Private
+    else
+        Private
+
+
+updateSideEffects : String -> SideEffects
+updateSideEffects sideEffects =
+    if viewHasSideEffectsValue == sideEffects then
+        HasSideEffects
+
+    else if viewHasNoSideEffectsValue == sideEffects then
+        HasNoSideEffects
+
+    else
+        UnsetSideEffects
 
 
 updateSpaces : String -> Spaces
@@ -4154,6 +4249,7 @@ initialModel windowWidth =
     , types = Types ""
     , moduleType = UnknownModule
     , access = Private
+    , sideEffects = UnsetSideEffects
     , bugs =
         Bugs
             { url = BugsUrl ""
@@ -4253,7 +4349,14 @@ type alias Model =
     , workspaces : List Workspace
     , directories : Directories
     , spaces : Spaces
+    , sideEffects : SideEffects
     }
+
+
+type SideEffects
+    = UnsetSideEffects
+    | HasSideEffects
+    | HasNoSideEffects
 
 
 type Types
@@ -4594,6 +4697,7 @@ type Message
     | UpdatePackageManager String
     | UpdateModuleType String
     | UpdateTypes String
+    | UpdateSideEffects String
     | AddCpu
     | RemoveCpu Int
     | UpdateCpu Int String
