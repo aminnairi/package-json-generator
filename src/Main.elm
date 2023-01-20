@@ -81,6 +81,7 @@ view model =
                 , viewModuleType model.moduleType
                 , viewAccess model.access
                 , viewName model.name
+                , viewTypes model.types
                 , viewDescription model.description
                 , viewVersion model.version
                 , viewHomepage model.homepage
@@ -808,6 +809,31 @@ viewName (Name name) =
             , Html.Events.onInput UpdateName
             , Html.Attributes.autofocus True
             , Html.Attributes.placeholder "@user/package"
+            , Html.Attributes.type_ "text"
+            ]
+            []
+        ]
+
+
+viewTypes : Types -> Html Message
+viewTypes (Types types) =
+    Html.div
+        []
+        [ viewSecondLevelTitle [] [ Html.text "Types" ]
+        , viewRow
+            []
+            [ viewButton [ Html.Events.onClick ResetTypes ] [ Html.text "Reset" ]
+            , viewLink
+                [ Html.Attributes.href "https://www.typescriptlang.org/docs/handbook/declaration-files/publishing.html#including-declarations-in-your-npm-package" ]
+                [ viewButton [] [ Html.text "help" ] ]
+            ]
+        , viewInputField
+            [ Html.Attributes.for "types" ]
+            [ Html.text "Types" ]
+            [ Html.Attributes.value types
+            , Html.Attributes.id "types"
+            , Html.Events.onInput UpdateTypes
+            , Html.Attributes.placeholder "dist/index.d.ts"
             , Html.Attributes.type_ "text"
             ]
             []
@@ -1780,6 +1806,7 @@ encodeModel model =
                 [ maybeEncodeAccess model.access
                 , maybeEncodeModuleType model.moduleType
                 , maybeEncodeName model.name
+                , maybeEncodeTypes model.types
                 , maybeEncodeDescription model.description
                 , maybeEncodeVersion model.version
                 , maybeEncodeHomepage model.homepage
@@ -2627,6 +2654,21 @@ maybeEncodeDescription (Description description) =
             Just ( "description", Json.Encode.string trimmedDescription )
 
 
+maybeEncodeTypes : Types -> Maybe ( String, Json.Encode.Value )
+maybeEncodeTypes (Types types) =
+    let
+        trimmedTypes : String
+        trimmedTypes =
+            String.trim types
+    in
+    case trimmedTypes of
+        "" ->
+            Nothing
+
+        _ ->
+            Just ( "types", Json.Encode.string trimmedTypes )
+
+
 maybeEncodeName : Name -> Maybe ( String, Json.Encode.Value )
 maybeEncodeName (Name name) =
     let
@@ -2902,6 +2944,13 @@ update message model =
             ( { model
                 | name = Name name
                 , notification = ""
+              }
+            , Cmd.none
+            )
+
+        UpdateTypes types ->
+            ( { model
+                | types = Types types
               }
             , Cmd.none
             )
@@ -3806,6 +3855,13 @@ update message model =
             , vibrate ()
             )
 
+        ResetTypes ->
+            ( { model
+                | types = Types ""
+              }
+            , vibrate ()
+            )
+
 
 updateAccess : String -> Access
 updateAccess access =
@@ -4095,6 +4151,7 @@ initialModel windowWidth =
     , main = Main ""
     , browser = Browser ""
     , packageManager = PackageManager ""
+    , types = Types ""
     , moduleType = UnknownModule
     , access = Private
     , bugs =
@@ -4166,6 +4223,7 @@ type alias Model =
     { windowWidth : Int
     , notification : String
     , name : Name
+    , types : Types
     , description : Description
     , version : Version
     , homepage : Homepage
@@ -4196,6 +4254,10 @@ type alias Model =
     , directories : Directories
     , spaces : Spaces
     }
+
+
+type Types
+    = Types String
 
 
 type ModuleType
@@ -4531,6 +4593,7 @@ type Message
     | UpdateEnginesNpm String
     | UpdatePackageManager String
     | UpdateModuleType String
+    | UpdateTypes String
     | AddCpu
     | RemoveCpu Int
     | UpdateCpu Int String
@@ -4622,3 +4685,4 @@ type Message
     | ResetBundledDependencies
     | ResetOptionalDependencies
     | ResetPackageManager
+    | ResetTypes
