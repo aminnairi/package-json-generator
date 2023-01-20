@@ -287,14 +287,24 @@ viewSpaces spaces =
         ]
 
 
+viewFourSpacesValue : String
+viewFourSpacesValue =
+    "fourspaces"
+
+
+viewTwoSpacesValue : String
+viewTwoSpacesValue =
+    "twospaces"
+
+
 viewSpacesValue : Spaces -> String
 viewSpacesValue spaces =
     case spaces of
         FourSpaces ->
-            "four-spaces"
+            viewFourSpacesValue
 
         TwoSpaces ->
-            "two-spaces"
+            viewTwoSpacesValue
 
 
 viewModuleType : ModuleType -> Html Message
@@ -306,24 +316,39 @@ viewModuleType moduleType =
             [ Html.Attributes.value <| viewModuleTypeValue moduleType
             , Html.Events.Extra.onChange UpdateModuleType
             ]
-            [ Html.option [ Html.Attributes.value <| viewModuleTypeValue UnknownModule ] [ Html.text "Unset" ]
+            [ Html.option [ Html.Attributes.value <| viewModuleTypeValue UnsetModule ] [ Html.text "Unset" ]
             , Html.option [ Html.Attributes.value <| viewModuleTypeValue EcmascriptModule ] [ Html.text "ECMAScript module" ]
             , Html.option [ Html.Attributes.value <| viewModuleTypeValue CommonjsModule ] [ Html.text "CommonJS module" ]
             ]
         ]
 
 
+viewEcmascriptModuleValue : String
+viewEcmascriptModuleValue =
+    "module"
+
+
+viewCommonjsModuleValue : String
+viewCommonjsModuleValue =
+    "commonjs"
+
+
+viewUnsetModuleValue : String
+viewUnsetModuleValue =
+    "unset"
+
+
 viewModuleTypeValue : ModuleType -> String
 viewModuleTypeValue moduleType =
     case moduleType of
         EcmascriptModule ->
-            "module"
+            viewEcmascriptModuleValue
 
         CommonjsModule ->
-            "commonjs"
+            viewCommonjsModuleValue
 
-        UnknownModule ->
-            ""
+        UnsetModule ->
+            viewUnsetSideEffectsValue
 
 
 viewDirectories : Directories -> Html Message
@@ -1932,7 +1957,7 @@ maybeEncodeModuleType moduleType =
         CommonjsModule ->
             Just ( "type", Json.Encode.string (viewModuleTypeValue CommonjsModule) )
 
-        UnknownModule ->
+        UnsetModule ->
             Nothing
 
 
@@ -3970,25 +3995,23 @@ updateSideEffects sideEffects =
 
 updateSpaces : String -> Spaces
 updateSpaces spaces =
-    case spaces of
-        "four-spaces" ->
-            FourSpaces
+    if viewFourSpacesValue == spaces then
+        FourSpaces
 
-        _ ->
-            TwoSpaces
+    else
+        TwoSpaces
 
 
 updateModuleType : String -> ModuleType
 updateModuleType moduleType =
-    case moduleType of
-        "commonjs" ->
-            CommonjsModule
+    if viewCommonjsModuleValue == moduleType then
+        CommonjsModule
 
-        "module" ->
-            EcmascriptModule
+    else if viewEcmascriptModuleValue == moduleType then
+        EcmascriptModule
 
-        _ ->
-            UnknownModule
+    else
+        UnsetModule
 
 
 updateTestDirectory : TestDirectory -> Directories -> Directories
@@ -4247,7 +4270,7 @@ initialModel windowWidth =
     , browser = Browser ""
     , packageManager = PackageManager ""
     , types = Types ""
-    , moduleType = UnknownModule
+    , moduleType = UnsetModule
     , access = Private
     , sideEffects = UnsetSideEffects
     , bugs =
@@ -4366,7 +4389,7 @@ type Types
 type ModuleType
     = CommonjsModule
     | EcmascriptModule
-    | UnknownModule
+    | UnsetModule
 
 
 type PackageManager
