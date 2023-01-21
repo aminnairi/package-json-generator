@@ -87,6 +87,7 @@ view model =
                 , viewVersion model.version
                 , viewHomepage model.homepage
                 , viewLicense model.license
+                , viewExports model.exports
                 , viewMain model.main
                 , viewBrowser model.browser
                 , viewPackageManager model.packageManager
@@ -624,6 +625,31 @@ viewBrowser (Browser browser) =
             , Html.Attributes.id "browser"
             , Html.Events.onInput UpdateBrowser
             , Html.Attributes.placeholder "./dist/index.browser.js"
+            , Html.Attributes.type_ "text"
+            ]
+            []
+        ]
+
+
+viewExports : Exports -> Html Message
+viewExports (Exports exports) =
+    Html.div
+        []
+        [ viewSecondLevelTitle [] [ Html.text "Exports" ]
+        , viewRow
+            []
+            [ viewButton [ Html.Events.onClick ResetExports ] [ Html.text "Reset" ]
+            , viewLink
+                [ Html.Attributes.href "https://nodejs.org/dist/latest/docs/api/packages.html#main-entry-point-export" ]
+                [ viewButton [] [ Html.text "help" ] ]
+            ]
+        , viewInputField
+            [ Html.Attributes.for "exports" ]
+            [ Html.text "Exports" ]
+            [ Html.Attributes.value exports
+            , Html.Attributes.id "exports"
+            , Html.Events.onInput UpdateExports
+            , Html.Attributes.placeholder "./dist/index.module.js"
             , Html.Attributes.type_ "text"
             ]
             []
@@ -1835,6 +1861,7 @@ encodeModel model =
                 , maybeEncodeVersion model.version
                 , maybeEncodeHomepage model.homepage
                 , maybeEncodeLicense model.license
+                , maybeEncodeExports model.exports
                 , maybeEncodeMain model.main
                 , maybeEncodeBrowser model.browser
                 , maybeEncodePackageManager model.packageManager
@@ -2602,6 +2629,21 @@ maybeEncodePackageManager (PackageManager packageManager) =
             Just ( "packageManager", Json.Encode.string trimmedPackageManager )
 
 
+maybeEncodeExports : Exports -> Maybe ( String, Json.Encode.Value )
+maybeEncodeExports (Exports exports) =
+    let
+        trimmedExports : String
+        trimmedExports =
+            String.trim exports
+    in
+    case trimmedExports of
+        "" ->
+            Nothing
+
+        _ ->
+            Just ( "exports", Json.Encode.string trimmedExports )
+
+
 maybeEncodeMain : Main -> Maybe ( String, Json.Encode.Value )
 maybeEncodeMain (Main entrypoint) =
     let
@@ -2974,6 +3016,7 @@ update message model =
         UpdateTypes types ->
             ( { model
                 | types = Types types
+                , notification = ""
               }
             , Cmd.none
             )
@@ -3026,6 +3069,14 @@ update message model =
             , Cmd.none
             )
 
+        UpdateExports exports ->
+            ( { model
+                | exports = Exports exports
+                , notification = ""
+              }
+            , Cmd.none
+            )
+
         UpdateMain entrypoint ->
             ( { model
                 | main = Main entrypoint
@@ -3053,6 +3104,7 @@ update message model =
         UpdateSideEffects sideEffects ->
             ( { model
                 | sideEffects = updateSideEffects sideEffects
+                , notification = ""
               }
             , Cmd.none
             )
@@ -3683,7 +3735,10 @@ update message model =
             ( initialModel model.windowWidth, vibrate () )
 
         ResetName ->
-            ( { model | name = Name "" }
+            ( { model
+                | name = Name ""
+                , notification = ""
+              }
             , Cmd.batch
                 [ vibrate ()
                 , focusElementById "name"
@@ -3691,7 +3746,10 @@ update message model =
             )
 
         ResetDescription ->
-            ( { model | description = Description "" }
+            ( { model
+                | description = Description ""
+                , notification = ""
+              }
             , Cmd.batch
                 [ vibrate ()
                 , focusElementById "description"
@@ -3699,7 +3757,10 @@ update message model =
             )
 
         ResetVersion ->
-            ( { model | version = Version "" }
+            ( { model
+                | version = Version ""
+                , notification = ""
+              }
             , Cmd.batch
                 [ vibrate ()
                 , focusElementById "version"
@@ -3707,7 +3768,10 @@ update message model =
             )
 
         ResetHomepage ->
-            ( { model | homepage = Homepage "" }
+            ( { model
+                | homepage = Homepage ""
+                , notification = ""
+              }
             , Cmd.batch
                 [ vibrate ()
                 , focusElementById "homepage"
@@ -3715,7 +3779,10 @@ update message model =
             )
 
         ResetLicense ->
-            ( { model | license = License "" }
+            ( { model
+                | license = License ""
+                , notification = ""
+              }
             , Cmd.batch
                 [ vibrate ()
                 , focusElementById "license"
@@ -3723,7 +3790,10 @@ update message model =
             )
 
         ResetMain ->
-            ( { model | main = Main "" }
+            ( { model
+                | main = Main ""
+                , notification = ""
+              }
             , Cmd.batch
                 [ vibrate ()
                 , focusElementById "main"
@@ -3731,7 +3801,10 @@ update message model =
             )
 
         ResetBrowser ->
-            ( { model | browser = Browser "" }
+            ( { model
+                | browser = Browser ""
+                , notification = ""
+              }
             , Cmd.batch
                 [ vibrate ()
                 , focusElementById "browser"
@@ -3739,7 +3812,10 @@ update message model =
             )
 
         ResetBugs ->
-            ( { model | bugs = Bugs { url = BugsUrl "", email = BugsEmail "" } }
+            ( { model
+                | bugs = Bugs { url = BugsUrl "", email = BugsEmail "" }
+                , notification = ""
+              }
             , Cmd.batch
                 [ vibrate ()
                 , focusElementById "bugs-url"
@@ -3747,7 +3823,10 @@ update message model =
             )
 
         ResetAuthor ->
-            ( { model | author = Author { name = AuthorName "", url = AuthorUrl "", email = AuthorEmail "" } }
+            ( { model
+                | author = Author { name = AuthorName "", url = AuthorUrl "", email = AuthorEmail "" }
+                , notification = ""
+              }
             , Cmd.batch
                 [ vibrate ()
                 , focusElementById "author-name"
@@ -3755,7 +3834,10 @@ update message model =
             )
 
         ResetRepository ->
-            ( { model | repository = Repository { kind = RepositoryKind "", url = RepositoryUrl "" } }
+            ( { model
+                | repository = Repository { kind = RepositoryKind "", url = RepositoryUrl "" }
+                , notification = ""
+              }
             , Cmd.batch
                 [ vibrate ()
                 , focusElementById "repository-type"
@@ -3763,7 +3845,10 @@ update message model =
             )
 
         ResetEngines ->
-            ( { model | engines = Engines { node = NodeEngine "", npm = NpmEngine "" } }
+            ( { model
+                | engines = Engines { node = NodeEngine "", npm = NpmEngine "" }
+                , notification = ""
+              }
             , Cmd.batch
                 [ vibrate ()
                 , focusElementById "engines-node"
@@ -3771,7 +3856,10 @@ update message model =
             )
 
         ResetDirectories ->
-            ( { model | directories = Directories { binary = BinaryDirectory "", manual = ManualDirectory "" } }
+            ( { model
+                | directories = Directories { binary = BinaryDirectory "", manual = ManualDirectory "" }
+                , notification = ""
+              }
             , Cmd.batch
                 [ vibrate ()
                 , focusElementById "directories-library"
@@ -3779,83 +3867,137 @@ update message model =
             )
 
         ResetCpus ->
-            ( { model | cpus = [] }
+            ( { model
+                | cpus = []
+                , notification = ""
+              }
             , vibrate ()
             )
 
         ResetOperatingSystems ->
-            ( { model | operatingSystems = [] }
+            ( { model
+                | operatingSystems = []
+                , notification = ""
+              }
             , vibrate ()
             )
 
         ResetFiles ->
-            ( { model | files = [] }
+            ( { model
+                | files = []
+                , notification = ""
+              }
             , vibrate ()
             )
 
         ResetKeywords ->
-            ( { model | keywords = [] }
+            ( { model
+                | keywords = []
+                , notification = ""
+              }
             , vibrate ()
             )
 
         ResetWorkspaces ->
-            ( { model | workspaces = [] }
+            ( { model
+                | workspaces = []
+                , notification = ""
+              }
             , vibrate ()
             )
 
         ResetContributors ->
-            ( { model | contributors = [] }
+            ( { model
+                | contributors = []
+                , notification = ""
+              }
             , vibrate ()
             )
 
         ResetFundings ->
-            ( { model | fundings = [] }
+            ( { model
+                | fundings = []
+                , notification = ""
+              }
             , vibrate ()
             )
 
         ResetScripts ->
-            ( { model | scripts = [] }
+            ( { model
+                | scripts = []
+                , notification = ""
+              }
             , vibrate ()
             )
 
         ResetConfigurations ->
-            ( { model | configurations = [] }
+            ( { model
+                | configurations = []
+                , notification = ""
+              }
             , vibrate ()
             )
 
         ResetDependencies ->
-            ( { model | dependencies = [] }
+            ( { model
+                | dependencies = []
+                , notification = ""
+              }
             , vibrate ()
             )
 
         ResetDevelopmentDependencies ->
-            ( { model | developmentDependencies = [] }
+            ( { model
+                | developmentDependencies = []
+                , notification = ""
+              }
             , vibrate ()
             )
 
         ResetPeerDependencies ->
-            ( { model | peerDependencies = [] }
+            ( { model
+                | peerDependencies = []
+                , notification = ""
+              }
             , vibrate ()
             )
 
         ResetBundledDependencies ->
-            ( { model | bundledDependencies = [] }
+            ( { model
+                | bundledDependencies = []
+                , notification = ""
+              }
             , vibrate ()
             )
 
         ResetOptionalDependencies ->
-            ( { model | optionalDependencies = [] }
+            ( { model
+                | optionalDependencies = []
+                , notification = ""
+              }
             , vibrate ()
             )
 
         ResetPackageManager ->
-            ( { model | packageManager = PackageManager "" }
+            ( { model
+                | packageManager = PackageManager ""
+                , notification = ""
+              }
             , vibrate ()
             )
 
         ResetTypes ->
             ( { model
                 | types = Types ""
+                , notification = ""
+              }
+            , vibrate ()
+            )
+
+        ResetExports ->
+            ( { model
+                | exports = Exports ""
+                , notification = ""
               }
             , vibrate ()
             )
@@ -4135,6 +4277,7 @@ initialModel windowWidth =
     , version = Version ""
     , homepage = Homepage ""
     , license = License ""
+    , exports = Exports ""
     , main = Main ""
     , browser = Browser ""
     , packageManager = PackageManager ""
@@ -4238,7 +4381,12 @@ type alias Model =
     , directories : Directories
     , spaces : Spaces
     , sideEffects : SideEffects
+    , exports : Exports
     }
+
+
+type Exports
+    = Exports String
 
 
 type SideEffects
@@ -4578,6 +4726,7 @@ type Message
     | UpdateModuleType String
     | UpdateTypes String
     | UpdateSideEffects String
+    | UpdateExports String
     | AddCpu
     | RemoveCpu Int
     | UpdateCpu Int String
@@ -4666,3 +4815,4 @@ type Message
     | ResetOptionalDependencies
     | ResetPackageManager
     | ResetTypes
+    | ResetExports
