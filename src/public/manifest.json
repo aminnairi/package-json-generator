@@ -1,0 +1,20 @@
+{
+  "background_color": "#ffffff",
+  "description": "Generate package.json files directly from your browser.",
+  "display": "standalone",
+  "name": "Package JSON Generator",
+  "orientation": "portrait-primary",
+  "prefer_related_applications": false,
+  "scope": "/package-json-generator",
+  "short_name": "PJG",
+  "start_url": "/package-json-generator",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "./icon.png",
+      "sizs": "512x512",
+      "type": "png",
+      "purpose": "any maskable"
+    }
+  ]
+}
