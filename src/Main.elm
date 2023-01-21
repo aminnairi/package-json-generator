@@ -363,27 +363,9 @@ viewDirectories (Directories directories) =
                 [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#directories" ]
                 [ viewButton [] [ Html.text "help" ] ]
             ]
-        , viewLibraryDirectory directories.library
         , viewBinaryDirectory directories.binary
         , viewManualDirectory directories.manual
-        , viewDocumentationDirectory directories.documentation
-        , viewExampleDirectory directories.example
-        , viewTestDirectory directories.test
         ]
-
-
-viewLibraryDirectory : LibraryDirectory -> Html Message
-viewLibraryDirectory (LibraryDirectory libraryDirectory) =
-    viewInputField
-        [ Html.Attributes.for "directories-library" ]
-        [ Html.text "Library" ]
-        [ Html.Attributes.value libraryDirectory
-        , Html.Attributes.id "directories-library"
-        , Html.Events.onInput UpdateLibraryDirectory
-        , Html.Attributes.placeholder "./library"
-        , Html.Attributes.type_ "text"
-        ]
-        []
 
 
 viewBinaryDirectory : BinaryDirectory -> Html Message
@@ -409,48 +391,6 @@ viewManualDirectory (ManualDirectory manualDirectory) =
         , Html.Attributes.id "directories-manual"
         , Html.Events.onInput UpdateManualDirectory
         , Html.Attributes.placeholder "./manual"
-        , Html.Attributes.type_ "text"
-        ]
-        []
-
-
-viewDocumentationDirectory : DocumentationDirectory -> Html Message
-viewDocumentationDirectory (DocumentationDirectory documentationDirectory) =
-    viewInputField
-        [ Html.Attributes.for "directories-documentation" ]
-        [ Html.text "Documentation" ]
-        [ Html.Attributes.value documentationDirectory
-        , Html.Attributes.id "directories-documentation"
-        , Html.Events.onInput UpdateDocumentationDirectory
-        , Html.Attributes.placeholder "./documentation"
-        , Html.Attributes.type_ "text"
-        ]
-        []
-
-
-viewExampleDirectory : ExampleDirectory -> Html Message
-viewExampleDirectory (ExampleDirectory exampleDirectory) =
-    viewInputField
-        [ Html.Attributes.for "directories-example" ]
-        [ Html.text "Example" ]
-        [ Html.Attributes.value exampleDirectory
-        , Html.Attributes.id "directories-example"
-        , Html.Events.onInput UpdateExampleDirectory
-        , Html.Attributes.placeholder "examples"
-        , Html.Attributes.type_ "text"
-        ]
-        []
-
-
-viewTestDirectory : TestDirectory -> Html Message
-viewTestDirectory (TestDirectory testDirectory) =
-    viewInputField
-        [ Html.Attributes.for "directories-test" ]
-        [ Html.text "Test" ]
-        [ Html.Attributes.value testDirectory
-        , Html.Attributes.id "directories-test"
-        , Html.Events.onInput UpdateTestDirectory
-        , Html.Attributes.placeholder "./tests"
         , Html.Attributes.type_ "text"
         ]
         []
@@ -1967,12 +1907,8 @@ maybeEncodeDirectories (Directories directories) =
         trimmedDirectories : List ( String, Json.Encode.Value )
         trimmedDirectories =
             List.filterMap identity
-                [ maybeEncodeLibraryDirectory directories.library
-                , maybeEncodeBinaryDirectory directories.binary
+                [ maybeEncodeBinaryDirectory directories.binary
                 , maybeEncodeManualDirectory directories.manual
-                , maybeEncodeDocumentationDirectory directories.documentation
-                , maybeEncodeExampleDirectory directories.example
-                , maybeEncodeTestDirectory directories.test
                 ]
     in
     case trimmedDirectories of
@@ -1981,21 +1917,6 @@ maybeEncodeDirectories (Directories directories) =
 
         _ ->
             Just ( "directories", Json.Encode.object trimmedDirectories )
-
-
-maybeEncodeLibraryDirectory : LibraryDirectory -> Maybe ( String, Json.Encode.Value )
-maybeEncodeLibraryDirectory (LibraryDirectory libraryDirectory) =
-    let
-        trimmedLibraryDirectory : String
-        trimmedLibraryDirectory =
-            String.trim libraryDirectory
-    in
-    case trimmedLibraryDirectory of
-        "" ->
-            Nothing
-
-        _ ->
-            Just ( "lib", Json.Encode.string trimmedLibraryDirectory )
 
 
 maybeEncodeBinaryDirectory : BinaryDirectory -> Maybe ( String, Json.Encode.Value )
@@ -3705,14 +3626,6 @@ update message model =
             , Cmd.none
             )
 
-        UpdateLibraryDirectory libraryDirectory ->
-            ( { model
-                | directories = updateLibraryDirectory (LibraryDirectory libraryDirectory) model.directories
-                , notification = ""
-              }
-            , Cmd.none
-            )
-
         UpdateBinaryDirectory binaryDirectory ->
             ( { model
                 | directories = updateBinaryDirectory (BinaryDirectory binaryDirectory) model.directories
@@ -3724,30 +3637,6 @@ update message model =
         UpdateManualDirectory manualDirectory ->
             ( { model
                 | directories = updateManualDirectory (ManualDirectory manualDirectory) model.directories
-                , notification = ""
-              }
-            , Cmd.none
-            )
-
-        UpdateDocumentationDirectory documentationDirectory ->
-            ( { model
-                | directories = updateDocumentationDirectory (DocumentationDirectory documentationDirectory) model.directories
-                , notification = ""
-              }
-            , Cmd.none
-            )
-
-        UpdateExampleDirectory exampleDirectory ->
-            ( { model
-                | directories = updateExampleDirectory (ExampleDirectory exampleDirectory) model.directories
-                , notification = ""
-              }
-            , Cmd.none
-            )
-
-        UpdateTestDirectory testDirectory ->
-            ( { model
-                | directories = updateTestDirectory (TestDirectory testDirectory) model.directories
                 , notification = ""
               }
             , Cmd.none
@@ -3882,7 +3771,7 @@ update message model =
             )
 
         ResetDirectories ->
-            ( { model | directories = Directories { library = LibraryDirectory "", binary = BinaryDirectory "", manual = ManualDirectory "", documentation = DocumentationDirectory "", example = ExampleDirectory "", test = TestDirectory "" } }
+            ( { model | directories = Directories { binary = BinaryDirectory "", manual = ManualDirectory "" } }
             , Cmd.batch
                 [ vibrate ()
                 , focusElementById "directories-library"
@@ -4014,21 +3903,6 @@ updateModuleType moduleType =
         UnsetModule
 
 
-updateTestDirectory : TestDirectory -> Directories -> Directories
-updateTestDirectory (TestDirectory test) (Directories directories) =
-    Directories { directories | test = TestDirectory test }
-
-
-updateExampleDirectory : ExampleDirectory -> Directories -> Directories
-updateExampleDirectory (ExampleDirectory example) (Directories directories) =
-    Directories { directories | example = ExampleDirectory example }
-
-
-updateDocumentationDirectory : DocumentationDirectory -> Directories -> Directories
-updateDocumentationDirectory (DocumentationDirectory documentation) (Directories directories) =
-    Directories { directories | documentation = DocumentationDirectory documentation }
-
-
 updateManualDirectory : ManualDirectory -> Directories -> Directories
 updateManualDirectory (ManualDirectory manual) (Directories directories) =
     Directories { directories | manual = ManualDirectory manual }
@@ -4037,11 +3911,6 @@ updateManualDirectory (ManualDirectory manual) (Directories directories) =
 updateBinaryDirectory : BinaryDirectory -> Directories -> Directories
 updateBinaryDirectory (BinaryDirectory binary) (Directories directories) =
     Directories { directories | binary = BinaryDirectory binary }
-
-
-updateLibraryDirectory : LibraryDirectory -> Directories -> Directories
-updateLibraryDirectory (LibraryDirectory library) (Directories directories) =
-    Directories { directories | library = LibraryDirectory library }
 
 
 updateNodeEngine : NodeEngine -> Engines -> Engines
@@ -4296,12 +4165,8 @@ initialModel windowWidth =
             }
     , directories =
         Directories
-            { library = LibraryDirectory ""
-            , binary = BinaryDirectory ""
+            { binary = BinaryDirectory ""
             , manual = ManualDirectory ""
-            , documentation = DocumentationDirectory ""
-            , example = ExampleDirectory ""
-            , test = TestDirectory ""
             }
     , cpus = []
     , operatingSystems = []
@@ -4403,17 +4268,9 @@ type Spaces
 
 type Directories
     = Directories
-        { library : LibraryDirectory
-        , binary : BinaryDirectory
+        { binary : BinaryDirectory
         , manual : ManualDirectory
-        , documentation : DocumentationDirectory
-        , example : ExampleDirectory
-        , test : TestDirectory
         }
-
-
-type LibraryDirectory
-    = LibraryDirectory String
 
 
 type BinaryDirectory
@@ -4773,12 +4630,8 @@ type Message
     | AddWorkspace
     | UpdateWorkspace Int String
     | RemoveWorkspace Int
-    | UpdateLibraryDirectory String
     | UpdateBinaryDirectory String
     | UpdateManualDirectory String
-    | UpdateDocumentationDirectory String
-    | UpdateExampleDirectory String
-    | UpdateTestDirectory String
     | UpdateSpaces String
     | CopyToClipboard
     | CopyToClipboardNotification String
