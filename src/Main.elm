@@ -360,7 +360,7 @@ viewDirectories (Directories directories) =
             []
             [ viewButton [ Html.Events.onClick ResetDirectories ] [ Html.text "Reset" ]
             , viewLink
-                [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#directories" ]
+                [ Html.Attributes.href "https://docs.npmjs.com/cli/v9/configuring-npm/package-json#directories" ]
                 [ viewButton [] [ Html.text "help" ] ]
             ]
         , viewBinaryDirectory directories.binary
@@ -408,7 +408,7 @@ viewWorkspaces workspaces =
                 [ viewButton [ Html.Events.onClick AddWorkspace ] [ Html.text "Add" ]
                 , viewButton [ Html.Events.onClick ResetWorkspaces ] [ Html.text "Reset" ]
                 , viewLink
-                    [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#workspaces" ]
+                    [ Html.Attributes.href "https://docs.npmjs.com/cli/v9/configuring-npm/package-json#workspaces" ]
                     [ viewButton [] [ Html.text "help" ] ]
                 ]
             ]
@@ -447,7 +447,7 @@ viewKeywords keywords =
                 [ viewButton [ Html.Events.onClick AddKeyword ] [ Html.text "Add" ]
                 , viewButton [ Html.Events.onClick ResetKeywords ] [ Html.text "Reset" ]
                 , viewLink
-                    [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#keywords" ]
+                    [ Html.Attributes.href "https://docs.npmjs.com/cli/v9/configuring-npm/package-json#keywords" ]
                     [ viewButton [] [ Html.text "help" ] ]
                 ]
             ]
@@ -486,7 +486,7 @@ viewFiles files =
                 [ viewButton [ Html.Events.onClick AddFile ] [ Html.text "Add" ]
                 , viewButton [ Html.Events.onClick ResetFiles ] [ Html.text "Reset" ]
                 , viewLink
-                    [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#files" ]
+                    [ Html.Attributes.href "https://docs.npmjs.com/cli/v9/configuring-npm/package-json#files" ]
                     [ viewButton [] [ Html.text "help" ] ]
                 ]
             ]
@@ -525,7 +525,7 @@ viewOperatingSystems operatingSystems =
                 [ viewButton [ Html.Events.onClick AddOperatingSystem ] [ Html.text "Add" ]
                 , viewButton [ Html.Events.onClick ResetOperatingSystems ] [ Html.text "Reset" ]
                 , viewLink
-                    [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#os" ]
+                    [ Html.Attributes.href "https://docs.npmjs.com/cli/v9/configuring-npm/package-json#os" ]
                     [ viewButton [] [ Html.text "help" ] ]
                 ]
             ]
@@ -578,7 +578,7 @@ viewCpus cpus =
                 [ viewButton [ Html.Events.onClick AddCpu ] [ Html.text "Add" ]
                 , viewButton [ Html.Events.onClick ResetCpus ] [ Html.text "Reset" ]
                 , viewLink
-                    [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#cpu" ]
+                    [ Html.Attributes.href "https://docs.npmjs.com/cli/v9/configuring-npm/package-json#cpu" ]
                     [ viewButton [] [ Html.text "help" ] ]
                 ]
             ]
@@ -614,7 +614,7 @@ viewBrowser (Browser browser) =
             []
             [ viewButton [ Html.Events.onClick ResetBrowser ] [ Html.text "Reset" ]
             , viewLink
-                [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#browser" ]
+                [ Html.Attributes.href "https://docs.npmjs.com/cli/v9/configuring-npm/package-json#browser" ]
                 [ viewButton [] [ Html.text "help" ] ]
             ]
         , viewInputField
@@ -639,7 +639,7 @@ viewMain (Main entrypoint) =
             []
             [ viewButton [ Html.Events.onClick ResetMain ] [ Html.text "Reset" ]
             , viewLink
-                [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#main" ]
+                [ Html.Attributes.href "https://docs.npmjs.com/cli/v9/configuring-npm/package-json#main" ]
                 [ viewButton [] [ Html.text "help" ] ]
             ]
         , viewInputField
@@ -664,7 +664,7 @@ viewLicense (License license) =
             []
             [ viewButton [ Html.Events.onClick ResetLicense ] [ Html.text "Reset" ]
             , viewLink
-                [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#license" ]
+                [ Html.Attributes.href "https://docs.npmjs.com/cli/v9/configuring-npm/package-json#license" ]
                 [ viewButton [] [ Html.text "help" ] ]
             ]
         , viewInputField
@@ -689,7 +689,7 @@ viewHomepage (Homepage homepage) =
             []
             [ viewButton [ Html.Events.onClick ResetHomepage ] [ Html.text "Reset" ]
             , viewLink
-                [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#homepage" ]
+                [ Html.Attributes.href "https://docs.npmjs.com/cli/v9/configuring-npm/package-json#homepage" ]
                 [ viewButton [] [ Html.text "help" ] ]
             ]
         , viewInputField
@@ -714,7 +714,7 @@ viewVersion (Version version) =
             []
             [ viewButton [ Html.Events.onClick ResetVersion ] [ Html.text "Reset" ]
             , viewLink
-                [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#version" ]
+                [ Html.Attributes.href "https://docs.npmjs.com/cli/v9/configuring-npm/package-json#version" ]
                 [ viewButton [] [ Html.text "help" ] ]
             ]
         , viewInputField
@@ -739,7 +739,7 @@ viewDescription (Description description) =
             []
             [ viewButton [ Html.Events.onClick ResetDescription ] [ Html.text "Reset" ]
             , viewLink
-                [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#description" ]
+                [ Html.Attributes.href "https://docs.npmjs.com/cli/v9/configuring-npm/package-json#description" ]
                 [ viewButton [] [ Html.text "help" ] ]
             ]
         , viewInputField
@@ -764,7 +764,7 @@ viewName (Name name) =
             []
             [ viewButton [ Html.Events.onClick ResetName ] [ Html.text "Reset" ]
             , viewLink
-                [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#name" ]
+                [ Html.Attributes.href "https://docs.npmjs.com/cli/v9/configuring-npm/package-json#name" ]
                 [ viewButton [] [ Html.text "help" ] ]
             ]
         , viewInputField
@@ -812,7 +812,7 @@ viewAccess access =
         []
         [ viewSecondLevelTitle [] [ Html.text "Access" ]
         , viewLink
-            [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/using-npm/config#access" ]
+            [ Html.Attributes.href "https://docs.npmjs.com/cli/v9/configuring-npm/package-json#private" ]
             [ viewCenteredButton [] [ Html.text "help" ] ]
         , viewSelect
             [ Html.Attributes.value <| viewAccessValue access
@@ -900,7 +900,7 @@ viewEngines (Engines engines) =
             []
             [ viewButton [ Html.Events.onClick ResetEngines ] [ Html.text "Reset" ]
             , viewLink
-                [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#engines" ]
+                [ Html.Attributes.href "https://docs.npmjs.com/cli/v9/configuring-npm/package-json#engines" ]
                 [ viewButton [] [ Html.text "help" ] ]
             ]
         , viewNodeEngine engines.node
@@ -945,7 +945,7 @@ viewRepository (Repository repository) =
             []
             [ viewButton [ Html.Events.onClick ResetRepository ] [ Html.text "Reset" ]
             , viewLink
-                [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#repository" ]
+                [ Html.Attributes.href "https://docs.npmjs.com/cli/v9/configuring-npm/package-json#repository" ]
                 [ viewButton [] [ Html.text "help" ] ]
             ]
         , viewRepositoryKind repository.kind
@@ -990,7 +990,7 @@ viewAuthor (Author author) =
             []
             [ viewButton [ Html.Events.onClick ResetAuthor ] [ Html.text "Reset" ]
             , viewLink
-                [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#people-fields-author-contributors" ]
+                [ Html.Attributes.href "https://docs.npmjs.com/cli/v9/configuring-npm/package-json#people-fields-author-contributors" ]
                 [ viewButton [] [ Html.text "help" ] ]
             ]
         , viewAuthorName author.name
@@ -1050,7 +1050,7 @@ viewBugs (Bugs bugs) =
             []
             [ viewButton [ Html.Events.onClick ResetBugs ] [ Html.text "Reset" ]
             , viewLink
-                [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#bugs" ]
+                [ Html.Attributes.href "https://docs.npmjs.com/cli/v9/configuring-npm/package-json#bugs" ]
                 [ viewButton [] [ Html.text "help" ] ]
             ]
         , viewBugsUrl bugs.url
@@ -1099,7 +1099,7 @@ viewOptionalDependencies optionalDependencies =
                 [ viewButton [ Html.Events.onClick AddOptionalDependency ] [ Html.text "Add" ]
                 , viewButton [ Html.Events.onClick ResetOptionalDependencies ] [ Html.text "Reset" ]
                 , viewLink
-                    [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#optionaldependencies" ]
+                    [ Html.Attributes.href "https://docs.npmjs.com/cli/v9/configuring-npm/package-json#optionaldependencies" ]
                     [ viewButton [] [ Html.text "help" ] ]
                 ]
             ]
@@ -1159,7 +1159,7 @@ viewBundledDependencies bundledDependencies =
                 [ viewButton [ Html.Events.onClick AddBundledDependency ] [ Html.text "Add" ]
                 , viewButton [ Html.Events.onClick ResetBundledDependencies ] [ Html.text "Reset" ]
                 , viewLink
-                    [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#bundleddependencies" ]
+                    [ Html.Attributes.href "https://docs.npmjs.com/cli/v9/configuring-npm/package-json#bundleddependencies" ]
                     [ viewButton [] [ Html.text "help" ] ]
                 ]
             ]
@@ -1219,7 +1219,7 @@ viewPeerDependencies peerDependencies =
                 [ viewButton [ Html.Events.onClick AddPeerDependency ] [ Html.text "Add" ]
                 , viewButton [ Html.Events.onClick ResetPeerDependencies ] [ Html.text "Reset" ]
                 , viewLink
-                    [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#peerdependencies" ]
+                    [ Html.Attributes.href "https://docs.npmjs.com/cli/v9/configuring-npm/package-json#peerdependencies" ]
                     [ viewButton [] [ Html.text "help" ] ]
                 ]
             ]
@@ -1279,7 +1279,7 @@ viewDevelopmentDependencies developmentDependencies =
                 [ viewButton [ Html.Events.onClick AddDevelopmentDependency ] [ Html.text "Add" ]
                 , viewButton [ Html.Events.onClick ResetDevelopmentDependencies ] [ Html.text "Reset" ]
                 , viewLink
-                    [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#devdependencies" ]
+                    [ Html.Attributes.href "https://docs.npmjs.com/cli/v9/configuring-npm/package-json#devdependencies" ]
                     [ viewButton [] [ Html.text "help" ] ]
                 ]
             ]
@@ -1339,7 +1339,7 @@ viewDependencies dependencies =
                 [ viewButton [ Html.Events.onClick AddDependency ] [ Html.text "Add" ]
                 , viewButton [ Html.Events.onClick ResetDependencies ] [ Html.text "Reset" ]
                 , viewLink
-                    [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#dependencies" ]
+                    [ Html.Attributes.href "https://docs.npmjs.com/cli/v9/configuring-npm/package-json#dependencies" ]
                     [ viewButton [] [ Html.text "help" ] ]
                 ]
             ]
@@ -1399,7 +1399,7 @@ viewConfigurations configurations =
                 [ viewButton [ Html.Events.onClick AddConfiguration ] [ Html.text "Add" ]
                 , viewButton [ Html.Events.onClick ResetConfigurations ] [ Html.text "Reset" ]
                 , viewLink
-                    [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#config" ]
+                    [ Html.Attributes.href "https://docs.npmjs.com/cli/v9/configuring-npm/package-json#config" ]
                     [ viewButton [] [ Html.text "help" ] ]
                 ]
             ]
@@ -1459,7 +1459,7 @@ viewScripts scripts =
                 [ viewButton [ Html.Events.onClick AddScript ] [ Html.text "Add" ]
                 , viewButton [ Html.Events.onClick ResetScripts ] [ Html.text "Reset" ]
                 , viewLink
-                    [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#scripts" ]
+                    [ Html.Attributes.href "https://docs.npmjs.com/cli/v9/configuring-npm/package-json#scripts" ]
                     [ viewButton [] [ Html.text "help" ] ]
                 ]
             ]
@@ -1519,7 +1519,7 @@ viewFundings fundings =
                 [ viewButton [ Html.Events.onClick AddFunding ] [ Html.text "Add" ]
                 , viewButton [ Html.Events.onClick ResetFundings ] [ Html.text "Reset" ]
                 , viewLink
-                    [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#funding" ]
+                    [ Html.Attributes.href "https://docs.npmjs.com/cli/v9/configuring-npm/package-json#funding" ]
                     [ viewButton [] [ Html.text "help" ] ]
                 ]
             ]
@@ -1577,7 +1577,7 @@ viewContributors contributors =
                 [ viewButton [ Html.Events.onClick AddContributor ] [ Html.text "Add" ]
                 , viewButton [ Html.Events.onClick ResetContributors ] [ Html.text "Reset" ]
                 , viewLink
-                    [ Html.Attributes.href "https://docs.npmjs.com/cli/v8/configuring-npm/package-json#people-fields-author-contributors" ]
+                    [ Html.Attributes.href "https://docs.npmjs.com/cli/v9/configuring-npm/package-json#people-fields-author-contributors" ]
                     [ viewButton [] [ Html.text "help" ] ]
                 ]
             ]
