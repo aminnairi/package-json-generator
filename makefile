@@ -12,7 +12,7 @@ build:
 	docker-compose build
 
 install:
-	docker-compose run $(DOCKER_COMPOSE_RUN_OPTIONS) npm install
+	docker-compose run $(DOCKER_COMPOSE_RUN_OPTIONS) npm install --force
 
 development: install
 	docker-compose run $(DOCKER_COMPOSE_RUN_OPTIONS) --service-ports npm run development
