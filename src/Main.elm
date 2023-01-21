@@ -166,7 +166,7 @@ viewHeader =
             [ Html.Attributes.style "font-family" "Poppins"
             , Html.Attributes.style "font-weight" "200"
             , Html.Attributes.style "font-size" "16px"
-            , Html.Attributes.href ""
+            , Html.Attributes.href "/package-json-generator"
             , Html.Attributes.style "display" "flex"
             , Html.Attributes.style "align-items" "center"
             , Html.Attributes.style "justify-content" "center"

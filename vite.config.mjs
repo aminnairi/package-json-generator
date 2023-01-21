@@ -1,8 +1,6 @@
 import {defineConfig} from "vite";
 import {plugin as elm} from "vite-plugin-elm";
 
-console.log(elm);
-
 export default defineConfig({
   root: "src",
   base: "https://aminnairi.github.io/package-json-generator/",
