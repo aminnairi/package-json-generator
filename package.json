@@ -5,7 +5,7 @@
   },
   "devDependencies": {
     "elm": "0.19.1-5",
-    "vite": "2.9.9",
+    "vite": "4.0.4",
     "vite-plugin-elm": "2.6.1"
   },
   "private": true,
@@ -49,8 +49,6 @@
   "contributors": [],
   "fundings": [],
   "config": {},
-  "dependencies": {},
-  "peerDependencies": {},
   "bundledDependencies": {},
-  "optionalDependencies": {}
+  "bundleDependencies": []
 }
