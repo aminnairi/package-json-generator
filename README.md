@@ -10,14 +10,14 @@ See [aminnairi.github.io/package-json-generator](https://aminnairi.github.io/pac
 
 ## Shortcuts
 
-Shortcut | Description
----|---
-`control + alt + c` | Copy to clipboard
-`control + alt + s` | Save to disk
-`control + alt + r` | Reset everything
-`control + alt + enter` | On a field after it has been added, add another field
-`control + alt + backspace` | On a field after it has been added, remove this field
-`control + alt + suppr` | On a field after it has been added, remove all fields
+Control | Alt | Shift | Key | Description
+---|---|---|---|---
+:white_check_mark: | :white_check_mark: | :negative_squared_cross_mark: | `c` | Copy to clipboard
+:white_check_mark: | :white_check_mark: | :negative_squared_cross_mark: | `s` | Save to disk
+:white_check_mark: | :white_check_mark: | :negative_squared_cross_mark: | `r` | Reset every fields
+:white_check_mark: | :white_check_mark: | :negative_squared_cross_mark: | `Enter` | Add a new field of the section
+:white_check_mark: | :white_check_mark: | :negative_squared_cross_mark: | `Backspace` | Remove the current field or reset the section
+:white_check_mark: | :white_check_mark: | :white_check_mark: | `Backspace` | Remove all fields of a section
 
 ## Contributing
 
