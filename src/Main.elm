@@ -76,7 +76,14 @@ view model =
                     )
                 , Html.Attributes.style "padding" "20px 0"
                 ]
-                [ viewCentered [] [ viewDangerButton [ Html.Events.onClick Reset ] [ Html.text "reset all" ] ]
+                [ viewCentered
+                    []
+                    [ viewDangerButton
+                        [ Html.Events.onClick Reset
+                        , Html.Attributes.title "Reinitialize all fields' value"
+                        ]
+                        [ Html.text "reset all" ]
+                    ]
                 , viewSpaces model.spaces
                 , viewModuleType model.moduleType
                 , viewAccess model.access
@@ -317,7 +324,10 @@ viewModuleType moduleType =
             []
             [ viewLink
                 [ Html.Attributes.href "https://nodejs.org/dist/latest-v18.x/docs/api/packages.html#type" ]
-                [ viewInformationButton [] [ Html.text "help" ] ]
+                [ viewInformationButton
+                    [ Html.Attributes.title "Whether your project uses CommonJS or ECMAScript Modules" ]
+                    [ Html.text "help" ]
+                ]
             ]
         , viewSelect
             [ Html.Attributes.value <| viewModuleTypeValue moduleType
@@ -729,10 +739,17 @@ viewLicense (License license) =
         [ viewSecondLevelTitle [] [ Html.text "License" ]
         , viewRow
             []
-            [ viewDangerButton [ Html.Events.onClick ResetLicense ] [ Html.text "Reset" ]
+            [ viewDangerButton
+                [ Html.Events.onClick ResetLicense
+                , Html.Attributes.title "Reset the license using an empty text"
+                ]
+                [ Html.text "Reset" ]
             , viewLink
                 [ Html.Attributes.href "https://docs.npmjs.com/cli/v9/configuring-npm/package-json#license" ]
-                [ viewInformationButton [] [ Html.text "help" ] ]
+                [ viewInformationButton
+                    [ Html.Attributes.title "The condition of usage, modification & distribution for this package" ]
+                    [ Html.text "help" ]
+                ]
             ]
         , viewInputField
             [ Html.Attributes.for "license" ]
@@ -754,10 +771,17 @@ viewHomepage (Homepage homepage) =
         [ viewSecondLevelTitle [] [ Html.text "Home page" ]
         , viewRow
             []
-            [ viewDangerButton [ Html.Events.onClick ResetHomepage ] [ Html.text "Reset" ]
+            [ viewDangerButton
+                [ Html.Events.onClick ResetHomepage
+                , Html.Attributes.title "Reset the link to the home page with an empty text"
+                ]
+                [ Html.text "Reset" ]
             , viewLink
                 [ Html.Attributes.href "https://docs.npmjs.com/cli/v9/configuring-npm/package-json#homepage" ]
-                [ viewInformationButton [] [ Html.text "help" ] ]
+                [ viewInformationButton
+                    [ Html.Attributes.title "The link to the home page of this package" ]
+                    [ Html.text "help" ]
+                ]
             ]
         , viewInputField
             [ Html.Attributes.for "homepage" ]
@@ -779,10 +803,17 @@ viewVersion (Version version) =
         [ viewSecondLevelTitle [] [ Html.text "Version" ]
         , viewRow
             []
-            [ viewDangerButton [ Html.Events.onClick ResetVersion ] [ Html.text "Reset" ]
+            [ viewDangerButton
+                [ Html.Events.onClick ResetVersion
+                , Html.Attributes.title "Reset the version using an empty text"
+                ]
+                [ Html.text "Reset" ]
             , viewLink
                 [ Html.Attributes.href "https://docs.npmjs.com/cli/v9/configuring-npm/package-json#version" ]
-                [ viewInformationButton [] [ Html.text "help" ] ]
+                [ viewInformationButton
+                    [ Html.Attributes.title "The version that is used for this package" ]
+                    [ Html.text "help" ]
+                ]
             ]
         , viewInputField
             [ Html.Attributes.for "version" ]
@@ -804,10 +835,17 @@ viewDescription (Description description) =
         [ viewSecondLevelTitle [] [ Html.text "Description" ]
         , viewRow
             []
-            [ viewDangerButton [ Html.Events.onClick ResetDescription ] [ Html.text "Reset" ]
+            [ viewDangerButton
+                [ Html.Events.onClick ResetDescription
+                , Html.Attributes.title "Reset the description using an empty text"
+                ]
+                [ Html.text "Reset" ]
             , viewLink
                 [ Html.Attributes.href "https://docs.npmjs.com/cli/v9/configuring-npm/package-json#description" ]
-                [ viewInformationButton [] [ Html.text "help" ] ]
+                [ viewInformationButton
+                    [ Html.Attributes.title "The description that is displayed when searching this package on NPM" ]
+                    [ Html.text "help" ]
+                ]
             ]
         , viewInputField
             [ Html.Attributes.for "description" ]
@@ -829,10 +867,17 @@ viewName (Name name) =
         [ viewSecondLevelTitle [] [ Html.text "Name" ]
         , viewRow
             []
-            [ viewDangerButton [ Html.Events.onClick ResetName ] [ Html.text "Reset" ]
+            [ viewDangerButton
+                [ Html.Events.onClick ResetName
+                , Html.Attributes.title "Resets the name using an empty text"
+                ]
+                [ Html.text "Reset" ]
             , viewLink
                 [ Html.Attributes.href "https://docs.npmjs.com/cli/v9/configuring-npm/package-json#name" ]
-                [ viewInformationButton [] [ Html.text "help" ] ]
+                [ viewInformationButton
+                    [ Html.Attributes.title "The name that is used when installing or importing the package" ]
+                    [ Html.text "help" ]
+                ]
             ]
         , viewInputField
             [ Html.Attributes.for "name" ]
@@ -855,10 +900,17 @@ viewTypes (Types types) =
         [ viewSecondLevelTitle [] [ Html.text "Types" ]
         , viewRow
             []
-            [ viewDangerButton [ Html.Events.onClick ResetTypes ] [ Html.text "Reset" ]
+            [ viewDangerButton
+                [ Html.Events.onClick ResetTypes
+                , Html.Attributes.title "Reset the path to the TypeScript type definition using an empty text"
+                ]
+                [ Html.text "Reset" ]
             , viewLink
                 [ Html.Attributes.href "https://www.typescriptlang.org/docs/handbook/declaration-files/publishing.html#including-declarations-in-your-npm-package" ]
-                [ viewInformationButton [] [ Html.text "help" ] ]
+                [ viewInformationButton
+                    [ Html.Attributes.title "The path to the TypeScript type definition for everything that is exposed by this package" ]
+                    [ Html.text "help" ]
+                ]
             ]
         , viewInputField
             [ Html.Attributes.for "types" ]
@@ -878,11 +930,14 @@ viewAccess access =
     Html.div
         []
         [ viewSecondLevelTitle [] [ Html.text "Access" ]
-        , viewLink
-            [ Html.Attributes.href "https://docs.npmjs.com/cli/v9/configuring-npm/package-json#private" ]
-            [ viewCentered
-                []
-                [ viewInformationButton [] [ Html.text "help" ] ]
+        , viewCentered
+            []
+            [ viewLink
+                [ Html.Attributes.href "https://docs.npmjs.com/cli/v9/configuring-npm/package-json#private" ]
+                [ viewInformationButton
+                    [ Html.Attributes.title "Whether your project is public or private" ]
+                    [ Html.text "help" ]
+                ]
             ]
         , viewSelect
             [ Html.Attributes.value <| viewAccessValue access
@@ -919,11 +974,14 @@ viewSideEffects sideEffects =
     Html.div
         []
         [ viewSecondLevelTitle [] [ Html.text "Side Effects" ]
-        , viewLink
-            [ Html.Attributes.href "https://webpack.js.org/guides/tree-shaking/#mark-the-file-as-side-effect-free" ]
-            [ viewCentered
-                []
-                [ viewInformationButton [] [ Html.text "help" ] ]
+        , viewCentered
+            []
+            [ viewLink
+                [ Html.Attributes.href "https://webpack.js.org/guides/tree-shaking/#mark-the-file-as-side-effect-free" ]
+                [ viewInformationButton
+                    [ Html.Attributes.title "Whether your projects triggers side-effects when imported or not" ]
+                    [ Html.text "help" ]
+                ]
             ]
         , viewSelect
             [ Html.Attributes.value <| viewSideEffectsValue sideEffects
